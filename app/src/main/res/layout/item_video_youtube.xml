@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="8dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
+
+    <ImageView
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:id="@+id/img_thumbnail"
+        android:layout_width="180dp"
+        android:layout_height="180dp"
+        android:layout_margin="5dp"
+        android:src="@drawable/icon_splash_screen" />
+
+    <TextView
+        app:layout_constraintEnd_toEndOf="@+id/img_thumbnail"
+        android:ellipsize="end"
+        android:maxLines="2"
+        app:layout_constraintStart_toStartOf="@id/img_thumbnail"
+        app:layout_constraintTop_toBottomOf="@+id/img_thumbnail"
+        android:id="@+id/tv_titleVideo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:text="Tên Video"
+        android:textColor="#000"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        tools:ignore="RtlCompat" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

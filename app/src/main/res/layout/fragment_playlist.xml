@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/tv_titlePlaylist"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="15dp"
+        android:layout_marginTop="15dp"
+        android:gravity="center"
+        android:text="PLAYLIST DÀNH CHO BẠN"
+        android:textColor="#000000"
+        android:textSize="25sp"
+        android:textStyle="bold" />
+<ListView
+    android:id="@+id/lv_playlist"
+    android:layout_below="@+id/tv_titlePlaylist"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+</ListView>
+<TextView
+    android:text="Xem Thêm Playlist"
+    android:textSize="18sp"
+    android:drawablePadding="10dp"
+    android:drawableLeft="@drawable/iconmoreplaylist"
+    android:paddingLeft="5dp"
+    android:layout_below="@+id/lv_playlist"
+    android:id="@+id/tv_morePlaylist"
+    android:paddingTop="10dp"
+    android:background="#c9c7c7"
+    android:layout_marginTop="8dp"
+    android:paddingBottom="10dp"
+    android:layout_marginBottom="8dp"
+    android:textColor="#000000"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content" />
+</RelativeLayout>

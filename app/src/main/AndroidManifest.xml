@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--suppress AndroidDomInspection -->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.trantri.tdt_music">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher_foreground"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme"
+        tools:ignore="GoogleAppIndexingWarning">
+        <activity android:name=".activity.SplashScreenActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".activity.MainActivity">
+
+        </activity>
+        <activity android:name=".activity.SongsListActivity" />
+        <activity android:name=".activity.PlaylistActivity" />
+        <activity android:name=".activity.DanhSachAllChuDeActivity" />
+        <activity android:name=".activity.DanhSachTheLoaiTheoChuDeActivity" />
+        <activity android:name=".activity.DanhSachAllAlbumActivity" />
+        <activity android:name=".activity.PlayMusicActivity" />
+        <activity
+            android:name=".activity.PlayVideoActivity"
+            android:configChanges="orientation|screenSize" />
+        <activity
+            android:name=".activity.MediaplayerVideoActivity"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".activity.KaraokeActivity"
+            android:configChanges="screenSize|orientation" />
+        <activity
+            android:name=".activity.PlayVideoKaraokeActivity"
+            android:screenOrientation="landscape">
+        </activity>
+    </application>
+
+</manifest>
