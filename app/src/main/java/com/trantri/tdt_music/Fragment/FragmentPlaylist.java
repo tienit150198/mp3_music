@@ -2,6 +2,7 @@ package com.trantri.tdt_music.Fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +26,10 @@ import com.trantri.tdt_music.Service.DataService;
 
 import java.util.List;
 
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.core.Scheduler;
+import io.reactivex.rxjava3.disposables.CompositeDisposable;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -35,6 +40,8 @@ public class FragmentPlaylist extends Fragment {
     TextView txtTiltlePlaylist, txtPlaylistGanDay;
     PlaylistAdapter mPlaylistAdapter;
     List<Playlist> mList;
+
+    private CompositeDisposable compositeDisposable = new CompositeDisposable();
 
     @Nullable
     @Override
@@ -64,29 +71,31 @@ public class FragmentPlaylist extends Fragment {
 
     private void GetData() {
         DataService mDataService = APIService.getService();
-        Call<List<Playlist>> mCall = mDataService.getDataPlaylist();
-        mCall.enqueue(new Callback<List<Playlist>>() {
-            @Override
-            public void onResponse(Call<List<Playlist>> call, Response<List<Playlist>> response) {
-                mList = response.body();
-                mPlaylistAdapter = new PlaylistAdapter(getActivity(), android.R.layout.simple_list_item_1, mList);
-                mListViewPlaylist.setAdapter(mPlaylistAdapter);
-                setListViewHeightBasedOnChildren(mListViewPlaylist);
-                mListViewPlaylist.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        Intent intent = new Intent(getActivity(), SongsListActivity.class);
-                        intent.putExtra("itemPlaylist", mList.get(position));
-                        startActivity(intent);
+
+        compositeDisposable.add(
+                mDataService.getDataPlaylist()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe((playlists, throwable) -> {
+                    if(throwable != null){
+                        // error
+                    }else{
+                        mList = playlists;
+                        mPlaylistAdapter = new PlaylistAdapter(getActivity(), android.R.layout.simple_list_item_1, mList);
+                        mListViewPlaylist.setAdapter(mPlaylistAdapter);
+                        setListViewHeightBasedOnChildren(mListViewPlaylist);
+                        mListViewPlaylist.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                Intent intent = new Intent(getActivity(), SongsListActivity.class);
+                                intent.putExtra("itemPlaylist", mList.get(position));
+                                startActivity(intent);
+                            }
+                        });
                     }
-                });
-            }
+                })
 
-            @Override
-            public void onFailure(Call<List<Playlist>> call, Throwable t) {
-
-            }
-        });
+        );
 
 
     }
@@ -115,5 +124,11 @@ public class FragmentPlaylist extends Fragment {
         params.height = totalHeight + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
         listView.setLayoutParams(params);
         listView.requestLayout();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        compositeDisposable.clear();
     }
 }

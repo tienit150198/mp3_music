@@ -12,6 +12,7 @@ import com.trantri.tdt_music.Model.TheLoai;
 
 import java.util.List;
 
+import io.reactivex.rxjava3.core.Single;
 import retrofit2.Call;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
@@ -26,19 +27,20 @@ public interface DataService {
     @GET("songbanner.php")
 
         // nhận dữ liệu
-    Call<List<Quangcao>> getDataBanner();
+    Single<List<Quangcao>> getDataBanner();
 
     @GET("PlaylistSong.php")
-    Call<List<Playlist>> getDataPlaylist();
+    Single<List<Playlist>> getDataPlaylist();
 
     @GET("chudeandTheLoai.php")
-    Call<ChuDeAndTheLoai> getDataChuDeTheLoai();
+    Single<ChuDeAndTheLoai> getDataChuDeTheLoai();
 
     @GET("albumSong.php")
-    Call<List<Album>> getDataAlbum();
+    Single<List<Album>> getDataAlbum();
+    // TODO: Đã làm 4 thằng trên, những thằng dưới chưa làm
 
     @GET("BaiHatDuocYeuThich.php")
-    Call<List<BaiHatYeuThich>> getDataBaiHatDuocYeuThich();
+    Single<List<BaiHatYeuThich>> getDataBaiHatDuocYeuThich();
 
     @FormUrlEncoded
     @POST("DanhSachBaiHat.php")
@@ -51,7 +53,7 @@ public interface DataService {
     Call<List<BaiHatYeuThich>> getDataBaiHatTheoPlaylist(@Field("idplaylist") String idplaylist);
 
     @GET("DanhSachAllPlaylist.php")
-    Call<List<PlaylistAll>> getAllPlaylist();
+    Single<List<PlaylistAll>> getAllPlaylist();
 
     @FormUrlEncoded
     @POST("DanhSachBaiHatPlaylist.php")
@@ -59,7 +61,7 @@ public interface DataService {
     Call<List<BaiHatYeuThich>> getDataBaiHatTheoTheLoai(@Field("idtheloai") String idtheloai);
 
     @GET("chuDeAll.php")
-    Call<List<ChuDe>> getAllChuDe();
+    Single<List<ChuDe>> getAllChuDe();
 
 
     @FormUrlEncoded
@@ -68,7 +70,7 @@ public interface DataService {
     Call<List<TheLoai>> getTheLoaiTheoChuDe(@Field("idchude") String idchude);
 
     @GET("AlbumAll.php")
-    Call<List<Album>> getAllAlbum();
+    Single<List<Album>> getAllAlbum();
 
     @FormUrlEncoded
     @POST("DanhSachBaiHatPlaylist.php")
