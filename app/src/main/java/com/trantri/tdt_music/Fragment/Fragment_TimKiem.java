@@ -1,6 +1,7 @@
 package com.trantri.tdt_music.Fragment;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -21,33 +22,31 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.trantri.tdt_music.Adapter.SearchBaiHatAdapter;
 import com.trantri.tdt_music.Model.BaiHatYeuThich;
 import com.trantri.tdt_music.R;
-import com.trantri.tdt_music.Service.APIService;
+import com.trantri.tdt_music.Service.ApiClient;
 import com.trantri.tdt_music.Service.DataService;
+import com.trantri.tdt_music.databinding.FragmentTimKiemBinding;
 
 import java.util.List;
 
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.observers.DisposableObserver;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class Fragment_TimKiem extends Fragment {
-    View view;
-    Toolbar toolbar;
-    RecyclerView mRecyclerView;
-    TextView mTextViewKoCoData;
     SearchBaiHatAdapter mAdapter;
+    FragmentTimKiemBinding binding;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.fragment_tim_kiem, container, false);
-        toolbar = view.findViewById(R.id.toolbartimkiembaihat);
-        mTextViewKoCoData = view.findViewById(R.id.tv_DataNull);
-        mRecyclerView = view.findViewById(R.id.recycleviewTimKiem);
-        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
-        toolbar.setTitle("Tìm kiếm bài hát...");
+        binding = FragmentTimKiemBinding.inflate(getLayoutInflater());
+        ((AppCompatActivity) getActivity()).setSupportActionBar(binding.toolbartimkiembaihat);
+        binding.toolbartimkiembaihat.setTitle("Tìm kiếm bài hát...");
         setHasOptionsMenu(true);
-        return view;
+        return binding.getRoot();
     }
 
     @Override
@@ -72,28 +71,57 @@ public class Fragment_TimKiem extends Fragment {
     }
 
     public void SearchBaiHat(String keyword) {
-        DataService dataService = APIService.getService();
-        Call<List<BaiHatYeuThich>> call = dataService.getSearchBaiHat(keyword);
-        call.enqueue(new Callback<List<BaiHatYeuThich>>() {
-            @Override
-            public void onResponse(Call<List<BaiHatYeuThich>> call, Response<List<BaiHatYeuThich>> response) {
-                List<BaiHatYeuThich> listBH = response.body();
-                if (listBH.size() > 0) {
-                    mAdapter = new SearchBaiHatAdapter(getActivity(), listBH);
-                    mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-                    mRecyclerView.setAdapter(mAdapter);
-                    mTextViewKoCoData.setVisibility(View.GONE);
-                    mRecyclerView.setVisibility(View.VISIBLE);
-                } else {
-                    mRecyclerView.setVisibility(View.GONE);
-                    mTextViewKoCoData.setVisibility(View.VISIBLE);
-                }
-            }
+        ApiClient.getService(getContext()).getSearchBaiHat(keyword)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new DisposableObserver<List<BaiHatYeuThich>>() {
+                    @Override
+                    public void onNext(@io.reactivex.rxjava3.annotations.NonNull List<BaiHatYeuThich> baiHatYeuThiches) {
+                        if (baiHatYeuThiches.size() > 0) {
+                            Log.d("TAGaaaa", "onNext: "+baiHatYeuThiches.size());
+                            mAdapter = new SearchBaiHatAdapter(getActivity(), baiHatYeuThiches);
+                            binding.recycleviewTimKiem.setLayoutManager(new LinearLayoutManager(getActivity()));
+                            binding.recycleviewTimKiem.setAdapter(mAdapter);
+                            binding.recycleviewTimKiem.setVisibility(View.GONE);
+                            binding.recycleviewTimKiem.setVisibility(View.VISIBLE);
+                        } else {
+                            binding.recycleviewTimKiem.setVisibility(View.GONE);
+                            binding.tvDataNull.setVisibility(View.VISIBLE);
+                        }
+                    }
 
-            @Override
-            public void onFailure(Call<List<BaiHatYeuThich>> call, Throwable t) {
+                    @Override
+                    public void onError(@io.reactivex.rxjava3.annotations.NonNull Throwable e) {
 
-            }
-        });
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
+//        DataService dataService = APIService.getService();
+//        Call<List<BaiHatYeuThich>> call = dataService.getSearchBaiHat(keyword);
+//        call.enqueue(new Callback<List<BaiHatYeuThich>>() {
+//            @Override
+//            public void onResponse(Call<List<BaiHatYeuThich>> call, Response<List<BaiHatYeuThich>> response) {
+//                List<BaiHatYeuThich> listBH = response.body();
+//                if (listBH.size() > 0) {
+//                    mAdapter = new SearchBaiHatAdapter(getActivity(), listBH);
+//                    mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+//                    mRecyclerView.setAdapter(mAdapter);
+//                    mTextViewKoCoData.setVisibility(View.GONE);
+//                    mRecyclerView.setVisibility(View.VISIBLE);
+//                } else {
+//                    mRecyclerView.setVisibility(View.GONE);
+//                    mTextViewKoCoData.setVisibility(View.VISIBLE);
+//                }
+//            }
+//
+//            @Override
+//            public void onFailure(Call<List<BaiHatYeuThich>> call, Throwable t) {
+//
+//            }
+//        });
     }
 }

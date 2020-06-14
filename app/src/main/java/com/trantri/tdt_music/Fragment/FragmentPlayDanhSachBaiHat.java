@@ -14,21 +14,21 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.trantri.tdt_music.activity.PlayMusicActivity;
 import com.trantri.tdt_music.Adapter.PlayMusicAdapter;
 import com.trantri.tdt_music.R;
+import com.trantri.tdt_music.databinding.FragmentPlayDanhSachBaiHatBinding;
 
 public class FragmentPlayDanhSachBaiHat extends Fragment {
-    View view;
-    RecyclerView mRecyclerView;
     PlayMusicAdapter musicAdapter;
+    FragmentPlayDanhSachBaiHatBinding binding;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.fragment_play_danh_sach_bai_hat, container, false);
-        mRecyclerView = view.findViewById(R.id.recyclePlayDanhSachBH);
+       binding =  FragmentPlayDanhSachBaiHatBinding.inflate(getLayoutInflater());
+
         if (PlayMusicActivity.baiHatList.size() > 0 ){
             musicAdapter = new PlayMusicAdapter(getActivity(), PlayMusicActivity.baiHatList);
-            mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-            mRecyclerView.setAdapter(musicAdapter);
+            binding.recyclePlayDanhSachBH.setLayoutManager(new LinearLayoutManager(getActivity()));
+            binding.recyclePlayDanhSachBH.setAdapter(musicAdapter);
         }
-        return view;
+        return binding.getRoot();
     }
 }

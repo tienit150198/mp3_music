@@ -12,6 +12,7 @@ import com.trantri.tdt_music.Model.TheLoai;
 
 import java.util.List;
 
+import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.core.Single;
 import retrofit2.Call;
 import retrofit2.http.Field;
@@ -27,63 +28,63 @@ public interface DataService {
     @GET("songbanner.php")
 
         // nhận dữ liệu
-    Single<List<Quangcao>> getDataBanner();
+    Observable<List<Quangcao>> getDataBanner();
 
     @GET("PlaylistSong.php")
-    Single<List<Playlist>> getDataPlaylist();
+    Observable<List<Playlist>> getDataPlaylist();
 
     @GET("chudeandTheLoai.php")
-    Single<ChuDeAndTheLoai> getDataChuDeTheLoai();
+    Observable<ChuDeAndTheLoai> getDataChuDeTheLoai();
 
     @GET("albumSong.php")
-    Single<List<Album>> getDataAlbum();
+    Observable<List<Album>> getDataAlbum();
     // TODO: Đã làm 4 thằng trên, những thằng dưới chưa làm
 
     @GET("BaiHatDuocYeuThich.php")
-    Single<List<BaiHatYeuThich>> getDataBaiHatDuocYeuThich();
+    Observable<List<BaiHatYeuThich>> getDataBaiHatDuocYeuThich();
 
     @FormUrlEncoded
     @POST("DanhSachBaiHat.php")
         // tương tác và gửi data lên và nhận về
-    Call<List<BaiHatYeuThich>> getDataBaiHatTheoQuangCao(@Field("idquangcao") String idquangcao);
+    Observable<List<BaiHatYeuThich>> getDataBaiHatTheoQuangCao(@Field("idquangcao") String idquangcao);
 
     @FormUrlEncoded
     @POST("DanhSachBaiHatPlaylist.php")
         // tương tác và gửi data lên và nhận về
-    Call<List<BaiHatYeuThich>> getDataBaiHatTheoPlaylist(@Field("idplaylist") String idplaylist);
+    Observable<List<BaiHatYeuThich>> getDataBaiHatTheoPlaylist(@Field("idplaylist") String idplaylist);
 
     @GET("DanhSachAllPlaylist.php")
-    Single<List<PlaylistAll>> getAllPlaylist();
+    Observable<List<PlaylistAll>> getAllPlaylist();
 
     @FormUrlEncoded
     @POST("DanhSachBaiHatPlaylist.php")
         // tương tác và gửi data lên và nhận về
-    Call<List<BaiHatYeuThich>> getDataBaiHatTheoTheLoai(@Field("idtheloai") String idtheloai);
+    Observable<List<BaiHatYeuThich>> getDataBaiHatTheoTheLoai(@Field("idtheloai") String idtheloai);
 
     @GET("chuDeAll.php")
-    Single<List<ChuDe>> getAllChuDe();
+    Observable<List<ChuDe>> getAllChuDe();
 
 
     @FormUrlEncoded
-    @POST("TheLoaiTheoChuDe.php")
         // tương tác và gửi data lên và nhận về
-    Call<List<TheLoai>> getTheLoaiTheoChuDe(@Field("idchude") String idchude);
+    @POST("TheLoaiTheoChuDe.php")
+    Observable<List<TheLoai>> getTheLoaiTheoChuDe(@Field("idchude") String idchude);
 
     @GET("AlbumAll.php")
-    Single<List<Album>> getAllAlbum();
+    Observable<List<Album>> getAllAlbum();
 
     @FormUrlEncoded
     @POST("DanhSachBaiHatPlaylist.php")
         // tương tác và gửi data lên và nhận về
-    Call<List<BaiHatYeuThich>> getDataBaiHatTheoAlbum(@Field("idalbum") String idalbum);
+    Observable<List<BaiHatYeuThich>> getDataBaiHatTheoAlbum(@Field("idalbum") String idalbum);
 
     @FormUrlEncoded
     @POST("UpdateLuotLike.php")
         // tương tác và gửi data lên và nhận về
-    Call<String> getDataLuotLikeBaiHat(@Field("luotthich") String luotlike, @Field("idbaihat") String idbaihat);
+    Observable<String> getDataLuotLikeBaiHat(@Field("luotthich") String luotlike, @Field("idbaihat") String idbaihat);
 
     @FormUrlEncoded
     @POST("SearchBH.php")
         // tương tác và gửi data lên và nhận về
-    Call<List<BaiHatYeuThich>> getSearchBaiHat(@Field("keyword") String keyword);
+    Observable<List<BaiHatYeuThich>> getSearchBaiHat(@Field("keyword") String keyword);
 }

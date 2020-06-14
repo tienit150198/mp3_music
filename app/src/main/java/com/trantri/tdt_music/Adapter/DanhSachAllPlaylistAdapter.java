@@ -16,13 +16,16 @@ import com.squareup.picasso.Picasso;
 import com.trantri.tdt_music.activity.SongsListActivity;
 import com.trantri.tdt_music.Model.PlaylistAll;
 import com.trantri.tdt_music.R;
+import com.trantri.tdt_music.databinding.ItemAllplaylistBinding;
+
 import java.util.ArrayList;
+import java.util.List;
 
 public class DanhSachAllPlaylistAdapter extends RecyclerView.Adapter<DanhSachAllPlaylistAdapter.ViewHolder> {
     Context mContext;
-    ArrayList<PlaylistAll> list;
+    List<PlaylistAll> list;
 
-    public DanhSachAllPlaylistAdapter(Context mContext, ArrayList<PlaylistAll> list) {
+    public DanhSachAllPlaylistAdapter(Context mContext, List<PlaylistAll> list) {
         this.mContext = mContext;
         this.list = list;
     }
@@ -31,17 +34,19 @@ public class DanhSachAllPlaylistAdapter extends RecyclerView.Adapter<DanhSachAll
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(mContext);
-        View v = inflater.inflate(R.layout.item_allplaylist, parent, false);
-        ViewHolder mViewHolder = new ViewHolder(v);
-        return mViewHolder;
+        return new ViewHolder(ItemAllplaylistBinding.inflate(inflater));
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         PlaylistAll playlist = list.get(position);
         // ??? getHinhAnhPlaylist = null
-        Glide.with(mContext).load(list.get(position).getHinhNen()).placeholder(R.drawable.ic_place_holder).into(holder.imgView);
-        holder.txtTenDanhSachBH.setText(playlist.getTen());
+        Glide.with(mContext)
+                .load(list.get(position).getHinhNen())
+                .placeholder(R.drawable.ic_place_holder)
+                .error(R.drawable.ic_place_holder)
+                .into(holder.binding.imgDanhsachallBH);
+        holder.binding.tvTenCaSiPlaylist.setText(playlist.getTen());
     }
 
     @Override
@@ -50,20 +55,15 @@ public class DanhSachAllPlaylistAdapter extends RecyclerView.Adapter<DanhSachAll
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        ImageView imgView;
-        TextView txtTenDanhSachBH;
+        ItemAllplaylistBinding binding;
 
-        public ViewHolder(View itemView) {
-            super(itemView);
-            imgView = itemView.findViewById(R.id.img_danhsachallBH);
-            txtTenDanhSachBH = itemView.findViewById(R.id.tv_danhsachallplaylist);
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(mContext, SongsListActivity.class);
-                    intent.putExtra("itemPlaylistAll", list.get(getPosition()));
-                    mContext.startActivity(intent);
-                }
+        public ViewHolder(@NonNull ItemAllplaylistBinding b) {
+            super(b.getRoot());
+            binding = b;
+            binding.lnList.setOnClickListener(v->{
+                Intent intent = new Intent(mContext, SongsListActivity.class);
+                intent.putExtra("itemPlaylistAll", list.get(getPosition()));
+                mContext.startActivity(intent);
             });
         }
     }

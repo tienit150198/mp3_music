@@ -12,12 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.trantri.tdt_music.Adapter.VideoYoutubeAdapter;
 import com.trantri.tdt_music.Model.YoutubeMusic;
 import com.trantri.tdt_music.R;
-import com.trantri.tdt_music.Service.APIService;
-import com.trantri.tdt_music.Service.DataService;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.trantri.tdt_music.databinding.ActivityPlayVideoBinding;
 
 import java.util.ArrayList;
 
@@ -26,43 +21,37 @@ public class PlayVideoActivity extends AppCompatActivity {
     protected static String API_KEY = "AIzaSyBE-8j4c1hviqwENsua7mKJAWSPsGNDPME";
     private String ID_PLAYLIST = "PLQDIMgoD-XFSrzVYJoilDK45ZAtugFe35";
     private String URL_GET_JSON = "https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=" + ID_PLAYLIST + "&key=" + API_KEY + "&maxResults=50";
-    private RecyclerView listViewVideo;
     private ArrayList<YoutubeMusic> mListVideo;
     private VideoYoutubeAdapter mAdapterVideo;
-    private Toolbar mToolbar;
-
+    ActivityPlayVideoBinding binding;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_play_video);
+        binding = ActivityPlayVideoBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
         init();
 //        GetJsonYoutbue(URL_GET_JSON);
     }
 
     private void init() {
-        mToolbar = findViewById(R.id.toobarDanhSachPhat);
-        listViewVideo = findViewById(R.id.lv_video);
-        setSupportActionBar(mToolbar);
+        setSupportActionBar(binding.toobarDanhSachPhat);
         getSupportActionBar().setTitle("Danh Sách MV");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+        binding.toobarDanhSachPhat.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();
             }
         });
-        mListVideo = new ArrayList<YoutubeMusic>();
-        listViewVideo.hasFixedSize();
-        listViewVideo.setLayoutManager(new GridLayoutManager(PlayVideoActivity.this, 2));
-        mAdapterVideo = new VideoYoutubeAdapter(PlayVideoActivity.this, mListVideo, new VideoYoutubeAdapter.OnClickItemYouTube() {
-            @Override
-            public void setOnClickListener(View view, int position) {
-                Intent intent = new Intent(PlayVideoActivity.this, MediaplayerVideoActivity.class);
-                intent.putExtra("IdVideo", mListVideo.get(position).getmIdVideo());
-                startActivity(intent);
-            }
+        mListVideo = new ArrayList<>();
+        binding.lvVideo.hasFixedSize();
+        binding.lvVideo.setLayoutManager(new GridLayoutManager(PlayVideoActivity.this, 2));
+        mAdapterVideo = new VideoYoutubeAdapter(PlayVideoActivity.this, mListVideo, (view, position) -> {
+            Intent intent = new Intent(PlayVideoActivity.this, MediaplayerVideoActivity.class);
+            intent.putExtra("IdVideo", mListVideo.get(position).getmIdVideo());
+            startActivity(intent);
         });
-        listViewVideo.setAdapter(mAdapterVideo);
+        binding.lvVideo.setAdapter(mAdapterVideo);
 
     }
 //

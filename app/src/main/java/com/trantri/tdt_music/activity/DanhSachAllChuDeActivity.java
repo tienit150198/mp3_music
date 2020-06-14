@@ -1,73 +1,76 @@
 package com.trantri.tdt_music.activity;
 
 import android.os.Bundle;
-import android.view.View;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.trantri.tdt_music.Adapter.DanhSachAllChuDeAdapter;
 import com.trantri.tdt_music.Model.ChuDe;
-import com.trantri.tdt_music.R;
-import com.trantri.tdt_music.Service.APIService;
-import com.trantri.tdt_music.Service.DataService;
+import com.trantri.tdt_music.Service.ApiClient;
+import com.trantri.tdt_music.databinding.ActivityDanhSachAllChuDeBinding;
 
 import java.util.List;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.annotations.NonNull;
+import io.reactivex.rxjava3.disposables.CompositeDisposable;
+import io.reactivex.rxjava3.disposables.Disposable;
+import io.reactivex.rxjava3.observers.DisposableObserver;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public class DanhSachAllChuDeActivity extends AppCompatActivity {
-    RecyclerView recyclerViewAllChuDe;
-    Toolbar mToolbarAllChuDe;
     DanhSachAllChuDeAdapter mAdapter;
+    ActivityDanhSachAllChuDeBinding binding;
+    private CompositeDisposable compositeDisposable = new CompositeDisposable();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_danh_sach_all_chu_de);
-        initView();
-        init();
+        binding = ActivityDanhSachAllChuDeBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+        initToolbar();
         GetDataChuDe();
     }
 
     private void GetDataChuDe() {
-        DataService mDataService = APIService.getService();
-        Call<List<ChuDe>> mCall = mDataService.getAllChuDe();
-        mCall.enqueue(new Callback<List<ChuDe>>() {
-            @Override
-            public void onResponse(Call<List<ChuDe>> call, Response<List<ChuDe>> response) {
-                List<ChuDe> chuDeList = response.body();
-              //  Log.d("bb",chuDeList.get(0).getIDChuDe());
-                mAdapter = new DanhSachAllChuDeAdapter(DanhSachAllChuDeActivity.this, chuDeList);
-            recyclerViewAllChuDe.setLayoutManager(new GridLayoutManager(DanhSachAllChuDeActivity.this, 1));
-            recyclerViewAllChuDe.setAdapter(mAdapter);
-            }
+        Disposable disposable = ApiClient.getService(getApplication()).getAllChuDe()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeWith(new DisposableObserver<List<ChuDe>>() {
+                    @Override
+                    public void onNext(@NonNull List<ChuDe> chuDes) {
+                        mAdapter = new DanhSachAllChuDeAdapter(getApplicationContext(), chuDes);
+                        binding.recycleViewAllChuDe.setLayoutManager(new GridLayoutManager(DanhSachAllChuDeActivity.this, 1));
+                        binding.recycleViewAllChuDe.setAdapter(mAdapter);
+                    }
 
-            @Override
-            public void onFailure(Call<List<ChuDe>> call, Throwable t) {
+                    @Override
+                    public void onError(@NonNull Throwable e) {
+                        e.printStackTrace();
+                        Toast.makeText(DanhSachAllChuDeActivity.this, "Dữ liệu lỗi !", Toast.LENGTH_SHORT).show();
+                    }
 
-            }
-        });
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
+        compositeDisposable.add(disposable);
+
     }
 
-    private void init() {
-        setSupportActionBar(mToolbarAllChuDe);
+    private void initToolbar() {
+        setSupportActionBar(binding.toobarAllChuDe);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("Tất Cả Chủ Đề Bài Hát");
-        mToolbarAllChuDe.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
+        binding.toobarAllChuDe.setNavigationOnClickListener(v -> finish());
     }
 
-    private void initView() {
-        recyclerViewAllChuDe = findViewById(R.id.recycleViewAllChuDe);
-        mToolbarAllChuDe = findViewById(R.id.toobarAllChuDe);
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        compositeDisposable.clear();
     }
 }

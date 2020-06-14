@@ -14,6 +14,7 @@ import com.bumptech.glide.Glide;
 import com.squareup.picasso.Picasso;
 import com.trantri.tdt_music.Model.YoutubeMusic;
 import com.trantri.tdt_music.R;
+import com.trantri.tdt_music.databinding.ItemVideoYoutubeBinding;
 
 import java.util.List;
 
@@ -31,21 +32,17 @@ public class VideoYoutubeAdapter extends RecyclerView.Adapter<VideoYoutubeAdapte
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.item_video_youtube, parent, false);
-        return new ViewHolder(view);
+
+        LayoutInflater inflater = LayoutInflater.from(context);
+        return new ViewHolder(ItemVideoYoutubeBinding.inflate(inflater));
     }
 
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
         YoutubeMusic music = musicList.get(position);
-        holder.txtTitle.setText(music.getmTitle());
-        Glide.with(context).load(music.getmThumbnail()).placeholder(R.drawable.ic_place_holder).into(holder.imageViewThumbnail);
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mListener.setOnClickListener(v,   holder.getAdapterPosition());
-            }
-        });
+        holder.binding.tvTitleVideo.setText(music.getmTitle());
+        Glide.with(context).load(music.getmThumbnail()).placeholder(R.drawable.ic_place_holder).into(holder.binding.imgThumbnail);
+        holder.itemView.setOnClickListener(v -> mListener.setOnClickListener(v, holder.getAdapterPosition()));
     }
 
     @Override
@@ -54,13 +51,12 @@ public class VideoYoutubeAdapter extends RecyclerView.Adapter<VideoYoutubeAdapte
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
-        ImageView imageViewThumbnail;
-        TextView txtTitle;
+        ItemVideoYoutubeBinding binding;
 
-        public ViewHolder(View itemView) {
-            super(itemView);
-            txtTitle = itemView.findViewById(R.id.tv_titleVideo);
-            imageViewThumbnail = itemView.findViewById(R.id.img_thumbnail);
+        public ViewHolder(ItemVideoYoutubeBinding b) {
+            super(b.getRoot());
+            binding = b;
+
         }
     }
 

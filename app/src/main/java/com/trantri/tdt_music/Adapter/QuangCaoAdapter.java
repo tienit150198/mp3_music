@@ -16,6 +16,7 @@ import com.squareup.picasso.Picasso;
 import com.trantri.tdt_music.activity.SongsListActivity;
 import com.trantri.tdt_music.Model.Quangcao;
 import com.trantri.tdt_music.R;
+import com.trantri.tdt_music.databinding.ItemQuangcaoBinding;
 
 import java.util.ArrayList;
 
@@ -43,28 +44,22 @@ public class QuangCaoAdapter extends PagerAdapter {
     // định hình object và gán dữ liệu cho mỗi object tượng trưng cho mỗi cái page
     @Override
     public Object instantiateItem(@NonNull ViewGroup container, final int position) {
+
+
         final LayoutInflater inflater = LayoutInflater.from(mContext);
-        View view = inflater.inflate(R.layout.item_quangcao, null);
+        ItemQuangcaoBinding binding = ItemQuangcaoBinding.inflate(inflater);
 
-        ImageView imgBackgroundQC = view.findViewById(R.id.img_backgroundQC);
-        ImageView imgQC = view.findViewById(R.id.img_QC);
-        TextView txtTitleBanner = view.findViewById(R.id.tv_titleBanner);
-        TextView txtNoiDungQC = view.findViewById(R.id.tv_mieutaBH);
-
-        Glide.with(mContext).load(mListQC.get(position).getHinhanh()).placeholder(R.drawable.ic_place_holder).into(imgBackgroundQC);
-        Glide.with(mContext).load(mListQC.get(position).getHinhbaihat()).placeholder(R.drawable.ic_place_holder).into(imgQC);
-        txtTitleBanner.setText(mListQC.get(position).getTenbaihat());
-        txtNoiDungQC.setText(mListQC.get(position).getNoidung());
-        view.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(mContext, SongsListActivity.class);
-                intent.putExtra("quangcao", mListQC.get(position));
-                mContext.startActivity(intent);
-            }
+        Glide.with(mContext).load(mListQC.get(position).getHinhanh()).placeholder(R.drawable.ic_place_holder).into(binding.imgBackgroundQC);
+        Glide.with(mContext).load(mListQC.get(position).getHinhbaihat()).placeholder(R.drawable.ic_place_holder).into(binding.imgQC);
+        binding.tvTitleBanner.setText(mListQC.get(position).getTenbaihat());
+        binding.tvMieutaBH.setText(mListQC.get(position).getNoidung());
+        binding.getRoot().setOnClickListener(v -> {
+            Intent intent = new Intent(mContext, SongsListActivity.class);
+            intent.putExtra("quangcao", mListQC.get(position));
+            mContext.startActivity(intent);
         });
-        container.addView(view);
-        return view;
+        container.addView(binding.getRoot());
+        return binding.getRoot();
     }
 
     @Override

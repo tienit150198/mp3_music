@@ -1,8 +1,8 @@
 package com.trantri.tdt_music.Adapter;
 
+import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,42 +13,41 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.trantri.tdt_music.activity.PlayMusicActivity;
 import com.trantri.tdt_music.Model.BaiHatYeuThich;
 import com.trantri.tdt_music.R;
-import com.trantri.tdt_music.Service.APIService;
-import com.trantri.tdt_music.Service.DataService;
+import com.trantri.tdt_music.Service.ApiClient;
+import com.trantri.tdt_music.activity.PlayMusicActivity;
+import com.trantri.tdt_music.databinding.ItemDanhsachbaihatBinding;
 
 import java.util.List;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.disposables.Disposable;
+import io.reactivex.rxjava3.observers.DisposableObserver;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public class DanhSachBaiHatAdapter extends RecyclerView.Adapter<DanhSachBaiHatAdapter.ViewHolder> {
-    Context mContext;
+
     List<BaiHatYeuThich> list;
 
-    public DanhSachBaiHatAdapter(Context mContext, List<BaiHatYeuThich> list) {
-        this.mContext = mContext;
+
+    public DanhSachBaiHatAdapter(List<BaiHatYeuThich> list) {
         this.list = list;
     }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        LayoutInflater inflater = LayoutInflater.from(mContext);
-        View v = inflater.inflate(R.layout.item_danhsachbaihat, parent, false);
-        ViewHolder viewHolder = new ViewHolder(v);
-        return viewHolder;
+        LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+        return new ViewHolder(ItemDanhsachbaihatBinding.inflate(inflater));
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         BaiHatYeuThich baiHatYeuThich = list.get(position);
-        holder.txtTenCS.setText(baiHatYeuThich.getCaSi());
-        holder.txtTenBH.setText(baiHatYeuThich.getTenBaiHat());
-        holder.txtSTT.setText(position + 1 + "");
+        holder.binding.tvTenCaSiBH.setText(baiHatYeuThich.getCaSi());
+        holder.binding.tvTenCaKhuc.setText(baiHatYeuThich.getCaSi());
+        holder.binding.tvDanhSachIndex.setText(position + 1 + "");
 
     }
 
@@ -58,47 +57,42 @@ public class DanhSachBaiHatAdapter extends RecyclerView.Adapter<DanhSachBaiHatAd
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        ImageView imgYeuThich;
-        TextView txtSTT, txtTenBH, txtTenCS;
+        ItemDanhsachbaihatBinding binding;
 
-        public ViewHolder(View itemView) {
-            super(itemView);
-            imgYeuThich = itemView.findViewById(R.id.img_yeuThich);
-            txtSTT = itemView.findViewById(R.id.tv_danhSachIndex);
-            txtTenBH = itemView.findViewById(R.id.tv_tenCaKhuc);
-            txtTenCS = itemView.findViewById(R.id.tv_TenCaSiBH);
-            imgYeuThich.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    imgYeuThich.setImageResource(R.drawable.iconloved);
-                    DataService dataService = APIService.getService();
-                    Call<String> mCall = dataService.getDataLuotLikeBaiHat("1", list.get(getPosition()).getIdBaiHat());
-                    mCall.enqueue(new Callback<String>() {
-                        @Override
-                        public void onResponse(Call<String> call, Response<String> response) {
-                            String resuilt = response.body();
-                            if (resuilt.equals("OK")){
-                                Toast.makeText(mContext, "Đã Thích Cám Ơn", Toast.LENGTH_SHORT).show();
+        public ViewHolder(ItemDanhsachbaihatBinding b) {
+            super(b.getRoot());
+            binding = b;
+            binding.imgYeuThich.setOnClickListener(v -> {
+                binding.imgYeuThich.setImageResource(R.drawable.iconloved);
+                ApiClient.getService(v.getContext()).getDataLuotLikeBaiHat("1", list.get(getAdapterPosition()).getIdBaiHat())
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new DisposableObserver<String>() {
+                            @Override
+                            public void onNext(@io.reactivex.rxjava3.annotations.NonNull String s) {
+                                if (s.equals("OK")) {
+                                    Toast.makeText(v.getContext(), "Đã Thích Cám Ơn", Toast.LENGTH_SHORT).show();
+                                } else {
+                                    Toast.makeText(v.getContext(), "Please Check Again !", Toast.LENGTH_SHORT).show();
+                                }
                             }
-                            else {
-                                Toast.makeText(mContext, "Please Check Again !", Toast.LENGTH_SHORT).show();
-                            }
-                        }
 
-                        @Override
-                        public void onFailure(Call<String> call, Throwable t) {
-                            Log.d("TAG",t.toString());
-                        }
-                    });
-                }
+
+                            @Override
+                            public void onError(@io.reactivex.rxjava3.annotations.NonNull Throwable e) {
+
+                            }
+
+                            @Override
+                            public void onComplete() {
+
+                            }
+                        });
             });
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(mContext, PlayMusicActivity.class);
-                    intent.putExtra("cakhuc",list.get(getPosition()));
-                    mContext.startActivity(intent);
-                }
+            binding.ClickPlay.setOnClickListener(v -> {
+                Intent intent = new Intent(v.getContext(), PlayMusicActivity.class);
+                intent.putExtra("cakhuc", list.get(getAdapterPosition()));
+                v.getContext().startActivity(intent);
             });
         }
     }

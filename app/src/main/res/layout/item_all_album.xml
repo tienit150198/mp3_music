@@ -3,6 +3,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_margin="5dp"
+    android:id="@+id/lnClick"
     android:orientation="vertical">
 
     <FrameLayout
@@ -13,8 +14,8 @@
 
         <ImageView
             android:id="@+id/img_allAlbum"
-            android:layout_width="150dp"
-            android:layout_height="150dp"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
             android:scaleType="centerCrop"
             android:src="@mipmap/ic_launcher" />
     </FrameLayout>

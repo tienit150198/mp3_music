@@ -16,32 +16,33 @@ import com.squareup.picasso.Picasso;
 import com.trantri.tdt_music.activity.SongsListActivity;
 import com.trantri.tdt_music.Model.TheLoai;
 import com.trantri.tdt_music.R;
+import com.trantri.tdt_music.databinding.ItemTheLoaiTheoChuDeBinding;
 
 import java.util.List;
 
 public class DanhSachTheLoaiTheoChuDeAdapter extends RecyclerView.Adapter<DanhSachTheLoaiTheoChuDeAdapter.ViewHolder> {
-    Context mContext;
     List<TheLoai> mTheLoais;
 
-    public DanhSachTheLoaiTheoChuDeAdapter(Context mContext, List<TheLoai> mTheLoais) {
-        this.mContext = mContext;
+    public DanhSachTheLoaiTheoChuDeAdapter(List<TheLoai> mTheLoais) {
         this.mTheLoais = mTheLoais;
     }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        LayoutInflater inflater = LayoutInflater.from(mContext);
-        View v = inflater.inflate(R.layout.item_the_loai_theo_chu_de, parent, false);
-        ViewHolder viewHolder = new ViewHolder(v);
-        return viewHolder;
+        LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+        return new ViewHolder(ItemTheLoaiTheoChuDeBinding.inflate(inflater));
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         TheLoai theLoai = mTheLoais.get(position);
-        Glide.with(mContext).load(theLoai.getHinhTheLoai()).placeholder(R.drawable.ic_place_holder).into(holder.imgTheoChuDe);
-        holder.txtTheochude.setText(theLoai.getTenTheLoai());
+        Glide.with(holder.binding.imgTheloaitheochude)
+                .load(theLoai.getHinhTheLoai())
+                .placeholder(R.drawable.ic_place_holder)
+                .error(R.drawable.ic_place_holder)
+                .into(holder.binding.imgTheloaitheochude);
+        holder.binding.tvTheloaitheochude.setText(theLoai.getTenTheLoai());
     }
 
     @Override
@@ -50,21 +51,18 @@ public class DanhSachTheLoaiTheoChuDeAdapter extends RecyclerView.Adapter<DanhSa
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        ImageView imgTheoChuDe;
-        TextView txtTheochude;
+        ItemTheLoaiTheoChuDeBinding binding;
 
-        public ViewHolder(View itemView) {
-            super(itemView);
-            imgTheoChuDe = itemView.findViewById(R.id.img_theloaitheochude);
-            txtTheochude = itemView.findViewById(R.id.tv_theloaitheochude);
-              itemView.setOnClickListener(new View.OnClickListener() {
-                  @Override
-                  public void onClick(View v) {
-                      Intent intent = new Intent(mContext, SongsListActivity.class);
-                      intent.putExtra("idtheloai",mTheLoais.get(getPosition()));
-                      mContext.startActivity(intent);
-                  }
-              });
+        public ViewHolder(@NonNull ItemTheLoaiTheoChuDeBinding b) {
+            super(b.getRoot());
+            binding = b;
+            binding.lnChude.setOnClickListener(v -> {
+                Intent intent = new Intent(v.getContext(), SongsListActivity.class);
+                intent.putExtra("idtheloai", mTheLoais.get(getLayoutPosition()));
+                v.getContext().startActivity(intent);
+            });
         }
+
     }
 }
+

@@ -25,6 +25,7 @@ import com.trantri.tdt_music.Fragment.FragmentCDMusic;
 import com.trantri.tdt_music.Fragment.FragmentPlayDanhSachBaiHat;
 import com.trantri.tdt_music.Model.BaiHatYeuThich;
 import com.trantri.tdt_music.R;
+import com.trantri.tdt_music.databinding.ActivityPlayMusicBinding;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -37,14 +38,11 @@ public class PlayMusicActivity extends AppCompatActivity {
     public static ArrayList<BaiHatYeuThich> baiHatList = new ArrayList<BaiHatYeuThich>();
 
     public static ViewPagerPlayMusicAdapter mViewPagerPlayMusicAdapter;
-
-    Toolbar mToolbar;
+    ActivityPlayMusicBinding binding;
 
     ViewPager mViewPager;
 
-    ImageButton btnPlay, btnBack, btnNext, btnLap, btnRandom;
 
-    TextView txtTimeSong, txtTotalTime;
 
     SeekBar mSeekBar;
 
@@ -62,23 +60,19 @@ public class PlayMusicActivity extends AppCompatActivity {
 
     boolean next = false;
 
-
     private Handler mHandler = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_play_music);
-        if (Build.VERSION.SDK_INT > 9) {
-            //
-            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-            StrictMode.setThreadPolicy(policy);
-        }
+        binding = ActivityPlayMusicBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+        //
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
 
 //khởi tạo handler
         mHandler = new Handler();
-
-        initView();
 
         init();
 
@@ -92,15 +86,12 @@ public class PlayMusicActivity extends AppCompatActivity {
            mMediaPlayer = new MediaPlayer();
            mMediaPlayer.setDataSource(this, Uri.parse(baiHatList.get(0).getLinkBaiHat()));
            mMediaPlayer.prepareAsync();
-           mMediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-               @Override
-               public void onPrepared(MediaPlayer mp) {
-                   mp.start();
-                   TimeSong();
-                   UpdateTime();
-                   btnPlay.setImageResource(mMediaPlayer.isPlaying() ? R.drawable.iconpause :
-                           R.drawable.iconplay);
-               }
+           mMediaPlayer.setOnPreparedListener(mp -> {
+               mp.start();
+               TimeSong();
+               UpdateTime();
+               binding.btnPlay.setImageResource(mMediaPlayer.isPlaying() ? R.drawable.iconpause :
+                       R.drawable.iconplay);
            });
 
        } catch (IllegalArgumentException | IOException e){
@@ -129,61 +120,51 @@ public class PlayMusicActivity extends AppCompatActivity {
             }
         }, 500);
 
-        btnPlay.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        binding.btnPlay.setOnClickListener(v -> {
 
-                if (mMediaPlayer.isPlaying()) {
+            if (mMediaPlayer.isPlaying()) {
 
-                    mMediaPlayer.pause();
+                mMediaPlayer.pause();
 
-                    btnPlay.setImageResource(R.drawable.iconplay);
-                    mFragmentCDMusic.stopAnimation();
+                binding.btnPlay.setImageResource(R.drawable.iconplay);
+                mFragmentCDMusic.stopAnimation();
 
-                } else {
-                    mMediaPlayer.start();
-                    btnPlay.setImageResource(R.drawable.iconpause);
-                    mFragmentCDMusic.startAnimation();
-                }
-                TimeSong();
-                UpdateTime();
+            } else {
+                mMediaPlayer.start();
+                binding.btnPlay.setImageResource(R.drawable.iconpause);
+                mFragmentCDMusic.startAnimation();
             }
+            TimeSong();
+            UpdateTime();
         });
 
-        btnLap.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (repeat == false) {
-                    if (checkRandom == true) {
-                        checkRandom = false;
-                        btnLap.setImageResource(R.drawable.iconsyned);
-                        btnRandom.setImageResource(R.drawable.iconsuffle);
-                    }
-                    btnLap.setImageResource(R.drawable.iconsyned);
-                    repeat = true;
-                } else {
-                    btnLap.setImageResource(R.drawable.iconrepeat);
-                    repeat = false;
-                }
-            }
-        });
-        btnRandom.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (checkRandom == false) {
-                    if (repeat == true) {
-                        repeat = false;
-                        btnRandom.setImageResource(R.drawable.iconshuffled);
-                        btnLap.setImageResource(R.drawable.iconrepeat);
-                    }
-                    btnRandom.setImageResource(R.drawable.iconshuffled);
-                    checkRandom = true;
-                } else {
-                    btnRandom.setImageResource(R.drawable.iconsuffle);
+        binding.btnLapLai.setOnClickListener(v -> {
+            if (repeat == false) {
+                if (checkRandom == true) {
                     checkRandom = false;
+                    binding.btnLapLai.setImageResource(R.drawable.iconsyned);
+                    binding.btnRandom.setImageResource(R.drawable.iconsuffle);
                 }
+                binding.btnLapLai.setImageResource(R.drawable.iconsyned);
+                repeat = true;
+            } else {
+                binding.btnLapLai.setImageResource(R.drawable.iconrepeat);
+                repeat = false;
             }
-
+        });
+        binding.btnRandom.setOnClickListener(v -> {
+            if (checkRandom == false) {
+                if (repeat == true) {
+                    repeat = false;
+                    binding.btnRandom.setImageResource(R.drawable.iconshuffled);
+                    binding.btnLapLai.setImageResource(R.drawable.iconrepeat);
+                }
+                binding.btnRandom.setImageResource(R.drawable.iconshuffled);
+                checkRandom = true;
+            } else {
+                binding.btnRandom.setImageResource(R.drawable.iconsuffle);
+                checkRandom = false;
+            }
         });
         mSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -202,106 +183,99 @@ public class PlayMusicActivity extends AppCompatActivity {
                 mMediaPlayer.seekTo(mSeekBar.getProgress());
             }
         });
-        btnNext.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (baiHatList.size() > 0) {
-                    if (mMediaPlayer.isPlaying() || mMediaPlayer != null) {
-                        mMediaPlayer.stop();
-                        mMediaPlayer.release();
-                        mMediaPlayer = null;
-                    }
-                    if (position < (baiHatList.size())) {
-                        btnPlay.setImageResource(R.drawable.iconpause);
-                        position++;
-
-
-                        if (repeat == true) {
-                            if (position == 0) {
-                                position = baiHatList.size();
-                            }
-                            position -= 1;
-                        }
-                        if (checkRandom == true) {
-                            Random random = new Random();
-                            int index = random.nextInt(baiHatList.size());
-                            if (index == position) {
-                                position = index - 1;
-                            }
-                            position = index;
-                        }
-                        if (position > (baiHatList.size()) - 1) {
-                            position = 0;
-                        }
-                        new PlayMusic().execute(baiHatList.get(position).getLinkBaiHat());
-                        mFragmentCDMusic.Playnhac(baiHatList.get(position).getHinhBaiHat());
-                        getSupportActionBar().setTitle(baiHatList.get(position).getTenBaiHat());
-                        UpdateTime();
-                    }
+        binding.btnNext.setOnClickListener(v -> {
+            if (baiHatList.size() > 0) {
+                if (mMediaPlayer.isPlaying() || mMediaPlayer != null) {
+                    mMediaPlayer.stop();
+                    mMediaPlayer.release();
+                    mMediaPlayer = null;
                 }
-                btnBack.setClickable(false);
-                btnNext.setClickable(false);
-                Handler mHandler = new Handler();
-                mHandler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        btnBack.setClickable(true);
-                        btnNext.setClickable(true);
+                if (position < (baiHatList.size())) {
+                    binding.btnPlay.setImageResource(R.drawable.iconpause);
+                    position++;
+
+
+                    if (repeat == true) {
+                        if (position == 0) {
+                            position = baiHatList.size();
+                        }
+                        position -= 1;
                     }
-                }, 5000);
+                    if (checkRandom == true) {
+                        Random random = new Random();
+                        int index = random.nextInt(baiHatList.size());
+                        if (index == position) {
+                            position = index - 1;
+                        }
+                        position = index;
+                    }
+                    if (position > (baiHatList.size()) - 1) {
+                        position = 0;
+                    }
+                    new PlayMusic().execute(baiHatList.get(position).getLinkBaiHat());
+                    mFragmentCDMusic.Playnhac(baiHatList.get(position).getHinhBaiHat());
+                    getSupportActionBar().setTitle(baiHatList.get(position).getTenBaiHat());
+                    UpdateTime();
+                }
             }
+            binding.btnBack.setClickable(false);
+            binding.btnNext.setClickable(false);
+            Handler mHandler = new Handler();
+            mHandler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    binding.btnBack.setClickable(true);
+                    binding.btnNext.setClickable(true);
+                }
+            }, 5000);
         });
-        btnBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (baiHatList.size() > 0) {
-                    if (mMediaPlayer.isPlaying() || mMediaPlayer != null) {
-                        mMediaPlayer.stop();
-                        mMediaPlayer.release();
-                        mMediaPlayer = null;
-                    }
-                    if (position < (baiHatList.size())) {
-
-                        btnPlay.setImageResource(R.drawable.iconpause);
-
-                        position--;
-
-                        if (position < 0) {
-
-                            position = baiHatList.size() - 1;
-
-                        }
-                        if (repeat == true) {
-                            position += 1;
-                        }
-                        if (checkRandom == true) {
-                            Random random = new Random();
-                            int index = random.nextInt(baiHatList.size());
-                            if (index == position) {
-                                position = index - 1;
-                            }
-                            position = index;
-                        }
-
-                        new PlayMusic().execute(baiHatList.get(position).getLinkBaiHat());
-                        mFragmentCDMusic.Playnhac(baiHatList.get(position).getHinhBaiHat());
-                        getSupportActionBar().setTitle(baiHatList.get(position).getTenBaiHat());
-                        UpdateTime();
-                    }
+        binding.btnBack.setOnClickListener(v -> {
+            if (baiHatList.size() > 0) {
+                if (mMediaPlayer.isPlaying() || mMediaPlayer != null) {
+                    mMediaPlayer.stop();
+                    mMediaPlayer.release();
+                    mMediaPlayer = null;
                 }
-                //Test máy thật xem như nhau mà t test từ hôm qua r
-                btnBack.setClickable(false);
-                btnNext.setClickable(false);
-                Handler mHandler = new Handler();
-                mHandler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        btnBack.setClickable(true);
-                        btnNext.setClickable(true);
-                    }
-                }, 500);
-            }
+                if (position < (baiHatList.size())) {
 
+                    binding.btnPlay.setImageResource(R.drawable.iconpause);
+
+                    position--;
+
+                    if (position < 0) {
+
+                        position = baiHatList.size() - 1;
+
+                    }
+                    if (repeat == true) {
+                        position += 1;
+                    }
+                    if (checkRandom == true) {
+                        Random random = new Random();
+                        int index = random.nextInt(baiHatList.size());
+                        if (index == position) {
+                            position = index - 1;
+                        }
+                        position = index;
+                    }
+
+                    new PlayMusic().execute(baiHatList.get(position).getLinkBaiHat());
+                    mFragmentCDMusic.Playnhac(baiHatList.get(position).getHinhBaiHat());
+                    getSupportActionBar().setTitle(baiHatList.get(position).getTenBaiHat());
+                    UpdateTime();
+                }
+            }
+            //Test máy thật xem như nhau mà t test từ hôm qua r
+            binding.btnBack.setClickable(false);
+            binding.btnNext.setClickable(false);
+            Handler mHandler = new Handler();
+            mHandler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    binding.btnBack.setClickable(true);
+                    binding.btnNext.setClickable(true);
+                }
+            }, 500);
         });
     }
 
@@ -322,17 +296,14 @@ public class PlayMusicActivity extends AppCompatActivity {
     }
 
     private void init() {
-        setSupportActionBar(mToolbar);
+        setSupportActionBar(binding.toobarPlayNhac);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-                mMediaPlayer.stop();
-                baiHatList.clear();
-            }
+        binding.toobarPlayNhac.setNavigationOnClickListener(v -> {
+            finish();
+            mMediaPlayer.stop();
+            baiHatList.clear();
         });
-        mToolbar.setTitleTextColor(Color.WHITE);
+        binding.toobarPlayNhac.setTitleTextColor(Color.WHITE);
         mFragmentCDMusic = new FragmentCDMusic();
         mFragmentPlayDanhSachBaiHat = new FragmentPlayDanhSachBaiHat();
 
@@ -348,38 +319,14 @@ public class PlayMusicActivity extends AppCompatActivity {
         if (baiHatList.size() > 0) {
             getSupportActionBar().setTitle(baiHatList.get(0).getTenBaiHat());
             new PlayMusic().execute(baiHatList.get(0).getLinkBaiHat());
-            btnPlay.setImageResource(R.drawable.iconpause);
+            binding.btnPlay.setImageResource(R.drawable.iconpause);
         }
     }
-
-    private void initView() {
-
-        mToolbar = findViewById(R.id.toobarPlayNhac);
-
-        mSeekBar = findViewById(R.id.seekbarSong);
-
-        mViewPager = findViewById(R.id.viewPagerPlayNhac);
-
-        txtTimeSong = findViewById(R.id.tv_timeSong);
-
-        txtTotalTime = findViewById(R.id.tv_totalTimeSong);
-
-        btnBack = findViewById(R.id.btn_back);
-
-        btnLap = findViewById(R.id.btn_lapLai);
-
-        btnPlay = findViewById(R.id.btn_play);
-
-        btnNext = findViewById(R.id.btn_next);
-
-        btnRandom = findViewById(R.id.btn_random);
-    }
-
     public void TimeSong() {
         try{
             SimpleDateFormat mFormat = new SimpleDateFormat("mm:ss");
             if (mMediaPlayer.getDuration() > 0){
-                txtTotalTime.setText(mFormat.format(mMediaPlayer.getDuration()));
+                binding.tvTotalTimeSong.setText(mFormat.format(mMediaPlayer.getDuration()));
                 mSeekBar.setMax(mMediaPlayer.getDuration());
             }
         } catch (Exception e){
@@ -396,7 +343,7 @@ public class PlayMusicActivity extends AppCompatActivity {
                 if (mMediaPlayer != null) {
                     SimpleDateFormat formatTime = new SimpleDateFormat("mm:ss");
 // thời gian vị trí hiện tai của bài hast
-                    txtTimeSong.setText(formatTime.format(mMediaPlayer.getCurrentPosition()));
+                    binding.tvTimeSong.setText(formatTime.format(mMediaPlayer.getCurrentPosition()));
                     // update process skSong
                     mSeekBar.setProgress(mMediaPlayer.getCurrentPosition());
                     // kiểm tra thời gian bài hát nếu kết thúc -> next
@@ -404,7 +351,7 @@ public class PlayMusicActivity extends AppCompatActivity {
                         @Override
                         public void onCompletion(MediaPlayer mp) {
                             if (position < (baiHatList.size())) {
-                                btnPlay.setImageResource(R.drawable.iconpause);
+                                binding.btnPlay.setImageResource(R.drawable.iconpause);
                                 position++;
                                 if (repeat == true) {
                                     if (position == 0) {
@@ -443,7 +390,7 @@ public class PlayMusicActivity extends AppCompatActivity {
             public void run() {
                 if (next == true) {
                     if (position < (baiHatList.size())) {
-                        btnPlay.setImageResource(R.drawable.iconpause);
+                        binding.btnPlay.setImageResource(R.drawable.iconpause);
                         position++;
                         if (repeat == true) {
                             if (position == 0) {
@@ -467,14 +414,14 @@ public class PlayMusicActivity extends AppCompatActivity {
                         getSupportActionBar().setTitle(baiHatList.get(position).getTenBaiHat());
                     }
 
-                    btnBack.setClickable(false);
-                    btnNext.setClickable(false);
+                    binding.btnBack.setClickable(false);
+                    binding.btnBack.setClickable(false);
                     Handler mHandler = new Handler();
                     mHandler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            btnBack.setClickable(true);
-                            btnNext.setClickable(true);
+                            binding.btnBack.setClickable(true);
+                            binding.btnNext.setClickable(true);
                         }
                     }, 5000);
                     next = false;
@@ -502,23 +449,17 @@ public class PlayMusicActivity extends AppCompatActivity {
             try {
                 mMediaPlayer = new MediaPlayer();
                 mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC); // play dưới dạng online
-                mMediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-                    @Override
-                    public void onCompletion(MediaPlayer mp) {
-                        mMediaPlayer.stop();
-                        mMediaPlayer.reset();
-                    }
+                mMediaPlayer.setOnCompletionListener(mp -> {
+                    mMediaPlayer.stop();
+                    mMediaPlayer.reset();
                 });
                 mMediaPlayer.setDataSource(baihat);
                 // khi media muốn phát đc
                 mMediaPlayer.prepareAsync();
-                mMediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-                    @Override
-                    public void onPrepared(MediaPlayer mp) {
-                        mp.start();
-                        TimeSong();
-                        UpdateTime();
-                    }
+                mMediaPlayer.setOnPreparedListener(mp -> {
+                    mp.start();
+                    TimeSong();
+                    UpdateTime();
                 });
             } catch (FileNotFoundException e) {
                 e.printStackTrace();

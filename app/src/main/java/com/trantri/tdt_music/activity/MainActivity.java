@@ -10,17 +10,17 @@ import com.trantri.tdt_music.Fragment.FragmentMV;
 import com.trantri.tdt_music.Fragment.Fragment_TimKiem;
 import com.trantri.tdt_music.Fragment.Fragment_TrangChu;
 import com.trantri.tdt_music.R;
+import com.trantri.tdt_music.databinding.ActivityMainBinding;
 
 
 public class MainActivity extends AppCompatActivity {
-    TabLayout mTabLayout;
-    ViewPager mViewPager;
+    ActivityMainBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        initView();
+        binding = ActivityMainBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
         init();
     }
 
@@ -30,16 +30,11 @@ public class MainActivity extends AppCompatActivity {
         mViewPagerAdapter.addFragment(new Fragment_TimKiem(), "Tìm Kiếm");
         mViewPagerAdapter.addFragment(new FragmentMV(), "Cá Nhân");
 
-        mViewPager.setAdapter(mViewPagerAdapter);
-        mTabLayout.setupWithViewPager(mViewPager);
-        mTabLayout.getTabAt(0).setIcon(R.drawable.icontrangchu);
-        mTabLayout.getTabAt(1).setIcon(R.drawable.ic_search);
-        mTabLayout.getTabAt(2).setIcon(R.drawable.ic_video);
-
+        binding.myViewPager.setAdapter(mViewPagerAdapter);
+        binding.myTablayout.setupWithViewPager(binding.myViewPager);
+        binding.myTablayout.getTabAt(0).setIcon(R.drawable.icontrangchu);
+        binding.myTablayout.getTabAt(1).setIcon(R.drawable.ic_search);
+        binding.myTablayout.getTabAt(2).setIcon(R.drawable.ic_video);
     }
 
-    private void initView() {
-        mTabLayout = findViewById(R.id.myTablayout);
-        mViewPager = findViewById(R.id.myViewPager);
-    }
 }

@@ -34,6 +34,7 @@ public class PlaylistAdapter extends ArrayAdapter<Playlist> {
         ViewHolder mViewHolder = null;
         if (convertView == null){
             LayoutInflater inflater = LayoutInflater.from(getContext());
+
             convertView = inflater.inflate(R.layout.item_playlist, null);
             mViewHolder = new ViewHolder();
             mViewHolder.txtNamePlaylist = convertView.findViewById(R.id.tv_NamePlaylist);

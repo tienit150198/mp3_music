@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.trantri.tdt_music.Model.MyVideo;
 import com.trantri.tdt_music.R;
+import com.trantri.tdt_music.databinding.ItemMyVideoBinding;
 
 import java.util.List;
 
@@ -23,14 +24,13 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.VideoViewHol
     @NonNull
     @Override
     public VideoViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from( parent.getContext()).inflate(R.layout.item_my_video, parent, false);
-
-        return new VideoViewHolder(view);
+        LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+        return new VideoViewHolder(ItemMyVideoBinding.inflate(inflater));
     }
 
     @Override
     public void onBindViewHolder(@NonNull VideoViewHolder holder, int position) {
-        holder.videoWeb.loadData( youtubeVideoList.get(position).getmVideoUrl(), "text/html" , "utf-8" );
+        holder.b.myWebViewVideoView.loadData( youtubeVideoList.get(position).getmVideoUrl(), "text/html" , "utf-8" );
     }
 
     @Override
@@ -39,13 +39,13 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.VideoViewHol
     }
 
     class VideoViewHolder extends RecyclerView.ViewHolder{
-     WebView videoWeb;
-     public VideoViewHolder(View itemView) {
-         super(itemView);
-         videoWeb = (WebView) itemView.findViewById(R.id.myWebViewVideoView);
+        ItemMyVideoBinding b;
+     public VideoViewHolder(ItemMyVideoBinding itemView) {
+         super(itemView.getRoot());
+         b = itemView;
 
-         videoWeb.getSettings().setJavaScriptEnabled(true);
-         videoWeb.setWebChromeClient(new WebChromeClient() {
+         b.myWebViewVideoView.getSettings().setJavaScriptEnabled(true);
+         b.myWebViewVideoView.setWebChromeClient(new WebChromeClient() {
 
 
          } );

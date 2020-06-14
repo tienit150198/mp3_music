@@ -14,47 +14,41 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.trantri.tdt_music.Adapter.AlbumAdapter;
-import com.trantri.tdt_music.Model.Album;
 import com.trantri.tdt_music.R;
-import com.trantri.tdt_music.Service.APIService;
+import com.trantri.tdt_music.Service.ApiClient;
 import com.trantri.tdt_music.Service.DataService;
 import com.trantri.tdt_music.activity.DanhSachAllAlbumActivity;
+import com.trantri.tdt_music.databinding.FragmentAlbumBinding;
 
 import java.util.List;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
+import io.reactivex.rxjava3.disposables.Disposable;
+import io.reactivex.rxjava3.observers.DisposableObserver;
 import io.reactivex.rxjava3.schedulers.Schedulers;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class FragmentAlbum extends Fragment {
-    View view;
-    RecyclerView mRecyclerView;
-    TextView txtXemThemAlbum;
+
     AlbumAdapter mAdapter;
+    FragmentAlbumBinding binding;
 
     private CompositeDisposable disposable = new CompositeDisposable();
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.fragment_album, container, false);
-        initview();
+
+       binding = FragmentAlbumBinding.inflate(getLayoutInflater());
+            initview();
         GetDataAlbum();
-        return view;
+        return binding.getRoot();
     }
 
     private void initview() {
-        mRecyclerView = view.findViewById(R.id.myRecycleAlbum);
-        txtXemThemAlbum = view.findViewById(R.id.tv_xemthemAlbum);
-        txtXemThemAlbum.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), DanhSachAllAlbumActivity.class);
-                startActivity(intent);
-            }
+        binding.tvXemthemAlbum.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), DanhSachAllAlbumActivity.class);
+            startActivity(intent);
         });
     }
 
@@ -65,25 +59,25 @@ public class FragmentAlbum extends Fragment {
     }
 
     private void GetDataAlbum() {
-        DataService mDataService = APIService.getService();
-
         disposable.add(
-                mDataService.getDataAlbum()
+                ApiClient.getService(getContext()).getDataAlbum()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe((albums, throwable) -> {
-                    if(throwable != null){
-                        // error
-                    }else{
+                .subscribe((albums) -> {
                         mAdapter = new AlbumAdapter(getActivity(), albums);
                         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
                         linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
-                        mRecyclerView.setLayoutManager(linearLayoutManager);
-                        mRecyclerView.setAdapter(mAdapter);
-                    }
+                        binding.myRecycleAlbum.setLayoutManager(linearLayoutManager);
+                        binding.myRecycleAlbum.setAdapter(mAdapter);
+
                 })
 
         );
+}
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        disposable.clear();
     }
 }

@@ -9,21 +9,24 @@ import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
 import com.google.android.youtube.player.YouTubePlayerView;
 import com.trantri.tdt_music.R;
+import com.trantri.tdt_music.databinding.ActivityMediaplayerVideoBinding;
+
+import io.reactivex.rxjava3.disposables.CompositeDisposable;
 
 public class MediaplayerVideoActivity extends YouTubeBaseActivity {
-    YouTubePlayerView mYouTubePlayerView;
     String id = "";
+    ActivityMediaplayerVideoBinding binding;
     int REQUEST_VIDEO = 100;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_mediaplayer_video);
-        mYouTubePlayerView = findViewById(R.id.myYoutube);
-
+        binding = ActivityMediaplayerVideoBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
         Intent intent = getIntent();
         id = intent.getStringExtra("IdVideo");
-        mYouTubePlayerView.initialize(PlayVideoActivity.API_KEY, new YouTubePlayer.OnInitializedListener() {
+        binding.myYoutube.initialize(PlayVideoActivity.API_KEY, new YouTubePlayer.OnInitializedListener() {
             @Override
             public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean b) {
                 youTubePlayer.loadVideo(id);
@@ -45,7 +48,7 @@ public class MediaplayerVideoActivity extends YouTubeBaseActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_VIDEO) {
-            mYouTubePlayerView.initialize(PlayVideoActivity.API_KEY, (YouTubePlayer.OnInitializedListener) MediaplayerVideoActivity.this);
+            binding.myYoutube.initialize(PlayVideoActivity.API_KEY, (YouTubePlayer.OnInitializedListener) MediaplayerVideoActivity.this);
 
         }
         super.onActivityResult(requestCode, resultCode, data);

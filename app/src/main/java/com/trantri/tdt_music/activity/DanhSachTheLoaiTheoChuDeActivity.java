@@ -2,86 +2,83 @@ package com.trantri.tdt_music.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.trantri.tdt_music.Adapter.DanhSachTheLoaiTheoChuDeAdapter;
 import com.trantri.tdt_music.Model.ChuDe;
 import com.trantri.tdt_music.Model.TheLoai;
-import com.trantri.tdt_music.R;
-import com.trantri.tdt_music.Service.APIService;
+import com.trantri.tdt_music.Service.ApiClient;
 import com.trantri.tdt_music.Service.DataService;
+import com.trantri.tdt_music.databinding.ActivityDanhSachTheLoaiTheoChuDeBinding;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import io.reactivex.rxjava3.annotations.NonNull;
+import io.reactivex.rxjava3.disposables.CompositeDisposable;
+import io.reactivex.rxjava3.disposables.Disposable;
+import io.reactivex.rxjava3.observers.DisposableObserver;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class DanhSachTheLoaiTheoChuDeActivity extends AppCompatActivity {
-    RecyclerView mRecyclerView;
-    Toolbar mToolbar;
+
     ChuDe mChuDe;
     DanhSachTheLoaiTheoChuDeAdapter mAdapter;
-
+    ActivityDanhSachTheLoaiTheoChuDeBinding binding;
+    private CompositeDisposable compositeDisposable = new CompositeDisposable();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_danh_sach_the_loai_theo_chu_de);
+        binding = ActivityDanhSachTheLoaiTheoChuDeBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
         mChuDe = new ChuDe();
         GetIntent();
-        initView();
         init();
-
-            GetData(mChuDe.getIDChuDe());
-
-
+        GetData(mChuDe.getIDChuDe());
     }
 
     private void GetData(String idchude) {
-        DataService mDataService = APIService.getService();
-        Call<List<TheLoai>> mCall = mDataService.getTheLoaiTheoChuDe(idchude);
-        mCall.enqueue(new Callback<List<TheLoai>>() {
-            @Override
-            public void onResponse(Call<List<TheLoai>> call, Response<List<TheLoai>> response) {
-                ArrayList<TheLoai> theLoaiList = (ArrayList<TheLoai>) response.body();
-                mAdapter = new DanhSachTheLoaiTheoChuDeAdapter(DanhSachTheLoaiTheoChuDeActivity.this, theLoaiList);
-                mRecyclerView.setLayoutManager(new GridLayoutManager(DanhSachTheLoaiTheoChuDeActivity.this, 2));
-                mRecyclerView.setAdapter(mAdapter);
-            }
+        Disposable disposable =ApiClient.getService(getApplication()).getTheLoaiTheoChuDe(idchude)
+                .subscribeOn(Schedulers.io())
+                .observeOn(Schedulers.newThread())
+                .subscribeWith(new DisposableObserver<List<TheLoai>>() {
+                    @Override
+                    public void onNext(@NonNull List<TheLoai> theLoais) {
+                        mAdapter = new DanhSachTheLoaiTheoChuDeAdapter(theLoais);
+                        binding.myRecycleTheoChuDe.setLayoutManager(new GridLayoutManager(DanhSachTheLoaiTheoChuDeActivity.this, 2));
+                        binding.myRecycleTheoChuDe.setAdapter(mAdapter);
+                    }
 
-            @Override
-            public void onFailure(Call<List<TheLoai>> call, Throwable t) {
+                    @Override
+                    public void onError(@NonNull Throwable e) {
+                        e.printStackTrace();
+                        Toast.makeText(DanhSachTheLoaiTheoChuDeActivity.this, "Dữ liệu lỗi!", Toast.LENGTH_SHORT).show();
+                    }
 
-            }
-        });
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
+        compositeDisposable.add(disposable);
     }
 
     private void init() {
-        setSupportActionBar(mToolbar);
+        setSupportActionBar(binding.myToolbarTheoChuDe);
         getSupportActionBar().setTitle(mChuDe.getTenChuDe());
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
+        binding.myToolbarTheoChuDe.setNavigationOnClickListener(v -> finish());
     }
 
-    private void initView() {
-        mToolbar = findViewById(R.id.my_toolbarTheoChuDe);
-        mRecyclerView = findViewById(R.id.myRecycleTheoChuDe);
-    }
 
     private void GetIntent() {
         Intent itent = getIntent();
-
 
 
         if (itent != null) {
@@ -90,5 +87,11 @@ public class DanhSachTheLoaiTheoChuDeActivity extends AppCompatActivity {
                 mChuDe = (ChuDe) itent.getSerializableExtra("chude");
             }
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        compositeDisposable.clear();
     }
 }

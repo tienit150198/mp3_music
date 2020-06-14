@@ -15,12 +15,13 @@ import com.squareup.picasso.Picasso;
 import com.trantri.tdt_music.activity.DanhSachTheLoaiTheoChuDeActivity;
 import com.trantri.tdt_music.Model.ChuDe;
 import com.trantri.tdt_music.R;
+import com.trantri.tdt_music.databinding.ItemCacChuDeBinding;
 
 import java.util.List;
 
 public class DanhSachAllChuDeAdapter extends RecyclerView.Adapter<DanhSachAllChuDeAdapter.ViewHolder> {
-    Context mContext;
     List<ChuDe> mList;
+    Context mContext;
 
     public DanhSachAllChuDeAdapter(Context mContext, List<ChuDe> mList) {
         this.mContext = mContext;
@@ -30,24 +31,23 @@ public class DanhSachAllChuDeAdapter extends RecyclerView.Adapter<DanhSachAllChu
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        LayoutInflater inflater = LayoutInflater.from(mContext);
-        View v = inflater.inflate(R.layout.item_cac_chu_de, parent, false);
-        ViewHolder viewHolder = new ViewHolder(v);
-        return viewHolder;
+        LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+        return new ViewHolder(ItemCacChuDeBinding.inflate(inflater));
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
         final ChuDe chuDe = mList.get(position);
 
-        Glide.with(mContext).load(chuDe.getHinhChuDe()).placeholder(R.drawable.ic_place_holder).into(holder.imgChuDe);
-        holder.imgChuDe.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(mContext, DanhSachTheLoaiTheoChuDeActivity.class);
-                intent.putExtra("chude", mList.get(position));
-                mContext.startActivity(intent);
-            }
+        Glide.with(mContext)
+                .load(chuDe.getHinhChuDe())
+                .placeholder(R.drawable.ic_place_holder)
+                .error(R.drawable.ic_place_holder)
+                .into(holder.binding.imgAllChuDe);
+        holder.binding.imgAllChuDe.setOnClickListener(v -> {
+            Intent intent = new Intent(mContext, DanhSachTheLoaiTheoChuDeActivity.class);
+            intent.putExtra("chude", mList.get(position));
+            mContext.startActivity(intent);
         });
     }
 
@@ -57,12 +57,10 @@ public class DanhSachAllChuDeAdapter extends RecyclerView.Adapter<DanhSachAllChu
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        ImageView imgChuDe;
-
-        public ViewHolder(View itemView) {
-            super(itemView);
-            imgChuDe = itemView.findViewById(R.id.img_allChuDe);
-
+        ItemCacChuDeBinding binding;
+        public ViewHolder(@NonNull ItemCacChuDeBinding b) {
+            super(b.getRoot());
+            binding = b;
         }
     }
 }

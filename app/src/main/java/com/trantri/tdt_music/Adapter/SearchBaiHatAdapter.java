@@ -13,11 +13,9 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.squareup.picasso.Picasso;
 import com.trantri.tdt_music.activity.PlayMusicActivity;
 import com.trantri.tdt_music.Model.BaiHatYeuThich;
 import com.trantri.tdt_music.R;
-import com.trantri.tdt_music.Service.APIService;
 import com.trantri.tdt_music.Service.DataService;
 
 import java.util.List;
@@ -76,32 +74,32 @@ public class SearchBaiHatAdapter extends RecyclerView.Adapter<SearchBaiHatAdapte
                 mContext.startActivity(intent);
             }
         });
-        imgLike.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                imgLike.setImageResource(R.drawable.iconloved);
-                DataService dataService = APIService.getService();
-                Call<String> call = dataService.getDataLuotLikeBaiHat("1", list.get(getPosition()).getIdBaiHat());
-            call.enqueue(new Callback<String>() {
-                @Override
-                public void onResponse(Call<String> call, Response<String> response) {
-                    String str = response.body();
-                    if (str.equals("OK")){
-                        Toast.makeText(mContext, "Bạn Đã Thích", Toast.LENGTH_SHORT).show();
-                    }
-                    else {
-                        Toast.makeText(mContext, "Please check again !", Toast.LENGTH_SHORT).show();
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<String> call, Throwable t) {
-
-                }
-            });
-            imgLike.setEnabled(false);
-            }
-        });
+//        imgLike.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                imgLike.setImageResource(R.drawable.iconloved);
+//                DataService dataService = APIService.getService();
+//                Call<String> call = dataService.getDataLuotLikeBaiHat("1", list.get(getPosition()).getIdBaiHat());
+//            call.enqueue(new Callback<String>() {
+//                @Override
+//                public void onResponse(Call<String> call, Response<String> response) {
+//                    String str = response.body();
+//                    if (str.equals("OK")){
+//                        Toast.makeText(mContext, "Bạn Đã Thích", Toast.LENGTH_SHORT).show();
+//                    }
+//                    else {
+//                        Toast.makeText(mContext, "Please check again !", Toast.LENGTH_SHORT).show();
+//                    }
+//                }
+//
+//                @Override
+//                public void onFailure(Call<String> call, Throwable t) {
+//
+//                }
+//            });
+//            imgLike.setEnabled(false);
+//            }
+//        });
         }
     }
 

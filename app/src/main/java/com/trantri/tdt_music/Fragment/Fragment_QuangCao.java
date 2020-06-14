@@ -15,69 +15,58 @@ import androidx.viewpager.widget.ViewPager;
 import com.trantri.tdt_music.Adapter.QuangCaoAdapter;
 import com.trantri.tdt_music.Model.Quangcao;
 import com.trantri.tdt_music.R;
-import com.trantri.tdt_music.Service.APIService;
+import com.trantri.tdt_music.Service.ApiClient;
 import com.trantri.tdt_music.Service.DataService;
+import com.trantri.tdt_music.databinding.FragmentQuangcaoBinding;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
+import io.reactivex.rxjava3.observers.DisposableObserver;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 import me.relex.circleindicator.CircleIndicator;
 
 public class Fragment_QuangCao extends Fragment {
-    View view;
-    ViewPager mViewPager;
     QuangCaoAdapter mAdapter;
-    CircleIndicator mCircleIndicator;
     Runnable mRunnable;
     Handler mHandler;
     int item;
 
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
+    FragmentQuangcaoBinding binding;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.fragment_quangcao, container, false);
-        initView();
+        binding = FragmentQuangcaoBinding.inflate(getLayoutInflater());
         GetBanner();
-        return view;
-    }
-
-    public void initView() {
-        mViewPager = view.findViewById(R.id.viewPager);
-        mCircleIndicator = view.findViewById(R.id.myIndicator);
-
+        return binding.getRoot();
     }
 
     private static final String TAG = "LOG_Fragment_QuangCao";
 
     public void GetBanner() {
-        DataService mDataService = APIService.getService(); // khởi tạo retrofit để đẩy lên
-
-
         compositeDisposable.add(
-                mDataService.getDataBanner()
+                ApiClient.getService(Objects.requireNonNull(getContext()))
+                        .getDataBanner()
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe((quangcaos, throwable) -> {
-                            if (throwable != null) {
-                                Log.d(TAG, "GetBanner: " + throwable.getMessage());
-                            } else {
-                                final List<Quangcao> arrayListBanner = quangcaos;
+                        .subscribe((quangcaoList) -> {
+                                final List<Quangcao> arrayListBanner = quangcaoList;
                                 mAdapter = new QuangCaoAdapter(getActivity(), (ArrayList<Quangcao>) arrayListBanner);
-                                mViewPager.setAdapter(mAdapter);
+                                binding.viewPager.setAdapter(mAdapter);
                                 // hiện ra số lượng indicator tùy theo số lượng pager
-                                mCircleIndicator.setViewPager(mViewPager);
+                                binding.myIndicator.setViewPager(binding.viewPager);
                                 mHandler = new Handler();
                                 // thực hiện hành động khi handler gọi
                                 mRunnable = new Runnable() {
                                     @Override
                                     public void run() {
                                         // item hiện tại đang đứng ở đâu
-                                        item = mViewPager.getCurrentItem();
+                                        item = binding.viewPager.getCurrentItem();
                                         item++;
                                         // nếu  vượt quá kích thức page thì trở lại pager đầu
                                         assert arrayListBanner != null;
@@ -85,13 +74,13 @@ public class Fragment_QuangCao extends Fragment {
                                             item = 0;
                                         }
                                         // chạy xong set dữ liệu lên
-                                        mViewPager.setCurrentItem(item, true);
+                                        binding.viewPager.setCurrentItem(item, true);
                                         //mHandler.postDelayed(mRunnable, 4000);
                                     }
 
                                 };
                                 mHandler.postDelayed(mRunnable, 4000);
-                            }
+
                         })
 
 

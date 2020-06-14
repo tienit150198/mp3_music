@@ -16,70 +16,58 @@ import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
-import com.squareup.picasso.Picasso;
+import com.trantri.tdt_music.Model.ChuDeAndTheLoai;
+import com.trantri.tdt_music.Service.ApiClient;
 import com.trantri.tdt_music.activity.DanhSachAllChuDeActivity;
 import com.trantri.tdt_music.activity.DanhSachTheLoaiTheoChuDeActivity;
 import com.trantri.tdt_music.activity.SongsListActivity;
 import com.trantri.tdt_music.Model.ChuDe;
-import com.trantri.tdt_music.Model.ChuDeAndTheLoai;
 import com.trantri.tdt_music.Model.TheLoai;
 import com.trantri.tdt_music.R;
-import com.trantri.tdt_music.Service.APIService;
 import com.trantri.tdt_music.Service.DataService;
+import com.trantri.tdt_music.databinding.FragmentChudeTheloaiBinding;
 
 import java.util.ArrayList;
 import java.util.Objects;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
+import io.reactivex.rxjava3.disposables.Disposable;
+import io.reactivex.rxjava3.observers.DisposableObserver;
 import io.reactivex.rxjava3.schedulers.Schedulers;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class FragmentChuDeThLoai extends Fragment {
-    View view;
-    HorizontalScrollView mHorizontalScrollView;
-    TextView txtXemThem;
 
-    private CompositeDisposable disposable = new CompositeDisposable();
+    FragmentChudeTheloaiBinding binding;
+    private CompositeDisposable compositeDisposable = new CompositeDisposable();
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.fragment_chude_theloai, container, false);
+        binding =   FragmentChudeTheloaiBinding.inflate(getLayoutInflater());
         initView();
         GetData();
-        return view;
+        return binding.getRoot();
     }
 
     private void initView() {
-        mHorizontalScrollView = view.findViewById(R.id.myScollChudeTheLoai);
-        txtXemThem = view.findViewById(R.id.tv_xemthem);
-        txtXemThem.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), DanhSachAllChuDeActivity.class);
-                startActivity(intent);
-            }
+        binding.tvXemthem.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), DanhSachAllChuDeActivity.class);
+            startActivity(intent);
         });
     }
 
     private void GetData() {
-        DataService mDataService = APIService.getService();
-
-        disposable.add(
-                mDataService.getDataChuDeTheLoai()
+        Disposable disposable = ApiClient.getService(getContext()).getDataChuDeTheLoai()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe((chuDeAndTheLoai, throwable) -> {
-                    if(throwable != null){
-                        // error
-                    }else{
+                .subscribeWith(new DisposableObserver<ChuDeAndTheLoai>() {
+                    @Override
+                    public void onNext(@io.reactivex.rxjava3.annotations.NonNull ChuDeAndTheLoai chuDeAndTheLoai) {
                         // addAll() là add thêm 1 mảng cùng kiểu dữ liệu vào mảng chủ đề
                         final ArrayList<ChuDe> chuDeArrayList = new ArrayList<>(chuDeAndTheLoai != null ? chuDeAndTheLoai.getChuDe() : null);
                         // addAll() là add thêm 1 mảng cùng kiểu dữ liệu vào mảng thể loại
-                        final ArrayList<TheLoai> theLoaiArrayList = new ArrayList<TheLoai>(chuDeAndTheLoai.getTheLoai());
+                        final ArrayList<TheLoai> theLoaiArrayList = new ArrayList<>(chuDeAndTheLoai.getTheLoai());
 
                         LinearLayout mLinearLayout = new LinearLayout(getActivity());
                         mLinearLayout.setOrientation(LinearLayout.HORIZONTAL);
@@ -100,14 +88,11 @@ public class FragmentChuDeThLoai extends Fragment {
                             mCardView.addView(mImageView);
                             mLinearLayout.addView(mCardView);
                             final int finalI = i;
-                            mImageView.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    Intent intent = new Intent(getActivity(), DanhSachTheLoaiTheoChuDeActivity.class);
-                                    intent.putExtra("chude", chuDeArrayList.get(finalI));
+                            mImageView.setOnClickListener(v -> {
+                                Intent intent = new Intent(getActivity(), DanhSachTheLoaiTheoChuDeActivity.class);
+                                intent.putExtra("chude", chuDeArrayList.get(finalI));
 //                            Log.d("BBB", chuDeArrayList.get(0).getIDChuDe());
-                                    startActivity(intent);
-                                }
+                                startActivity(intent);
                             });
                         }
                         for (int j = 0; j < theLoaiArrayList.size(); j++) {
@@ -123,25 +108,32 @@ public class FragmentChuDeThLoai extends Fragment {
                             mLinearLayout.addView(mCardView);
 
                             final int finalJ = j;
-                            mImageView.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    Intent intent = new Intent(getActivity(), SongsListActivity.class);
-                                    intent.putExtra("idtheloai", theLoaiArrayList.get(finalJ));
-                                    startActivity(intent);
-                                }
+                            mImageView.setOnClickListener(v -> {
+                                Intent intent = new Intent(getActivity(), SongsListActivity.class);
+                                intent.putExtra("idtheloai", theLoaiArrayList.get(finalJ));
+                                startActivity(intent);
                             });
                         }
-                        mHorizontalScrollView.addView(mLinearLayout);
-                    }
-                })
+                        binding.myScollChudeTheLoai.addView(mLinearLayout);
 
-        );
+                    }
+
+                    @Override
+                    public void onError(@io.reactivex.rxjava3.annotations.NonNull Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
+        compositeDisposable.add(disposable);
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        disposable.clear();
+        compositeDisposable.clear();
     }
 }

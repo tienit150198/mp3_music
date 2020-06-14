@@ -20,7 +20,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
-import com.squareup.picasso.Picasso;
 import com.trantri.tdt_music.Adapter.DanhSachBaiHatAdapter;
 import com.trantri.tdt_music.Model.Album;
 import com.trantri.tdt_music.Model.BaiHatYeuThich;
@@ -29,8 +28,9 @@ import com.trantri.tdt_music.Model.PlaylistAll;
 import com.trantri.tdt_music.Model.Quangcao;
 import com.trantri.tdt_music.Model.TheLoai;
 import com.trantri.tdt_music.R;
-import com.trantri.tdt_music.Service.APIService;
+import com.trantri.tdt_music.Service.ApiClient;
 import com.trantri.tdt_music.Service.DataService;
+import com.trantri.tdt_music.databinding.ActivitySongsListBinding;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -38,35 +38,36 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.annotations.NonNull;
+import io.reactivex.rxjava3.disposables.CompositeDisposable;
+import io.reactivex.rxjava3.disposables.Disposable;
+import io.reactivex.rxjava3.observers.DisposableObserver;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class SongsListActivity extends AppCompatActivity {
-    CoordinatorLayout mCoordinatorLayout;
-    CollapsingToolbarLayout mCollapsingToolbarLayout;
-    Toolbar mToolbar;
-    RecyclerView mRecyclerView;
-    Button mButtonNgheTatCa;
-    ImageView mImageView;
+    ActivitySongsListBinding binding;
     Quangcao mQuangcao;
-    List<BaiHatYeuThich> listBaiHat ;
+    List<BaiHatYeuThich> listBaiHat;
     DanhSachBaiHatAdapter mAdapter;
     Playlist mPlaylist;
     PlaylistAll mPlaylistAll;
     TheLoai mTheLoai;
     Album mAlbum;
+    private CompositeDisposable compositeDisposable = new CompositeDisposable();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_songs_list);
-        if (android.os.Build.VERSION.SDK_INT > 9) {
-            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-            StrictMode.setThreadPolicy(policy);
-        }
+        binding = ActivitySongsListBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+        // SDK Luôn lớn hơn 16 nên sử dụng luôn . không cần check version
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
         DataItent();
-        initView();
         init();
 
         if (mQuangcao != null && !mQuangcao.getTenbaihat().equals("")) {
@@ -92,74 +93,92 @@ public class SongsListActivity extends AppCompatActivity {
     }
 
     private void getDataAlbum(String idAlbum) {
-        DataService dataService = APIService.getService();
-        Call<List<BaiHatYeuThich>> mCall = dataService.getDataBaiHatTheoAlbum(idAlbum);
-        mCall.enqueue(new Callback<List<BaiHatYeuThich>>() {
-            @Override
-            public void onResponse(Call<List<BaiHatYeuThich>> call, Response<List<BaiHatYeuThich>> response) {
-                listBaiHat = response.body();
-                mAdapter = new DanhSachBaiHatAdapter(SongsListActivity.this, listBaiHat);
-                mRecyclerView.setLayoutManager(new LinearLayoutManager(SongsListActivity.this));
-                mRecyclerView.setAdapter(mAdapter);
-                eventClick();
-            }
+      Disposable disposable =  ApiClient.getService(getApplication()).getDataBaiHatTheoAlbum(idAlbum)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeWith(new DisposableObserver<List<BaiHatYeuThich>>() {
+                    @Override
+                    public void onNext(@NonNull List<BaiHatYeuThich> baiHatYeuThiches) {
+                        mAdapter = new DanhSachBaiHatAdapter(baiHatYeuThiches);
+                        binding.recycleDanhSachBH.setLayoutManager(new LinearLayoutManager(SongsListActivity.this));
+                        binding.recycleDanhSachBH.setAdapter(mAdapter);
+                        eventClick();
+                    }
 
-            @Override
-            public void onFailure(Call<List<BaiHatYeuThich>> call, Throwable t) {
+                    @Override
+                    public void onError(@NonNull Throwable e) {
 
-            }
-        });
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
+      compositeDisposable.add(disposable);
     }
 
     private void getDataTheLoai(String idtheloai) {
-        DataService mDataService = APIService.getService();
-        Call<List<BaiHatYeuThich>> mCall = mDataService.getDataBaiHatTheoTheLoai(idtheloai);
-        mCall.enqueue(new Callback<List<BaiHatYeuThich>>() {
-            @Override
-            public void onResponse(Call<List<BaiHatYeuThich>> call, Response<List<BaiHatYeuThich>> response) {
-                listBaiHat = response.body();
-                mAdapter = new DanhSachBaiHatAdapter(SongsListActivity.this, listBaiHat);
-                mRecyclerView.setLayoutManager(new LinearLayoutManager(SongsListActivity.this));
-                mRecyclerView.setAdapter(mAdapter);
-                eventClick();
-            }
+       Disposable disposable1 = ApiClient.getService(getApplicationContext()).getDataBaiHatTheoTheLoai(idtheloai)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeWith(new DisposableObserver<List<BaiHatYeuThich>>() {
+                    @Override
+                    public void onNext(@NonNull List<BaiHatYeuThich> baiHatYeuThiches) {
+                        mAdapter = new DanhSachBaiHatAdapter( baiHatYeuThiches);
+                        binding.recycleDanhSachBH.setLayoutManager(new LinearLayoutManager(SongsListActivity.this));
+                        binding.recycleDanhSachBH.setAdapter(mAdapter);
+                        eventClick();
+                    }
 
-            @Override
-            public void onFailure(Call<List<BaiHatYeuThich>> call, Throwable t) {
+                    @Override
+                    public void onError(@NonNull Throwable e) {
 
-            }
-        });
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
+       compositeDisposable.add(disposable1);
     }
 
     private void getDataPlaylist(String idplaylist) {
-        DataService mDataService = APIService.getService();
-        Call<List<BaiHatYeuThich>> call = mDataService.getDataBaiHatTheoPlaylist(idplaylist);
-        call.enqueue(new Callback<List<BaiHatYeuThich>>() {
-            @Override
-            public void onResponse(Call<List<BaiHatYeuThich>> call, Response<List<BaiHatYeuThich>> response) {
-                listBaiHat = response.body();
-                mAdapter = new DanhSachBaiHatAdapter(SongsListActivity.this, listBaiHat);
-                mRecyclerView.setLayoutManager(new LinearLayoutManager(SongsListActivity.this));
-                mRecyclerView.setAdapter(mAdapter);
-                eventClick();
-            }
+       Disposable disposable2 = ApiClient.getService(getApplicationContext()).getDataBaiHatTheoPlaylist(idplaylist)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeWith(new DisposableObserver<List<BaiHatYeuThich>>() {
+                    @Override
+                    public void onNext(@NonNull List<BaiHatYeuThich> baiHatYeuThiches) {
+                        mAdapter = new DanhSachBaiHatAdapter( baiHatYeuThiches);
+                        binding.recycleDanhSachBH.setLayoutManager(new LinearLayoutManager(SongsListActivity.this));
+                        binding.recycleDanhSachBH.setAdapter(mAdapter);
+                        eventClick();
+                    }
 
-            @Override
-            public void onFailure(Call<List<BaiHatYeuThich>> call, Throwable t) {
+                    @Override
+                    public void onError(@NonNull Throwable e) {
 
-            }
-        });
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
+       compositeDisposable.add(disposable2);
     }
 
     // lấy data tên bài hát để gắn lên toolbar
     private void setValuesInView(String name, String image) {
-        mCollapsingToolbarLayout.setTitle(name);
+        binding.myCollapsingToolLayout.setTitle(name);
         try {
             URL mUrl = new URL(image);
             Bitmap mBitmap = BitmapFactory.decodeStream(mUrl.openConnection().getInputStream());
             BitmapDrawable mBitmapDrawable = new BitmapDrawable(getResources(), mBitmap);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                mCollapsingToolbarLayout.setBackground(mBitmapDrawable);
+                binding.myCollapsingToolLayout.setBackground(mBitmapDrawable);
             }
 
         } catch (MalformedURLException e) {
@@ -167,56 +186,49 @@ public class SongsListActivity extends AppCompatActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        Glide.with(this).load(image).into(mImageView);
+        Glide.with(this).load(image).into(binding.imgDanhSachbaihat);
     }
 
     private void getDataQuangCao(String idquangcao) {
-        DataService mDataService = APIService.getService();
-        Call<List<BaiHatYeuThich>> mCall = mDataService.getDataBaiHatTheoQuangCao(idquangcao);
-        mCall.enqueue(new Callback<List<BaiHatYeuThich>>() {
-            @Override
-            public void onResponse(Call<List<BaiHatYeuThich>> call, Response<List<BaiHatYeuThich>> response) {
-                listBaiHat = response.body();
-                mAdapter = new DanhSachBaiHatAdapter(SongsListActivity.this, listBaiHat);
-                mRecyclerView.setLayoutManager(new LinearLayoutManager(SongsListActivity.this));
-                mRecyclerView.setAdapter(mAdapter);
-                eventClick();
-            }
+       Disposable disposable3= ApiClient.getService(getApplicationContext()).getDataBaiHatTheoQuangCao(idquangcao)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeWith(new DisposableObserver<List<BaiHatYeuThich>>() {
+                    @Override
+                    public void onNext(@NonNull List<BaiHatYeuThich> baiHatYeuThiches) {
+                        mAdapter = new DanhSachBaiHatAdapter(baiHatYeuThiches );
+                        binding.recycleDanhSachBH.setLayoutManager(new LinearLayoutManager(SongsListActivity.this));
+                        binding.recycleDanhSachBH.setAdapter(mAdapter);
+                        eventClick();
+                    }
 
-            @Override
-            public void onFailure(Call<List<BaiHatYeuThich>> call, Throwable t) {
+                    @Override
+                    public void onError(@NonNull Throwable e) {
 
-            }
-        });
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
+       compositeDisposable.add(disposable3);
     }
 
 
     private void init() {
-        setSupportActionBar(mToolbar);
+        setSupportActionBar(binding.myToolbarList);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("");
-        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
+        binding.myToolbarList.setNavigationOnClickListener(v -> finish());
 //        mCollapsingToolbarLayout.setExpandedTitleColor(Color.BLUE);
 //        mCollapsingToolbarLayout.setCollapsedTitleTextColor(Color.BLACK);
 //        mCollapsingToolbarLayout.setExpandedTitleMarginStart(25);
 //        mCollapsingToolbarLayout.setExpandedTitleTextAppearance(18);
 //        mCollapsingToolbarLayout.setCollapsedTitleTextAppearance(18);
-        mButtonNgheTatCa.setEnabled(false);
+        binding.btnNghetatca.setEnabled(false);
     }
 
-    private void initView() {
-        mCollapsingToolbarLayout = findViewById(R.id.myCollapsingToolLayout);
-        mCoordinatorLayout = findViewById(R.id.myCooridinerLayout);
-        mToolbar = findViewById(R.id.my_toolbarList);
-        mRecyclerView = findViewById(R.id.recycleDanhSachBH);
-        mButtonNgheTatCa = findViewById(R.id.btn_nghetatca);
-        mImageView = findViewById(R.id.img_danhSachbaihat);
-    }
 
     private void DataItent() {
         Intent intent = getIntent();
@@ -241,14 +253,17 @@ public class SongsListActivity extends AppCompatActivity {
     }
 
     private void eventClick() {
-        mButtonNgheTatCa.setEnabled(true);
-        mButtonNgheTatCa.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(SongsListActivity.this, PlayMusicActivity.class);
-                intent.putParcelableArrayListExtra("allbaihat", (ArrayList<? extends Parcelable>) listBaiHat);
-                startActivity(intent);
-            }
+        binding.btnNghetatca.setEnabled(true);
+        binding.btnNghetatca.setOnClickListener(v -> {
+            Intent intent = new Intent(SongsListActivity.this, PlayMusicActivity.class);
+            intent.putParcelableArrayListExtra("allbaihat", (ArrayList<? extends Parcelable>) listBaiHat);
+            startActivity(intent);
         });
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        compositeDisposable.clear();
     }
 }

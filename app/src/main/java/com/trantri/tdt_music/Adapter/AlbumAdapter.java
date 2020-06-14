@@ -16,6 +16,8 @@ import com.squareup.picasso.Picasso;
 import com.trantri.tdt_music.activity.SongsListActivity;
 import com.trantri.tdt_music.Model.Album;
 import com.trantri.tdt_music.R;
+import com.trantri.tdt_music.databinding.ItemAlbumBinding;
+import com.trantri.tdt_music.databinding.ItemAllAlbumBinding;
 
 import java.util.List;
 
@@ -32,41 +34,37 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.ViewHolder> 
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(mContext);
-        View mView = inflater.inflate(R.layout.item_album, parent, false);
-        ViewHolder mViewHolder = new ViewHolder(mView);
-        return mViewHolder;
+        return new ViewHolder(ItemAlbumBinding.inflate(inflater));
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-          Album album = albumList.get(position);
-          holder.txtTenAlbum.setText(album.getTenAlbum());
-          holder.txtTenCaSiAlbum.setText(album.getTenCaSiAlbum());
-        Glide.with(mContext).load(album.getHinhAlbum()).placeholder(R.drawable.ic_place_holder).into(holder.imgHinhAlbum);
+        Album album = albumList.get(position);
+        holder.binding.tvTenAlbum.setText(album.getTenAlbum());
+        holder.binding.tvTenCaSiALbum.setText(album.getTenCaSiAlbum());
+        Glide.with(mContext)
+                .load(album.getHinhAlbum())
+                .placeholder(R.drawable.ic_place_holder)
+                .error(R.drawable.ic_place_holder)
+                .into(holder.binding.imgAlbum);
     }
 
     @Override
     public int getItemCount() {
-        return albumList.isEmpty()?0:albumList.size();
+        return albumList.isEmpty() ? 0 : albumList.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        ImageView imgHinhAlbum;
-        TextView txtTenAlbum, txtTenCaSiAlbum;
+        ItemAlbumBinding binding;
 
-        public ViewHolder(final View itemView) {
-            super(itemView);
-            imgHinhAlbum = itemView.findViewById(R.id.img_album);
-            txtTenAlbum = itemView.findViewById(R.id.tv_tenAlbum);
-            txtTenCaSiAlbum = itemView.findViewById(R.id.tv_tenCaSiALbum);
-     itemView.setOnClickListener(new View.OnClickListener() {
-         @Override
-         public void onClick(View v) {
-             Intent intent = new Intent(mContext, SongsListActivity.class);
-             intent.putExtra("album", albumList.get(getPosition()));
-             mContext.startActivity(intent);
-         }
-     });
+        public ViewHolder(@NonNull ItemAlbumBinding b) {
+            super(b.getRoot());
+            binding = b;
+            binding.ClickAlbum.setOnClickListener(v -> {
+                Intent intent = new Intent(mContext, SongsListActivity.class);
+                intent.putExtra("album", albumList.get(getLayoutPosition()));
+                mContext.startActivity(intent);
+            });
         }
     }
 }

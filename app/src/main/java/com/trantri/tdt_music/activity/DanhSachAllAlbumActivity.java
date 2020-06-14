@@ -1,68 +1,126 @@
 package com.trantri.tdt_music.activity;
 
 import android.os.Bundle;
-import android.view.View;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.trantri.tdt_music.Adapter.DanhSachAllAlbumAdapter;
 import com.trantri.tdt_music.Model.Album;
-import com.trantri.tdt_music.R;
-import com.trantri.tdt_music.Service.APIService;
-import com.trantri.tdt_music.Service.DataService;
+import com.trantri.tdt_music.Service.ApiClient;
+import com.trantri.tdt_music.databinding.ActivityDanhSachAllAlbumBinding;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.annotations.NonNull;
+import io.reactivex.rxjava3.core.Scheduler;
+import io.reactivex.rxjava3.disposables.CompositeDisposable;
+import io.reactivex.rxjava3.disposables.Disposable;
+import io.reactivex.rxjava3.observers.DisposableObserver;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class DanhSachAllAlbumActivity extends AppCompatActivity {
-    RecyclerView mRecyclerView;
-    Toolbar toolbar;
     DanhSachAllAlbumAdapter mDanhSachAllAlbumAdapter;
+    ActivityDanhSachAllAlbumBinding binding;
+    private  CompositeDisposable compositeDisposable = new CompositeDisposable();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_danh_sach_all_album);
+        binding = ActivityDanhSachAllAlbumBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
         initView();
         GetData();
     }
 
     private void initView() {
-        mRecyclerView = findViewById(R.id.recycleAllAlbum);
-        toolbar = findViewById(R.id.toolbarAllAlbum);
-        setSupportActionBar(toolbar);
+        setSupportActionBar(binding.toolbarAllAlbum);
         getSupportActionBar().setTitle("Tất Cả AlBum Bài Hát");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
+        binding.toolbarAllAlbum.setNavigationOnClickListener(v -> finish());
     }
 
     private void GetData() {
-        DataService dataService = APIService.getService();
-        Call<List<Album>> mCall = dataService.getAllAlbum();
-        mCall.enqueue(new Callback<List<Album>>() {
-            @Override
-            public void onResponse(Call<List<Album>> call, Response<List<Album>> response) {
-                List<Album> albumList = response.body();
-                mDanhSachAllAlbumAdapter = new DanhSachAllAlbumAdapter(DanhSachAllAlbumActivity.this, albumList);
-                mRecyclerView.setLayoutManager(new GridLayoutManager(DanhSachAllAlbumActivity.this, 2));
-                mRecyclerView.setAdapter(mDanhSachAllAlbumAdapter);
-            }
+        Disposable disposable = ApiClient.getService(getApplicationContext()).getAllAlbum()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeWith(new DisposableObserver<List<Album>>() {
+                    @Override
+                    public void onNext(@NonNull List<Album> albums) {
+                        mDanhSachAllAlbumAdapter = new DanhSachAllAlbumAdapter(albums);
+                        binding.recycleAllAlbum.setLayoutManager(new GridLayoutManager(DanhSachAllAlbumActivity.this, 2));
+                        binding.recycleAllAlbum.setAdapter(mDanhSachAllAlbumAdapter);
+                    }
 
-            @Override
-            public void onFailure(Call<List<Album>> call, Throwable t) {
+                    @Override
+                    public void onError(@NonNull Throwable e) {
 
-            }
-        });
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
+        compositeDisposable.add(disposable);
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        compositeDisposable.clear();
     }
 }
+
+//    public void loadCurrentWeatherData() {
+//        Disposable disposable = mCurrentWeatherData.getCurrentWeather(locationName,KEY_TEMP_UNIT,KEY_APP_ID)
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribeWith(new DisposableObserver<CurrentWeather>() {
+//                    @Override
+//                    public void onNext(CurrentWeather currentWeather) {
+//                        Log.i(TAG, "Server response - "+currentWeather);
+//                        mWeatherFragmentView.updateCurrentWeatherData(currentWeather);
+//                    }
+//
+//                    @Override
+//                    public void onError(Throwable t) {
+//                        Log.e(TAG, t.getMessage());
+//                        try {
+//                            String erroeJson = ((retrofit2.adapter.rxjava2.HttpException)t).response().errorBody().source().readUtf8();
+//                            JSONObject jsonObject = new JSONObject(erroeJson);
+//                            String errorMessage = jsonObject.getString("message");
+//                            mWeatherFragmentView.showMessage(errorMessage);
+//                        } catch (NullPointerException | IOException | JSONException e) {
+//                            e.printStackTrace();
+//                        }
+//                    }
+//
+//                    @Override
+//                    public void onComplete() {
+//
+//                    }
+//                });
+//        mCompositeDisposable.add(disposable);
+//    }
+
+
+//     compositeDisposable.add(
+//             ApiClient.getService(getApplicationContext()).getAllAlbum()
+//             .subscribeOn(Schedulers.io())
+//             .observeOn(AndroidSchedulers.mainThread())
+//             .subscribe(
+//             albums -> {
+//             mDanhSachAllAlbumAdapter = new DanhSachAllAlbumAdapter(albums);
+//             binding.recycleAllAlbum.setLayoutManager(new GridLayoutManager(DanhSachAllAlbumActivity.this, 2));
+//             binding.recycleAllAlbum.setAdapter(mDanhSachAllAlbumAdapter);
+//             }
+//             )
+//             );
