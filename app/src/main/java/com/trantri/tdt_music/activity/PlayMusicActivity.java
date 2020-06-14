@@ -40,12 +40,6 @@ public class PlayMusicActivity extends AppCompatActivity {
     public static ViewPagerPlayMusicAdapter mViewPagerPlayMusicAdapter;
     ActivityPlayMusicBinding binding;
 
-    ViewPager mViewPager;
-
-
-
-    SeekBar mSeekBar;
-
     FragmentCDMusic mFragmentCDMusic;
 
     FragmentPlayDanhSachBaiHat mFragmentPlayDanhSachBaiHat;
@@ -166,7 +160,7 @@ public class PlayMusicActivity extends AppCompatActivity {
                 checkRandom = false;
             }
         });
-        mSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+        binding.seekbarSong.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
 
@@ -180,7 +174,7 @@ public class PlayMusicActivity extends AppCompatActivity {
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                mMediaPlayer.seekTo(mSeekBar.getProgress());
+                mMediaPlayer.seekTo(binding.seekbarSong.getProgress());
             }
         });
         binding.btnNext.setOnClickListener(v -> {
@@ -221,12 +215,9 @@ public class PlayMusicActivity extends AppCompatActivity {
             binding.btnBack.setClickable(false);
             binding.btnNext.setClickable(false);
             Handler mHandler = new Handler();
-            mHandler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    binding.btnBack.setClickable(true);
-                    binding.btnNext.setClickable(true);
-                }
+            mHandler.postDelayed(() -> {
+                binding.btnBack.setClickable(true);
+                binding.btnNext.setClickable(true);
             }, 5000);
         });
         binding.btnBack.setOnClickListener(v -> {
@@ -313,7 +304,7 @@ public class PlayMusicActivity extends AppCompatActivity {
 
         mViewPagerPlayMusicAdapter.addFragment(mFragmentCDMusic);
 
-        mViewPager.setAdapter(mViewPagerPlayMusicAdapter);
+        binding.viewPagerPlayNhac.setAdapter(mViewPagerPlayMusicAdapter);
         mFragmentCDMusic = (FragmentCDMusic) mViewPagerPlayMusicAdapter.getItem(1);
 
         if (baiHatList.size() > 0) {
@@ -327,7 +318,7 @@ public class PlayMusicActivity extends AppCompatActivity {
             SimpleDateFormat mFormat = new SimpleDateFormat("mm:ss");
             if (mMediaPlayer.getDuration() > 0){
                 binding.tvTotalTimeSong.setText(mFormat.format(mMediaPlayer.getDuration()));
-                mSeekBar.setMax(mMediaPlayer.getDuration());
+                binding.seekbarSong.setMax(mMediaPlayer.getDuration());
             }
         } catch (Exception e){
             Log.d("TAG", "TimeSong: "+e);
@@ -345,7 +336,7 @@ public class PlayMusicActivity extends AppCompatActivity {
 // thời gian vị trí hiện tai của bài hast
                     binding.tvTimeSong.setText(formatTime.format(mMediaPlayer.getCurrentPosition()));
                     // update process skSong
-                    mSeekBar.setProgress(mMediaPlayer.getCurrentPosition());
+                    binding.seekbarSong.setProgress(mMediaPlayer.getCurrentPosition());
                     // kiểm tra thời gian bài hát nếu kết thúc -> next
                     mMediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                         @Override
