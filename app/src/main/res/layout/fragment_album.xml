@@ -14,7 +14,8 @@
             android:textColor="@android:color/white"
             android:textSize="20sp"
             android:textStyle="bold"
-            android:text="Album Hot >"
+            android:text="Album Hot "
+            android:drawableRight="@drawable/ic_more"
             android:id="@+id/tv_NameAlbum"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
