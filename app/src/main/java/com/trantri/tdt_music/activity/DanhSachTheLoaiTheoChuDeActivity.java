@@ -11,20 +11,16 @@ import com.trantri.tdt_music.Adapter.DanhSachTheLoaiTheoChuDeAdapter;
 import com.trantri.tdt_music.Model.ChuDe;
 import com.trantri.tdt_music.Model.TheLoai;
 import com.trantri.tdt_music.Service.ApiClient;
-import com.trantri.tdt_music.Service.DataService;
 import com.trantri.tdt_music.databinding.ActivityDanhSachTheLoaiTheoChuDeBinding;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import io.reactivex.rxjava3.annotations.NonNull;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.observers.DisposableObserver;
 import io.reactivex.rxjava3.schedulers.Schedulers;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class DanhSachTheLoaiTheoChuDeActivity extends AppCompatActivity {
 
@@ -32,6 +28,7 @@ public class DanhSachTheLoaiTheoChuDeActivity extends AppCompatActivity {
     DanhSachTheLoaiTheoChuDeAdapter mAdapter;
     ActivityDanhSachTheLoaiTheoChuDeBinding binding;
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,7 +41,7 @@ public class DanhSachTheLoaiTheoChuDeActivity extends AppCompatActivity {
     }
 
     private void GetData(String idchude) {
-        Disposable disposable =ApiClient.getService(getApplication()).getTheLoaiTheoChuDe(idchude)
+        Disposable disposable = ApiClient.getService(getApplication()).getTheLoaiTheoChuDe(idchude)
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.newThread())
                 .subscribeWith(new DisposableObserver<List<TheLoai>>() {
@@ -71,7 +68,7 @@ public class DanhSachTheLoaiTheoChuDeActivity extends AppCompatActivity {
 
     private void init() {
         setSupportActionBar(binding.myToolbarTheoChuDe);
-        getSupportActionBar().setTitle(mChuDe.getTenChuDe());
+        Objects.requireNonNull(getSupportActionBar()).setTitle(mChuDe.getTenChuDe());
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         binding.myToolbarTheoChuDe.setNavigationOnClickListener(v -> finish());
     }

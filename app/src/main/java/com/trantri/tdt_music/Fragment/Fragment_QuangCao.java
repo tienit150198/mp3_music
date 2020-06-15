@@ -1,14 +1,20 @@
 package com.trantri.tdt_music.Fragment;
 
+import android.app.SearchManager;
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
@@ -30,10 +36,10 @@ import io.reactivex.rxjava3.schedulers.Schedulers;
 import me.relex.circleindicator.CircleIndicator;
 
 public class Fragment_QuangCao extends Fragment {
-    QuangCaoAdapter mAdapter;
-    Runnable mRunnable;
-    Handler mHandler;
-    int item;
+    private QuangCaoAdapter mAdapter;
+    private Runnable mRunnable;
+    private Handler mHandler;
+    private int item;
 
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
     FragmentQuangcaoBinding binding;
@@ -48,7 +54,7 @@ public class Fragment_QuangCao extends Fragment {
 
     private static final String TAG = "LOG_Fragment_QuangCao";
 
-    public void GetBanner() {
+    private void GetBanner() {
         compositeDisposable.add(
                 ApiClient.getService(Objects.requireNonNull(getContext()))
                         .getDataBanner()
@@ -62,28 +68,22 @@ public class Fragment_QuangCao extends Fragment {
                                 binding.myIndicator.setViewPager(binding.viewPager);
                                 mHandler = new Handler();
                                 // thực hiện hành động khi handler gọi
-                                mRunnable = new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        // item hiện tại đang đứng ở đâu
-                                        item = binding.viewPager.getCurrentItem();
-                                        item++;
-                                        // nếu  vượt quá kích thức page thì trở lại pager đầu
-                                        assert arrayListBanner != null;
-                                        if (item >= arrayListBanner.size()) {
-                                            item = 0;
-                                        }
-                                        // chạy xong set dữ liệu lên
-                                        binding.viewPager.setCurrentItem(item, true);
-                                        //mHandler.postDelayed(mRunnable, 4000);
+                                mRunnable = () -> {
+                                    // item hiện tại đang đứng ở đâu
+                                    item = binding.viewPager.getCurrentItem();
+                                    item++;
+                                    // nếu  vượt quá kích thức page thì trở lại pager đầu
+                                    assert arrayListBanner != null;
+                                    if (item >= arrayListBanner.size()) {
+                                        item = 0;
                                     }
-
+                                    // chạy xong set dữ liệu lên
+                                    binding.viewPager.setCurrentItem(item, true);
+                                    //mHandler.postDelayed(mRunnable, 4000);
                                 };
                                 mHandler.postDelayed(mRunnable, 4000);
 
                         })
-
-
         );
 
     }

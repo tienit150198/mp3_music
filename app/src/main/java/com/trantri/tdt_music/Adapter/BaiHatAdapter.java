@@ -13,6 +13,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.CenterInside;
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.trantri.tdt_music.Model.BaiHatYeuThich;
 import com.trantri.tdt_music.R;
 import com.trantri.tdt_music.Service.ApiClient;
@@ -51,7 +53,10 @@ public class BaiHatAdapter extends RecyclerView.Adapter<BaiHatAdapter.ViewHolder
         holder.binding.tvTenCaSi.setText(baiHatYeuThich.getCaSi());
         holder.binding.tvTenBaiHat.setText(baiHatYeuThich.getTenBaiHat());
 
-        Glide.with(mContext).load(baiHatYeuThich.getHinhBaiHat()).placeholder(R.drawable.ic_place_holder).into(holder.binding.imgBaihatyeuthich);
+        Glide.with(mContext).load(baiHatYeuThich.getHinhBaiHat())
+                .transform(new CenterInside(), new RoundedCorners(15))
+                .placeholder(R.drawable.ic_place_holder)
+                .into(holder.binding.imgBaihatyeuthich);
 
     }
 

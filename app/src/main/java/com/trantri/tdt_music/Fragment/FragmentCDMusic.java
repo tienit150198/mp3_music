@@ -15,18 +15,20 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
-import com.squareup.picasso.Picasso;
 import com.trantri.tdt_music.R;
+
+import java.util.Objects;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class FragmentCDMusic extends Fragment {
-    View view;
- private    CircleImageView mCircleImageView;
+    private View view;
+    private CircleImageView mCircleImageView;
     // khi click nó tạo ra các hình ảnh
- private    ObjectAnimator mObjectAnimator;
+    private ObjectAnimator mObjectAnimator;
 
-    private boolean aLive=false;
+    private boolean aLive = false;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -53,22 +55,24 @@ public class FragmentCDMusic extends Fragment {
     }
 
     public void Playnhac(String hinhAnh) {
-        Log.d("TAG",hinhAnh);
-        try{
-            if (!hinhAnh.isEmpty()){
-                Glide.with(getContext()).load(hinhAnh).into(mCircleImageView);
+        Log.d("TAG", hinhAnh);
+        try {
+            if (!hinhAnh.isEmpty()) {
+                Glide.with(Objects.requireNonNull(getContext())).load(hinhAnh).into(mCircleImageView);
             }
-        } catch (IllegalArgumentException e){
+        } catch (IllegalArgumentException e) {
             e.getMessage();
         }
 
     }
-    public void stopAnimation(){
+
+    public void stopAnimation() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             mObjectAnimator.pause();
         }
     }
-    public void startAnimation(){
+
+    public void startAnimation() {
         mObjectAnimator.start();
     }
 }

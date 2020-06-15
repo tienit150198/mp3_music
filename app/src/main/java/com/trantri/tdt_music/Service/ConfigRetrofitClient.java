@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
@@ -23,7 +24,7 @@ public class ConfigRetrofitClient {
                  .writeTimeout(10000, TimeUnit.MILLISECONDS)
                 .connectTimeout(10000 , TimeUnit.MILLISECONDS) // đợi lâu ngắt kết nối
                 .retryOnConnectionFailure(true)   // cố gắng két nối
-                .protocols(Arrays.asList(Protocol.HTTP_1_1)) // khi kết nối phần giao thức server ko tìm đc như : HTTP..
+                .protocols(Collections.singletonList(Protocol.HTTP_1_1)) // khi kết nối phần giao thức server ko tìm đc như : HTTP..
                 .build();
 
         // khi dữ liệu trả từ server về Gson sẽ thực hiện đọc dữ liệu từ khóa API về thành từ khóa java

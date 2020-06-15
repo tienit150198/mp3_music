@@ -27,8 +27,6 @@ public class ApiClient {
 
         OkHttpClient okHttpClient = httpClient.build();
 
-
-
         return new Retrofit.Builder()
                 .baseUrl(BASE_URL)
                 .client(okHttpClient)

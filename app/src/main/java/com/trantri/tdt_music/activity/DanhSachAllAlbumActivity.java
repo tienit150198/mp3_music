@@ -13,6 +13,7 @@ import com.trantri.tdt_music.databinding.ActivityDanhSachAllAlbumBinding;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.annotations.NonNull;
@@ -41,7 +42,7 @@ public class DanhSachAllAlbumActivity extends AppCompatActivity {
 
     private void initView() {
         setSupportActionBar(binding.toolbarAllAlbum);
-        getSupportActionBar().setTitle("Tất Cả AlBum Bài Hát");
+        Objects.requireNonNull(getSupportActionBar()).setTitle("Tất Cả AlBum Bài Hát");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         binding.toolbarAllAlbum.setNavigationOnClickListener(v -> finish());
     }
@@ -78,49 +79,3 @@ public class DanhSachAllAlbumActivity extends AppCompatActivity {
         compositeDisposable.clear();
     }
 }
-
-//    public void loadCurrentWeatherData() {
-//        Disposable disposable = mCurrentWeatherData.getCurrentWeather(locationName,KEY_TEMP_UNIT,KEY_APP_ID)
-//                .subscribeOn(Schedulers.io())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribeWith(new DisposableObserver<CurrentWeather>() {
-//                    @Override
-//                    public void onNext(CurrentWeather currentWeather) {
-//                        Log.i(TAG, "Server response - "+currentWeather);
-//                        mWeatherFragmentView.updateCurrentWeatherData(currentWeather);
-//                    }
-//
-//                    @Override
-//                    public void onError(Throwable t) {
-//                        Log.e(TAG, t.getMessage());
-//                        try {
-//                            String erroeJson = ((retrofit2.adapter.rxjava2.HttpException)t).response().errorBody().source().readUtf8();
-//                            JSONObject jsonObject = new JSONObject(erroeJson);
-//                            String errorMessage = jsonObject.getString("message");
-//                            mWeatherFragmentView.showMessage(errorMessage);
-//                        } catch (NullPointerException | IOException | JSONException e) {
-//                            e.printStackTrace();
-//                        }
-//                    }
-//
-//                    @Override
-//                    public void onComplete() {
-//
-//                    }
-//                });
-//        mCompositeDisposable.add(disposable);
-//    }
-
-
-//     compositeDisposable.add(
-//             ApiClient.getService(getApplicationContext()).getAllAlbum()
-//             .subscribeOn(Schedulers.io())
-//             .observeOn(AndroidSchedulers.mainThread())
-//             .subscribe(
-//             albums -> {
-//             mDanhSachAllAlbumAdapter = new DanhSachAllAlbumAdapter(albums);
-//             binding.recycleAllAlbum.setLayoutManager(new GridLayoutManager(DanhSachAllAlbumActivity.this, 2));
-//             binding.recycleAllAlbum.setAdapter(mDanhSachAllAlbumAdapter);
-//             }
-//             )
-//             );

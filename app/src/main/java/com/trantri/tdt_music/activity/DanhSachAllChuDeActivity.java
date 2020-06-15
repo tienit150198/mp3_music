@@ -12,6 +12,7 @@ import com.trantri.tdt_music.Service.ApiClient;
 import com.trantri.tdt_music.databinding.ActivityDanhSachAllChuDeBinding;
 
 import java.util.List;
+import java.util.Objects;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.annotations.NonNull;
@@ -63,7 +64,7 @@ public class DanhSachAllChuDeActivity extends AppCompatActivity {
 
     private void initToolbar() {
         setSupportActionBar(binding.toobarAllChuDe);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("Tất Cả Chủ Đề Bài Hát");
         binding.toobarAllChuDe.setNavigationOnClickListener(v -> finish());
     }

@@ -2,6 +2,7 @@ package com.trantri.tdt_music.Fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +26,7 @@ import com.trantri.tdt_music.Service.DataService;
 import com.trantri.tdt_music.databinding.FragmentPlaylistBinding;
 
 import java.util.List;
+import java.util.Objects;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
@@ -49,40 +51,32 @@ public class FragmentPlaylist extends Fragment {
     }
 
     private void ActionView() {
-        binding.tvMorePlaylist.setOnClickListener(v -> {
+        binding.tvTitlePlaylist.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), PlaylistActivity.class);
             startActivity(intent);
         });
     }
 
-
+    private static final String TAG = "LOG_FragmentPlaylist";
     private void GetData() {
-      Disposable disposable = ApiClient.getService(getContext()).getDataPlaylist()
+      Disposable disposable = ApiClient.getService(Objects.requireNonNull(getContext())).getDataPlaylist()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribeWith(new DisposableObserver<List<Playlist>>() {
-                    public void onNext(@io.reactivex.rxjava3.annotations.NonNull List<Playlist> playlists) {
-                        mList = playlists;
-                        mPlaylistAdapter = new PlaylistAdapter(getActivity(), android.R.layout.simple_list_item_1, mList);
-                        binding.lvPlaylist.setAdapter(mPlaylistAdapter);
-                        setListViewHeightBasedOnChildren(binding.lvPlaylist);
-                        binding.lvPlaylist.setOnItemClickListener((parent, view, position, id) -> {
-                            Intent intent = new Intent(getActivity(), SongsListActivity.class);
-                            intent.putExtra("itemPlaylist", mList.get(position));
-                            startActivity(intent);
-
-                        });
+                .subscribe((playlists, throwable) -> {
+                    if(throwable != null){
+                        Log.d(TAG, "Getdata: " + throwable.getMessage());
+                        return;
                     }
+                    mList = playlists;
+                    mPlaylistAdapter = new PlaylistAdapter(Objects.requireNonNull(getActivity()), android.R.layout.simple_list_item_1, mList);
+                    binding.lvPlaylist.setAdapter(mPlaylistAdapter);
+                    setListViewHeightBasedOnChildren(binding.lvPlaylist);
+                    binding.lvPlaylist.setOnItemClickListener((parent, view, position, id) -> {
+                        Intent intent = new Intent(getActivity(), SongsListActivity.class);
+                        intent.putExtra("itemPlaylist", mList.get(position));
+                        startActivity(intent);
 
-                    @Override
-                    public void onError(@io.reactivex.rxjava3.annotations.NonNull Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onComplete() {
-
-                    }
+                    });
                 });
       compositeDisposable.add(disposable);
     }

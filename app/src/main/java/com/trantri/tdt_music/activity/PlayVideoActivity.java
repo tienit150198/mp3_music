@@ -5,16 +5,14 @@ import android.os.Bundle;
 import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.trantri.tdt_music.Adapter.VideoYoutubeAdapter;
 import com.trantri.tdt_music.Model.YoutubeMusic;
-import com.trantri.tdt_music.R;
 import com.trantri.tdt_music.databinding.ActivityPlayVideoBinding;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class PlayVideoActivity extends AppCompatActivity {
 
@@ -24,6 +22,7 @@ public class PlayVideoActivity extends AppCompatActivity {
     private ArrayList<YoutubeMusic> mListVideo;
     private VideoYoutubeAdapter mAdapterVideo;
     ActivityPlayVideoBinding binding;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,7 +34,7 @@ public class PlayVideoActivity extends AppCompatActivity {
 
     private void init() {
         setSupportActionBar(binding.toobarDanhSachPhat);
-        getSupportActionBar().setTitle("Danh Sách MV");
+        Objects.requireNonNull(getSupportActionBar()).setTitle("Danh Sách MV");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         binding.toobarDanhSachPhat.setNavigationOnClickListener(new View.OnClickListener() {
             @Override

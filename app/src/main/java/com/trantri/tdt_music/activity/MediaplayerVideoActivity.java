@@ -7,11 +7,7 @@ import android.widget.Toast;
 import com.google.android.youtube.player.YouTubeBaseActivity;
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
-import com.google.android.youtube.player.YouTubePlayerView;
-import com.trantri.tdt_music.R;
 import com.trantri.tdt_music.databinding.ActivityMediaplayerVideoBinding;
-
-import io.reactivex.rxjava3.disposables.CompositeDisposable;
 
 public class MediaplayerVideoActivity extends YouTubeBaseActivity {
     String id = "";

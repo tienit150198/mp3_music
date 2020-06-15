@@ -7,7 +7,7 @@
   <TextView
       android:id="@+id/tv_mv"
       android:text="Xem MV"
-      android:textColor="@color/BLACK"
+      android:textColor="@android:color/white"
       android:textSize="32sp"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"

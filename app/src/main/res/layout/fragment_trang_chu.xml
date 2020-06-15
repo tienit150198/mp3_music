@@ -2,14 +2,37 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:fillViewport="true"
-    android:scrollbars="none">
+    android:scrollbars="none"
+    android:background = "#30012D">
 
     <LinearLayout
         android:id="@+id/linearLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        >
+
+        <com.mancj.materialsearchbar.MaterialSearchBar
+            android:id = "@+id/search_music"
+            style="@style/MaterialSearchBarDark"
+            app:mt_speechMode="true"
+            app:mt_hint="Nhập lời bài hát"
+            app:mt_hintColor="@android:color/white"
+            app:mt_maxSuggestionsCount="5"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:mt_menuIconDrawable="@drawable/ic_search"
+            app:mt_searchIconDrawable="@drawable/ic_search"
+            app:mt_searchIconTint="@android:color/white"
+            app:mt_placeholder="Nhập lời bài hát"
+            app:mt_backIconDrawable="@drawable/ic_search"
+            app:mt_clearIconDrawable="@drawable/ic_search"
+            app:mt_middleTextSelectorDrawable="@drawable/ic_search"
+            app:mt_roundedSearchBarEnabled="true"
+            android:layout_margin="5dp"
+            />
 
         <fragment
             android:id="@+id/fragmentQuangCao"

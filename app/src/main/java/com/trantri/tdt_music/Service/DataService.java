@@ -28,20 +28,19 @@ public interface DataService {
     @GET("songbanner.php")
 
         // nhận dữ liệu
-    Observable<List<Quangcao>> getDataBanner();
+    Single<List<Quangcao>> getDataBanner();
 
     @GET("PlaylistSong.php")
-    Observable<List<Playlist>> getDataPlaylist();
+    Single<List<Playlist>> getDataPlaylist();
 
     @GET("chudeandTheLoai.php")
-    Observable<ChuDeAndTheLoai> getDataChuDeTheLoai();
+    Single<ChuDeAndTheLoai> getDataChuDeTheLoai();
 
     @GET("albumSong.php")
-    Observable<List<Album>> getDataAlbum();
-    // TODO: Đã làm 4 thằng trên, những thằng dưới chưa làm
+    Single<List<Album>> getDataAlbum();
 
     @GET("BaiHatDuocYeuThich.php")
-    Observable<List<BaiHatYeuThich>> getDataBaiHatDuocYeuThich();
+    Single<List<BaiHatYeuThich>> getDataBaiHatDuocYeuThich();
 
     @FormUrlEncoded
     @POST("DanhSachBaiHat.php")
@@ -54,7 +53,7 @@ public interface DataService {
     Observable<List<BaiHatYeuThich>> getDataBaiHatTheoPlaylist(@Field("idplaylist") String idplaylist);
 
     @GET("DanhSachAllPlaylist.php")
-    Observable<List<PlaylistAll>> getAllPlaylist();
+    Single<List<PlaylistAll>> getAllPlaylist();
 
     @FormUrlEncoded
     @POST("DanhSachBaiHatPlaylist.php")

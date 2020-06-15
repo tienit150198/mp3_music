@@ -8,18 +8,11 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.os.StrictMode;
-import android.view.View;
-import android.widget.Button;
-import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.trantri.tdt_music.Adapter.DanhSachBaiHatAdapter;
 import com.trantri.tdt_music.Model.Album;
 import com.trantri.tdt_music.Model.BaiHatYeuThich;
@@ -27,9 +20,7 @@ import com.trantri.tdt_music.Model.Playlist;
 import com.trantri.tdt_music.Model.PlaylistAll;
 import com.trantri.tdt_music.Model.Quangcao;
 import com.trantri.tdt_music.Model.TheLoai;
-import com.trantri.tdt_music.R;
 import com.trantri.tdt_music.Service.ApiClient;
-import com.trantri.tdt_music.Service.DataService;
 import com.trantri.tdt_music.databinding.ActivitySongsListBinding;
 
 import java.io.IOException;
@@ -37,6 +28,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.annotations.NonNull;
@@ -44,9 +36,6 @@ import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.observers.DisposableObserver;
 import io.reactivex.rxjava3.schedulers.Schedulers;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class SongsListActivity extends AppCompatActivity {
     ActivitySongsListBinding binding;
@@ -93,7 +82,7 @@ public class SongsListActivity extends AppCompatActivity {
     }
 
     private void getDataAlbum(String idAlbum) {
-      Disposable disposable =  ApiClient.getService(getApplication()).getDataBaiHatTheoAlbum(idAlbum)
+        Disposable disposable = ApiClient.getService(getApplication()).getDataBaiHatTheoAlbum(idAlbum)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeWith(new DisposableObserver<List<BaiHatYeuThich>>() {
@@ -115,17 +104,17 @@ public class SongsListActivity extends AppCompatActivity {
 
                     }
                 });
-      compositeDisposable.add(disposable);
+        compositeDisposable.add(disposable);
     }
 
     private void getDataTheLoai(String idtheloai) {
-       Disposable disposable1 = ApiClient.getService(getApplicationContext()).getDataBaiHatTheoTheLoai(idtheloai)
+        Disposable disposable1 = ApiClient.getService(getApplicationContext()).getDataBaiHatTheoTheLoai(idtheloai)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeWith(new DisposableObserver<List<BaiHatYeuThich>>() {
                     @Override
                     public void onNext(@NonNull List<BaiHatYeuThich> baiHatYeuThiches) {
-                        mAdapter = new DanhSachBaiHatAdapter( baiHatYeuThiches);
+                        mAdapter = new DanhSachBaiHatAdapter(baiHatYeuThiches);
                         binding.recycleDanhSachBH.setLayoutManager(new LinearLayoutManager(SongsListActivity.this));
                         binding.recycleDanhSachBH.setAdapter(mAdapter);
                         eventClick();
@@ -141,17 +130,17 @@ public class SongsListActivity extends AppCompatActivity {
 
                     }
                 });
-       compositeDisposable.add(disposable1);
+        compositeDisposable.add(disposable1);
     }
 
     private void getDataPlaylist(String idplaylist) {
-       Disposable disposable2 = ApiClient.getService(getApplicationContext()).getDataBaiHatTheoPlaylist(idplaylist)
+        Disposable disposable2 = ApiClient.getService(getApplicationContext()).getDataBaiHatTheoPlaylist(idplaylist)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeWith(new DisposableObserver<List<BaiHatYeuThich>>() {
                     @Override
                     public void onNext(@NonNull List<BaiHatYeuThich> baiHatYeuThiches) {
-                        mAdapter = new DanhSachBaiHatAdapter( baiHatYeuThiches);
+                        mAdapter = new DanhSachBaiHatAdapter(baiHatYeuThiches);
                         binding.recycleDanhSachBH.setLayoutManager(new LinearLayoutManager(SongsListActivity.this));
                         binding.recycleDanhSachBH.setAdapter(mAdapter);
                         eventClick();
@@ -167,7 +156,7 @@ public class SongsListActivity extends AppCompatActivity {
 
                     }
                 });
-       compositeDisposable.add(disposable2);
+        compositeDisposable.add(disposable2);
     }
 
     // lấy data tên bài hát để gắn lên toolbar
@@ -190,13 +179,13 @@ public class SongsListActivity extends AppCompatActivity {
     }
 
     private void getDataQuangCao(String idquangcao) {
-       Disposable disposable3= ApiClient.getService(getApplicationContext()).getDataBaiHatTheoQuangCao(idquangcao)
+        Disposable disposable3 = ApiClient.getService(getApplicationContext()).getDataBaiHatTheoQuangCao(idquangcao)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeWith(new DisposableObserver<List<BaiHatYeuThich>>() {
                     @Override
                     public void onNext(@NonNull List<BaiHatYeuThich> baiHatYeuThiches) {
-                        mAdapter = new DanhSachBaiHatAdapter(baiHatYeuThiches );
+                        mAdapter = new DanhSachBaiHatAdapter(baiHatYeuThiches);
                         binding.recycleDanhSachBH.setLayoutManager(new LinearLayoutManager(SongsListActivity.this));
                         binding.recycleDanhSachBH.setAdapter(mAdapter);
                         eventClick();
@@ -212,13 +201,13 @@ public class SongsListActivity extends AppCompatActivity {
 
                     }
                 });
-       compositeDisposable.add(disposable3);
+        compositeDisposable.add(disposable3);
     }
 
 
     private void init() {
         setSupportActionBar(binding.myToolbarList);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("");
         binding.myToolbarList.setNavigationOnClickListener(v -> finish());
 //        mCollapsingToolbarLayout.setExpandedTitleColor(Color.BLUE);

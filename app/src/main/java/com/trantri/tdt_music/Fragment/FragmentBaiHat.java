@@ -1,5 +1,6 @@
 package com.trantri.tdt_music.Fragment;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +21,7 @@ import com.trantri.tdt_music.databinding.FragmentBaiHatYeuthichBinding;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
@@ -30,8 +32,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 public class FragmentBaiHat extends Fragment {
-    BaiHatAdapter mAdapter;
-    FragmentBaiHatYeuthichBinding binding;
+    private BaiHatAdapter mAdapter;
+    private FragmentBaiHatYeuthichBinding binding;
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
     @Nullable
     @Override
@@ -41,30 +43,23 @@ public class FragmentBaiHat extends Fragment {
         return binding.getRoot();
     }
 
+    private static final String TAG = "LOG_FragmentBaiHat";
+
     private void GetData() {
 
-        Disposable disposable = ApiClient.getService(getContext()).getDataBaiHatDuocYeuThich()
+        Disposable disposable = ApiClient.getService(Objects.requireNonNull(getContext())).getDataBaiHatDuocYeuThich()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribeWith(new DisposableObserver<List<BaiHatYeuThich>>() {
-                    @Override
-                    public void onNext(@io.reactivex.rxjava3.annotations.NonNull List<BaiHatYeuThich> baiHatYeuThiches) {
-                        mAdapter = new BaiHatAdapter(getActivity(), baiHatYeuThiches);
-                        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
-                        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-                        binding.myRecycleBaiHatYeuThich.setLayoutManager(layoutManager);
-                        binding.myRecycleBaiHatYeuThich.setAdapter(mAdapter);
+                .subscribe((baiHatYeuThiches, throwable) -> {
+                    if(throwable != null){
+                        Log.d(TAG, "Getdata: " + throwable.getMessage());
+                        return;
                     }
-
-                    @Override
-                    public void onError(@io.reactivex.rxjava3.annotations.NonNull Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onComplete() {
-
-                    }
+                    mAdapter = new BaiHatAdapter(getActivity(), baiHatYeuThiches);
+                    LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
+                    layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+                    binding.myRecycleBaiHatYeuThich.setLayoutManager(layoutManager);
+                    binding.myRecycleBaiHatYeuThich.setAdapter(mAdapter);
                 });
         compositeDisposable.add(disposable);
     }

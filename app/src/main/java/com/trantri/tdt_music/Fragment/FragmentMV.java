@@ -20,8 +20,8 @@ import com.trantri.tdt_music.R;
 import java.util.Vector;
 
 public class FragmentMV extends Fragment {
-    View view;
-    TextView txtMV, txtKara;
+    private View view;
+    private TextView txtMV, txtKara;
     RecyclerView mRecyclerViewVideoMV,mRecyclerViewKaraoke;
     Vector<MyVideo> myVideos = new Vector<MyVideo>();
     Vector<MyVideo> myVideosKaraoke = new Vector<MyVideo>();
