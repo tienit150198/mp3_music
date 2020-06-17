@@ -66,13 +66,10 @@ public class SearchBaiHatAdapter extends RecyclerView.Adapter<SearchBaiHatAdapte
             imgLike = itemView.findViewById(R.id.img_SearchLuotThich);
             txtTenBaiHat = itemView.findViewById(R.id.tv_SearchBaiHat);
             txtCasi = itemView.findViewById(R.id.tv_SearchTenCaSi);
-        itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(mContext, PlayMusicActivity.class);
-                intent.putExtra("cakhuc",list.get(getPosition()));
-                mContext.startActivity(intent);
-            }
+        itemView.setOnClickListener(v -> {
+            Intent intent = new Intent(mContext, PlayMusicActivity.class);
+            intent.putExtra("cakhuc",list.get(getAdapterPosition()));
+            mContext.startActivity(intent);
         });
 //        imgLike.setOnClickListener(new View.OnClickListener() {
 //            @Override
