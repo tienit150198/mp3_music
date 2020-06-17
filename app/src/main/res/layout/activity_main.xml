@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -8,28 +8,29 @@
     android:orientation="vertical"
     tools:context=".activity.MainActivity">
 
-    <androidx.viewpager.widget.ViewPager
-        android:id="@+id/myViewPager"
+    <FrameLayout
+        android:id="@+id/flMain"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1" />
+        android:layout_height="match_parent"
+        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior" />
 
-    <include
-        android:id="@+id/bottomMusic"
-        layout="@layout/bottom_sheet"
-        />
+    <com.trantri.tdt_music.Adapter.NoSwipePager
+        android:id="@+id/viewpager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:background="#EFEFEF" />
 
-    <com.google.android.material.tabs.TabLayout
-        android:id="@+id/myTablayout"
-        style="@style/tabLayoutHome"
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNavigation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@android:color/transparent"
-        app:tabIndicatorColor="#5E0257"
-        app:tabIndicatorHeight="2dp"
-        app:tabMode="fixed"
-        app:tabSelectedTextColor="@android:color/white"
-        app:tabTextColor="#8C8C8C" />
+        android:layout_gravity="bottom"
+        android:background="@drawable/custom_navigation"
+        app:itemIconTint="@android:color/white"
+        app:itemRippleColor="@android:color/white"
+        app:itemTextColor="@android:color/white"
+        app:layout_behavior="com.google.android.material.behavior.HideBottomViewOnScrollBehavior"
+        app:menu="@menu/menu_botoomnavigation" />
 
-</LinearLayout>
 
+</FrameLayout>

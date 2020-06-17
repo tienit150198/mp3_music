@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+ <item android:id="@+id/homeNavigation"
+     android:icon="@drawable/icontrangchu"
+     android:title="Trang Chủ"
+     />
+    <item android:id="@+id/mvNavigation"
+         android:icon="@drawable/ic_video"
+        android:title="MV"
+        />
+    <item android:id="@+id/personNavigation"
+        android:icon="@drawable/ic_user"
+        android:title="MV"
+        />
+
+</menu>

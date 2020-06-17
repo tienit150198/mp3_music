@@ -1,11 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:fillViewport="true"
     android:scrollbars="none"
     android:background = "#30012D">
+<androidx.core.widget.NestedScrollView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
 
     <LinearLayout
         android:id="@+id/linearLayout"
@@ -18,22 +22,24 @@
             android:id = "@+id/search_music"
             style="@style/MaterialSearchBarDark"
             app:mt_speechMode="true"
-            app:mt_hint="Nhập lời bài hát"
+            app:mt_hint="Nhập bài hát cần tìm"
             app:mt_hintColor="@android:color/white"
             app:mt_maxSuggestionsCount="5"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:mt_menuIconDrawable="@drawable/ic_search"
             app:mt_searchIconDrawable="@drawable/ic_search"
             app:mt_searchIconTint="@android:color/white"
-            app:mt_placeholder="Nhập lời bài hát"
-            app:mt_backIconDrawable="@drawable/ic_search"
-            app:mt_clearIconDrawable="@drawable/ic_search"
-            app:mt_middleTextSelectorDrawable="@drawable/ic_search"
+            app:mt_placeholder="Nhập bài hát cần tìm"
+            app:mt_backIconDrawable="@drawable/ic_baseline_arrow_back_24"
             app:mt_roundedSearchBarEnabled="true"
             android:layout_margin="5dp"
             />
-
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerViewSearch"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone"
+            />
         <fragment
             android:id="@+id/fragmentQuangCao"
             android:name="com.trantri.tdt_music.Fragment.Fragment_QuangCao"
@@ -65,4 +71,7 @@
             android:layout_height="wrap_content" />
     </LinearLayout>
 
-</ScrollView>
+</androidx.core.widget.NestedScrollView>
+
+
+</FrameLayout>
