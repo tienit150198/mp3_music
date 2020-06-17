@@ -116,7 +116,10 @@ public class FragmentChuDeThLoai extends Fragment {
                             startActivity(intent);
                         });
                     }
-                    binding.myScollChudeTheLoai.addView(mLinearLayout);
+
+                    if (!binding.myScollChudeTheLoai.isFillViewport()) {
+                        binding.myScollChudeTheLoai.addView(mLinearLayout);
+                    }
                 });
         compositeDisposable.add(disposable);
     }

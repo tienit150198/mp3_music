@@ -18,8 +18,12 @@ import com.trantri.tdt_music.Adapter.ViewPagerPlayMusicAdapter;
 import com.trantri.tdt_music.Fragment.FragmentCDMusic;
 import com.trantri.tdt_music.Fragment.FragmentPlayDanhSachBaiHat;
 import com.trantri.tdt_music.Model.BaiHatYeuThich;
+import com.trantri.tdt_music.Model.MessageEventBus;
 import com.trantri.tdt_music.R;
+import com.trantri.tdt_music.data.Constraint;
 import com.trantri.tdt_music.databinding.ActivityPlayMusicBinding;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -79,8 +83,18 @@ public class PlayMusicActivity extends AppCompatActivity {
                 mp.start();
                 TimeSong();
                 UpdateTime();
-                binding.btnPlay.setImageResource(mMediaPlayer.isPlaying() ? R.drawable.iconpause :
-                        R.drawable.iconplay);
+
+                if(mMediaPlayer.isPlaying()){
+                    binding.btnPlay.setImageResource( R.drawable.iconpause);
+                    EventBus.getDefault().post(new MessageEventBus(Constraint.EventBusAction.PAUSE, null));
+                }else{
+                    binding.btnPlay.setImageResource( R.drawable.ic_play);
+                    EventBus.getDefault().post(new MessageEventBus(Constraint.EventBusAction.PLAY, null));
+                }
+
+//                binding.btnPlay.setImageResource(mMediaPlayer.isPlaying() ? R.drawable.iconpause :
+//                        R.drawable.iconplay);
+                
             });
 
         } catch (IllegalArgumentException | IOException e) {
@@ -112,12 +126,15 @@ public class PlayMusicActivity extends AppCompatActivity {
             if (mMediaPlayer.isPlaying()) {
 
                 mMediaPlayer.pause();
+                EventBus.getDefault().post(new MessageEventBus(Constraint.EventBusAction.PAUSE, null));
 
                 binding.btnPlay.setImageResource(R.drawable.iconplay);
+                EventBus.getDefault().post(new MessageEventBus(Constraint.EventBusAction.PLAY, null));
                 mFragmentCDMusic.stopAnimation();
 
             } else {
                 mMediaPlayer.start();
+                EventBus.getDefault().post(new MessageEventBus(Constraint.EventBusAction.PLAY, null));
                 binding.btnPlay.setImageResource(R.drawable.iconpause);
                 mFragmentCDMusic.startAnimation();
             }
@@ -179,6 +196,8 @@ public class PlayMusicActivity extends AppCompatActivity {
                 }
                 if (position < (baiHatList.size())) {
                     binding.btnPlay.setImageResource(R.drawable.iconpause);
+                    EventBus.getDefault().post(new MessageEventBus(Constraint.EventBusAction.PAUSE, null));
+
                     position++;
 
 
@@ -223,6 +242,7 @@ public class PlayMusicActivity extends AppCompatActivity {
                 if (position < (baiHatList.size())) {
 
                     binding.btnPlay.setImageResource(R.drawable.iconpause);
+                    EventBus.getDefault().post(new MessageEventBus(Constraint.EventBusAction.PAUSE, null));
 
                     position--;
 
@@ -300,6 +320,8 @@ public class PlayMusicActivity extends AppCompatActivity {
             getSupportActionBar().setTitle(baiHatList.get(0).getTenBaiHat());
             new PlayMusic().execute(baiHatList.get(0).getLinkBaiHat());
             binding.btnPlay.setImageResource(R.drawable.iconpause);
+            EventBus.getDefault().post(new MessageEventBus(Constraint.EventBusAction.PAUSE, null));
+
         }
     }
 
@@ -333,6 +355,8 @@ public class PlayMusicActivity extends AppCompatActivity {
                         public void onCompletion(MediaPlayer mp) {
                             if (position < (baiHatList.size())) {
                                 binding.btnPlay.setImageResource(R.drawable.iconpause);
+                                EventBus.getDefault().post(new MessageEventBus(Constraint.EventBusAction.PAUSE, null));
+
                                 position++;
                                 if (repeat) {
                                     if (position == 0) {
@@ -372,6 +396,7 @@ public class PlayMusicActivity extends AppCompatActivity {
                 if (next) {
                     if (position < (baiHatList.size())) {
                         binding.btnPlay.setImageResource(R.drawable.iconpause);
+                        EventBus.getDefault().post(new MessageEventBus(Constraint.EventBusAction.PAUSE, null));
                         position++;
                         if (repeat) {
                             if (position == 0) {

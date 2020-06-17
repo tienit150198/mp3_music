@@ -16,8 +16,8 @@ import com.trantri.tdt_music.databinding.ItemPlayMusicBinding;
 import java.util.List;
 
 public class PlayMusicAdapter extends RecyclerView.Adapter<PlayMusicAdapter.ViewHolder> {
-    Context mContext;
-    List<BaiHatYeuThich> listBH;
+    private Context mContext;
+    private List<BaiHatYeuThich> listBH;
 
     public PlayMusicAdapter(Context mContext, List<BaiHatYeuThich> listBH) {
         this.mContext = mContext;
@@ -44,7 +44,7 @@ public class PlayMusicAdapter extends RecyclerView.Adapter<PlayMusicAdapter.View
         return listBH.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public static class ViewHolder extends RecyclerView.ViewHolder {
         ItemPlayMusicBinding binding;
 
         public ViewHolder(ItemPlayMusicBinding b) {
