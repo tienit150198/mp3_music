@@ -41,7 +41,7 @@ public class DanhSachAllAlbumAdapter extends RecyclerView.Adapter<DanhSachAllAlb
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Glide.with(holder.binding.imgAllAlbum)
                 .load(albumList.get(position).getHinhAlbum())
-                .error(R.drawable.ic_place_holder)
+//                .error(R.drawable.ic_place_holder)
                 .into(holder.binding.imgAllAlbum);
         holder.binding.tvTenAllAlbum.setText(albumList.get(position).getTenAlbum());
         holder.binding.tvTenCaSiAlBum.setText(albumList.get(position).getTenCaSiAlbum());

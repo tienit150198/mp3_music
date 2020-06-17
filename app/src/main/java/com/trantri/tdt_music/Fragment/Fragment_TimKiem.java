@@ -8,37 +8,34 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
-import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.trantri.tdt_music.Adapter.SearchBaiHatAdapter;
 import com.trantri.tdt_music.Model.BaiHatYeuThich;
 import com.trantri.tdt_music.R;
 import com.trantri.tdt_music.Service.ApiClient;
-import com.trantri.tdt_music.Service.DataService;
 import com.trantri.tdt_music.databinding.FragmentTimKiemBinding;
 
 import java.util.List;
 import java.util.Objects;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
-import io.reactivex.rxjava3.observers.DisposableObserver;
+import io.reactivex.rxjava3.core.Observer;
+import io.reactivex.rxjava3.disposables.CompositeDisposable;
+import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class Fragment_TimKiem extends Fragment {
     private SearchBaiHatAdapter mAdapter;
     private FragmentTimKiemBinding binding;
+
+    private CompositeDisposable compositeDisposable = new CompositeDisposable();
 
     @Nullable
     @Override
@@ -71,15 +68,28 @@ public class Fragment_TimKiem extends Fragment {
         super.onCreateOptionsMenu(menu, inflater);
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        compositeDisposable.clear();
+    }
+
+    private static final String TAG = "LOG_Fragment_TimKiem";
+
     private void SearchBaiHat(String keyword) {
         ApiClient.getService(Objects.requireNonNull(getContext())).getSearchBaiHat(keyword)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new DisposableObserver<List<BaiHatYeuThich>>() {
+                .subscribe(new Observer<List<BaiHatYeuThich>>() {
+                    @Override
+                    public void onSubscribe(@io.reactivex.rxjava3.annotations.NonNull Disposable d) {
+                        compositeDisposable.add(d);
+                    }
+
                     @Override
                     public void onNext(@io.reactivex.rxjava3.annotations.NonNull List<BaiHatYeuThich> baiHatYeuThiches) {
                         if (baiHatYeuThiches.size() > 0) {
-                            Log.d("TAGaaaa", "onNext: "+baiHatYeuThiches.size());
+                            Log.d("TAGaaaa", "onNext: " + baiHatYeuThiches.size());
                             mAdapter = new SearchBaiHatAdapter(getActivity(), baiHatYeuThiches);
                             binding.recycleviewTimKiem.setLayoutManager(new LinearLayoutManager(getActivity()));
                             binding.recycleviewTimKiem.setAdapter(mAdapter);
@@ -93,7 +103,7 @@ public class Fragment_TimKiem extends Fragment {
 
                     @Override
                     public void onError(@io.reactivex.rxjava3.annotations.NonNull Throwable e) {
-
+                        Log.d(TAG, "onError: " + e.getMessage());
                     }
 
                     @Override
@@ -101,5 +111,6 @@ public class Fragment_TimKiem extends Fragment {
 
                     }
                 });
+
     }
 }

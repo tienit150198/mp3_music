@@ -61,7 +61,7 @@ public interface DataService {
     Observable<List<BaiHatYeuThich>> getDataBaiHatTheoTheLoai(@Field("idtheloai") String idtheloai);
 
     @GET("chuDeAll.php")
-    Observable<List<ChuDe>> getAllChuDe();
+    Single<List<ChuDe>> getAllChuDe();
 
 
     @FormUrlEncoded
@@ -70,7 +70,7 @@ public interface DataService {
     Observable<List<TheLoai>> getTheLoaiTheoChuDe(@Field("idchude") String idchude);
 
     @GET("AlbumAll.php")
-    Observable<List<Album>> getAllAlbum();
+    Single<List<Album>> getAllAlbum();
 
     @FormUrlEncoded
     @POST("DanhSachBaiHatPlaylist.php")

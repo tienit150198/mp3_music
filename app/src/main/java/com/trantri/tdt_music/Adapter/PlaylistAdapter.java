@@ -14,7 +14,6 @@ import androidx.annotation.Nullable;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CenterInside;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
-import com.squareup.picasso.Picasso;
 import com.trantri.tdt_music.Model.Playlist;
 import com.trantri.tdt_music.R;
 
@@ -25,7 +24,8 @@ public class PlaylistAdapter extends ArrayAdapter<Playlist> {
         super(context, resource, objects);
 
     }
-    public class ViewHolder{
+
+    public class ViewHolder {
         TextView txtNamePlaylist;
         ImageView imgBackgroud, imgPlaylist;
     }
@@ -34,7 +34,7 @@ public class PlaylistAdapter extends ArrayAdapter<Playlist> {
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         ViewHolder mViewHolder = null;
-        if (convertView == null){
+        if (convertView == null) {
             LayoutInflater inflater = LayoutInflater.from(getContext());
 
             convertView = inflater.inflate(R.layout.item_playlist, null);
@@ -42,21 +42,20 @@ public class PlaylistAdapter extends ArrayAdapter<Playlist> {
             mViewHolder.txtNamePlaylist = convertView.findViewById(R.id.tv_NamePlaylist);
             mViewHolder.imgBackgroud = convertView.findViewById(R.id.img_backgroundPlaylist);
             mViewHolder.imgPlaylist = convertView.findViewById(R.id.img_Playlist);
-        convertView.setTag(mViewHolder);
-        }
-        else {
+            convertView.setTag(mViewHolder);
+        } else {
             mViewHolder = (ViewHolder) convertView.getTag();
 
         }
         Playlist playlist = getItem(position);
         Glide.with(getContext()).load(playlist.getHinhAnhPlaylist())
                 .transform(new CenterInside(), new RoundedCorners(30))
-                .placeholder(R.drawable.ic_place_holder)
+//                .placeholder(R.drawable.ic_place_holder)
                 .into(mViewHolder.imgBackgroud);
         Glide.with(getContext())
                 .load(playlist.getIcon())
                 .transform(new CenterInside(), new RoundedCorners(15))
-                .placeholder(R.drawable.ic_place_holder)
+//                .placeholder(R.drawable.ic_place_holder)
                 .into(mViewHolder.imgPlaylist);
         mViewHolder.txtNamePlaylist.setText(playlist.getTen());
         return convertView;

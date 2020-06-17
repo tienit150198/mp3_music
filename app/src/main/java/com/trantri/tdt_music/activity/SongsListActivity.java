@@ -85,24 +85,11 @@ public class SongsListActivity extends AppCompatActivity {
         Disposable disposable = ApiClient.getService(getApplication()).getDataBaiHatTheoAlbum(idAlbum)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribeWith(new DisposableObserver<List<BaiHatYeuThich>>() {
-                    @Override
-                    public void onNext(@NonNull List<BaiHatYeuThich> baiHatYeuThiches) {
-                        mAdapter = new DanhSachBaiHatAdapter(baiHatYeuThiches);
-                        binding.recycleDanhSachBH.setLayoutManager(new LinearLayoutManager(SongsListActivity.this));
-                        binding.recycleDanhSachBH.setAdapter(mAdapter);
-                        eventClick();
-                    }
-
-                    @Override
-                    public void onError(@NonNull Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onComplete() {
-
-                    }
+                .subscribe(baiHatYeuThiches -> {
+                    mAdapter = new DanhSachBaiHatAdapter(baiHatYeuThiches);
+                    binding.recycleDanhSachBH.setLayoutManager(new LinearLayoutManager(SongsListActivity.this));
+                    binding.recycleDanhSachBH.setAdapter(mAdapter);
+                    eventClick();
                 });
         compositeDisposable.add(disposable);
     }
@@ -111,24 +98,11 @@ public class SongsListActivity extends AppCompatActivity {
         Disposable disposable1 = ApiClient.getService(getApplicationContext()).getDataBaiHatTheoTheLoai(idtheloai)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribeWith(new DisposableObserver<List<BaiHatYeuThich>>() {
-                    @Override
-                    public void onNext(@NonNull List<BaiHatYeuThich> baiHatYeuThiches) {
-                        mAdapter = new DanhSachBaiHatAdapter(baiHatYeuThiches);
-                        binding.recycleDanhSachBH.setLayoutManager(new LinearLayoutManager(SongsListActivity.this));
-                        binding.recycleDanhSachBH.setAdapter(mAdapter);
-                        eventClick();
-                    }
-
-                    @Override
-                    public void onError(@NonNull Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onComplete() {
-
-                    }
+                .subscribe(baiHatYeuThiches -> {
+                    mAdapter = new DanhSachBaiHatAdapter(baiHatYeuThiches);
+                    binding.recycleDanhSachBH.setLayoutManager(new LinearLayoutManager(SongsListActivity.this));
+                    binding.recycleDanhSachBH.setAdapter(mAdapter);
+                    eventClick();
                 });
         compositeDisposable.add(disposable1);
     }
@@ -137,24 +111,11 @@ public class SongsListActivity extends AppCompatActivity {
         Disposable disposable2 = ApiClient.getService(getApplicationContext()).getDataBaiHatTheoPlaylist(idplaylist)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribeWith(new DisposableObserver<List<BaiHatYeuThich>>() {
-                    @Override
-                    public void onNext(@NonNull List<BaiHatYeuThich> baiHatYeuThiches) {
-                        mAdapter = new DanhSachBaiHatAdapter(baiHatYeuThiches);
-                        binding.recycleDanhSachBH.setLayoutManager(new LinearLayoutManager(SongsListActivity.this));
-                        binding.recycleDanhSachBH.setAdapter(mAdapter);
-                        eventClick();
-                    }
-
-                    @Override
-                    public void onError(@NonNull Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onComplete() {
-
-                    }
+                .subscribe(baiHatYeuThiches -> {
+                    mAdapter = new DanhSachBaiHatAdapter(baiHatYeuThiches);
+                    binding.recycleDanhSachBH.setLayoutManager(new LinearLayoutManager(SongsListActivity.this));
+                    binding.recycleDanhSachBH.setAdapter(mAdapter);
+                    eventClick();
                 });
         compositeDisposable.add(disposable2);
     }
@@ -182,24 +143,11 @@ public class SongsListActivity extends AppCompatActivity {
         Disposable disposable3 = ApiClient.getService(getApplicationContext()).getDataBaiHatTheoQuangCao(idquangcao)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribeWith(new DisposableObserver<List<BaiHatYeuThich>>() {
-                    @Override
-                    public void onNext(@NonNull List<BaiHatYeuThich> baiHatYeuThiches) {
-                        mAdapter = new DanhSachBaiHatAdapter(baiHatYeuThiches);
-                        binding.recycleDanhSachBH.setLayoutManager(new LinearLayoutManager(SongsListActivity.this));
-                        binding.recycleDanhSachBH.setAdapter(mAdapter);
-                        eventClick();
-                    }
-
-                    @Override
-                    public void onError(@NonNull Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onComplete() {
-
-                    }
+                .subscribe(baiHatYeuThiches -> {
+                    mAdapter = new DanhSachBaiHatAdapter(baiHatYeuThiches);
+                    binding.recycleDanhSachBH.setLayoutManager(new LinearLayoutManager(SongsListActivity.this));
+                    binding.recycleDanhSachBH.setAdapter(mAdapter);
+                    eventClick();
                 });
         compositeDisposable.add(disposable3);
     }

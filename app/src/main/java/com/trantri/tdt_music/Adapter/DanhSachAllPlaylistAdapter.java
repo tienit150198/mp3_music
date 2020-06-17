@@ -43,8 +43,8 @@ public class DanhSachAllPlaylistAdapter extends RecyclerView.Adapter<DanhSachAll
         // ??? getHinhAnhPlaylist = null
         Glide.with(mContext)
                 .load(list.get(position).getHinhNen())
-                .placeholder(R.drawable.ic_place_holder)
-                .error(R.drawable.ic_place_holder)
+//                .placeholder(R.drawable.ic_place_holder)
+//                .error(R.drawable.ic_place_holder)
                 .into(holder.binding.imgDanhsachallBH);
         holder.binding.tvTenCaSiPlaylist.setText(playlist.getTen());
     }

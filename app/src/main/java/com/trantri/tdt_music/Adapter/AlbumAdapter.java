@@ -44,8 +44,8 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.ViewHolder> 
         holder.binding.tvTenCaSiALbum.setText(album.getTenCaSiAlbum());
         Glide.with(mContext)
                 .load(album.getHinhAlbum())
-                .placeholder(R.drawable.ic_place_holder)
-                .error(R.drawable.ic_place_holder)
+//                .placeholder(R.drawable.ic_place_holder)
+//                .error(R.drawable.ic_place_holder)
                 .into(holder.binding.imgAlbum);
     }
 

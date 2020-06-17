@@ -1,6 +1,7 @@
 package com.trantri.tdt_music.activity;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -35,28 +36,19 @@ public class DanhSachAllChuDeActivity extends AppCompatActivity {
         GetDataChuDe();
     }
 
+    private static final String TAG = "LOG_DSAllChuDe";
     private void GetDataChuDe() {
         Disposable disposable = ApiClient.getService(getApplication()).getAllChuDe()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribeWith(new DisposableObserver<List<ChuDe>>() {
-                    @Override
-                    public void onNext(@NonNull List<ChuDe> chuDes) {
-                        mAdapter = new DanhSachAllChuDeAdapter(getApplicationContext(), chuDes);
-                        binding.recycleViewAllChuDe.setLayoutManager(new GridLayoutManager(DanhSachAllChuDeActivity.this, 1));
-                        binding.recycleViewAllChuDe.setAdapter(mAdapter);
+                .subscribe((chuDes, throwable) -> {
+                    if(throwable != null){
+                        Log.d(TAG, "GetDataChuDe: err");
+                        return;
                     }
-
-                    @Override
-                    public void onError(@NonNull Throwable e) {
-                        e.printStackTrace();
-                        Toast.makeText(DanhSachAllChuDeActivity.this, "Dữ liệu lỗi !", Toast.LENGTH_SHORT).show();
-                    }
-
-                    @Override
-                    public void onComplete() {
-
-                    }
+                    mAdapter = new DanhSachAllChuDeAdapter(getApplicationContext(), chuDes);
+                    binding.recycleViewAllChuDe.setLayoutManager(new GridLayoutManager(DanhSachAllChuDeActivity.this, 1));
+                    binding.recycleViewAllChuDe.setAdapter(mAdapter);
                 });
         compositeDisposable.add(disposable);
 

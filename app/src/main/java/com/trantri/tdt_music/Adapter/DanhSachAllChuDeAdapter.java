@@ -41,8 +41,8 @@ public class DanhSachAllChuDeAdapter extends RecyclerView.Adapter<DanhSachAllChu
 
         Glide.with(mContext)
                 .load(chuDe.getHinhChuDe())
-                .placeholder(R.drawable.ic_place_holder)
-                .error(R.drawable.ic_place_holder)
+//                .placeholder(R.drawable.ic_place_holder)
+//                .error(R.drawable.ic_place_holder)
                 .into(holder.binding.imgAllChuDe);
         holder.binding.imgAllChuDe.setOnClickListener(v -> {
             Intent intent = new Intent(mContext, DanhSachTheLoaiTheoChuDeActivity.class);

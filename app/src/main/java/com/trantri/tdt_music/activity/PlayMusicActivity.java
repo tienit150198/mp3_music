@@ -55,6 +55,8 @@ public class PlayMusicActivity extends AppCompatActivity {
 
     private Handler mHandler = null;
 
+    private static final String TAG = "LOG_PlayMusicActivity";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -76,26 +78,30 @@ public class PlayMusicActivity extends AppCompatActivity {
         //khởi tạo bài hát dầu tiên
 
         try {
-            mMediaPlayer = new MediaPlayer();
-            mMediaPlayer.setDataSource(this, Uri.parse(baiHatList.get(0).getLinkBaiHat()));
-            mMediaPlayer.prepareAsync();
-            mMediaPlayer.setOnPreparedListener(mp -> {
-                mp.start();
-                TimeSong();
-                UpdateTime();
+            if (baiHatList.get(0) != null) {
+                mMediaPlayer = new MediaPlayer();
+                mMediaPlayer.setDataSource(this, Uri.parse(baiHatList.get(0).getLinkBaiHat()));
+                mMediaPlayer.prepareAsync();
+                mMediaPlayer.setOnPreparedListener(mp -> {
+                    mp.start();
+                    TimeSong();
+                    UpdateTime();
 
-                if(mMediaPlayer.isPlaying()){
-                    binding.btnPlay.setImageResource( R.drawable.iconpause);
-                    EventBus.getDefault().post(new MessageEventBus(Constraint.EventBusAction.PAUSE, null));
-                }else{
-                    binding.btnPlay.setImageResource( R.drawable.ic_play);
-                    EventBus.getDefault().post(new MessageEventBus(Constraint.EventBusAction.PLAY, null));
-                }
+                    if (mMediaPlayer.isPlaying()) {
+                        binding.btnPlay.setImageResource(R.drawable.iconpause);
+                        EventBus.getDefault().post(new MessageEventBus(Constraint.EventBusAction.PLAY, baiHatList.get(0)));
+                    } else {
+                        Log.d(TAG, "onCreate: " + baiHatList.get(0));
+                        binding.btnPlay.setImageResource(R.drawable.ic_play);
+                        EventBus.getDefault().post(new MessageEventBus(Constraint.EventBusAction.PLAY, null));
+                    }
 
 //                binding.btnPlay.setImageResource(mMediaPlayer.isPlaying() ? R.drawable.iconpause :
 //                        R.drawable.iconplay);
-                
-            });
+
+                });
+            }
+
 
         } catch (IllegalArgumentException | IOException e) {
             Log.d("TAG", "erross" + e);
@@ -112,6 +118,7 @@ public class PlayMusicActivity extends AppCompatActivity {
             public void run() {
                 mViewPagerPlayMusicAdapter.getItem(1);
                 if (!baiHatList.isEmpty()) {
+
                     mFragmentCDMusic.Playnhac(baiHatList.get(position).getHinhBaiHat());
                     handler.removeCallbacks(this);
                 } else {
@@ -126,17 +133,16 @@ public class PlayMusicActivity extends AppCompatActivity {
             if (mMediaPlayer.isPlaying()) {
 
                 mMediaPlayer.pause();
+                binding.btnPlay.setImageResource(R.drawable.iconplay);
+                mFragmentCDMusic.stopAnimation();
                 EventBus.getDefault().post(new MessageEventBus(Constraint.EventBusAction.PAUSE, null));
 
-                binding.btnPlay.setImageResource(R.drawable.iconplay);
-                EventBus.getDefault().post(new MessageEventBus(Constraint.EventBusAction.PLAY, null));
-                mFragmentCDMusic.stopAnimation();
-
             } else {
+
                 mMediaPlayer.start();
-                EventBus.getDefault().post(new MessageEventBus(Constraint.EventBusAction.PLAY, null));
                 binding.btnPlay.setImageResource(R.drawable.iconpause);
                 mFragmentCDMusic.startAnimation();
+                EventBus.getDefault().post(new MessageEventBus(Constraint.EventBusAction.PLAY, baiHatList.get(position)));
             }
             TimeSong();
             UpdateTime();
@@ -196,7 +202,7 @@ public class PlayMusicActivity extends AppCompatActivity {
                 }
                 if (position < (baiHatList.size())) {
                     binding.btnPlay.setImageResource(R.drawable.iconpause);
-                    EventBus.getDefault().post(new MessageEventBus(Constraint.EventBusAction.PAUSE, null));
+                    EventBus.getDefault().post(new MessageEventBus(Constraint.EventBusAction.PLAY, baiHatList.get(position)));
 
                     position++;
 
@@ -242,7 +248,7 @@ public class PlayMusicActivity extends AppCompatActivity {
                 if (position < (baiHatList.size())) {
 
                     binding.btnPlay.setImageResource(R.drawable.iconpause);
-                    EventBus.getDefault().post(new MessageEventBus(Constraint.EventBusAction.PAUSE, null));
+                    EventBus.getDefault().post(new MessageEventBus(Constraint.EventBusAction.PLAY, baiHatList.get(position)));
 
                     position--;
 
@@ -291,6 +297,8 @@ public class PlayMusicActivity extends AppCompatActivity {
             if (intent.hasExtra("allbaihat")) {
                 baiHatList = intent.getParcelableArrayListExtra("allbaihat");
             }
+
+            Log.d(TAG, "GetDataFromItent: " + baiHatList.toString());
         }
 
     }
@@ -320,7 +328,7 @@ public class PlayMusicActivity extends AppCompatActivity {
             getSupportActionBar().setTitle(baiHatList.get(0).getTenBaiHat());
             new PlayMusic().execute(baiHatList.get(0).getLinkBaiHat());
             binding.btnPlay.setImageResource(R.drawable.iconpause);
-            EventBus.getDefault().post(new MessageEventBus(Constraint.EventBusAction.PAUSE, null));
+            EventBus.getDefault().post(new MessageEventBus(Constraint.EventBusAction.PLAY, baiHatList.get(0)));
 
         }
     }
@@ -355,7 +363,7 @@ public class PlayMusicActivity extends AppCompatActivity {
                         public void onCompletion(MediaPlayer mp) {
                             if (position < (baiHatList.size())) {
                                 binding.btnPlay.setImageResource(R.drawable.iconpause);
-                                EventBus.getDefault().post(new MessageEventBus(Constraint.EventBusAction.PAUSE, null));
+                                EventBus.getDefault().post(new MessageEventBus(Constraint.EventBusAction.PLAY, baiHatList.get(position)));
 
                                 position++;
                                 if (repeat) {
@@ -396,7 +404,7 @@ public class PlayMusicActivity extends AppCompatActivity {
                 if (next) {
                     if (position < (baiHatList.size())) {
                         binding.btnPlay.setImageResource(R.drawable.iconpause);
-                        EventBus.getDefault().post(new MessageEventBus(Constraint.EventBusAction.PAUSE, null));
+                        EventBus.getDefault().post(new MessageEventBus(Constraint.EventBusAction.PLAY, baiHatList.get(position)));
                         position++;
                         if (repeat) {
                             if (position == 0) {

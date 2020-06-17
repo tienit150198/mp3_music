@@ -44,24 +44,10 @@ public class DanhSachTheLoaiTheoChuDeActivity extends AppCompatActivity {
         Disposable disposable = ApiClient.getService(getApplication()).getTheLoaiTheoChuDe(idchude)
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.newThread())
-                .subscribeWith(new DisposableObserver<List<TheLoai>>() {
-                    @Override
-                    public void onNext(@NonNull List<TheLoai> theLoais) {
-                        mAdapter = new DanhSachTheLoaiTheoChuDeAdapter(theLoais);
-                        binding.myRecycleTheoChuDe.setLayoutManager(new GridLayoutManager(DanhSachTheLoaiTheoChuDeActivity.this, 2));
-                        binding.myRecycleTheoChuDe.setAdapter(mAdapter);
-                    }
-
-                    @Override
-                    public void onError(@NonNull Throwable e) {
-                        e.printStackTrace();
-                        Toast.makeText(DanhSachTheLoaiTheoChuDeActivity.this, "Dữ liệu lỗi!", Toast.LENGTH_SHORT).show();
-                    }
-
-                    @Override
-                    public void onComplete() {
-
-                    }
+                .subscribe(theLoais -> {
+                    mAdapter = new DanhSachTheLoaiTheoChuDeAdapter(theLoais);
+                    binding.myRecycleTheoChuDe.setLayoutManager(new GridLayoutManager(DanhSachTheLoaiTheoChuDeActivity.this, 2));
+                    binding.myRecycleTheoChuDe.setAdapter(mAdapter);
                 });
         compositeDisposable.add(disposable);
     }

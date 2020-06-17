@@ -41,7 +41,10 @@ public class VideoYoutubeAdapter extends RecyclerView.Adapter<VideoYoutubeAdapte
     public void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
         YoutubeMusic music = musicList.get(position);
         holder.binding.tvTitleVideo.setText(music.getmTitle());
-        Glide.with(context).load(music.getmThumbnail()).placeholder(R.drawable.ic_place_holder).into(holder.binding.imgThumbnail);
+        Glide.with(context)
+                .load(music.getmThumbnail())
+//                .placeholder(R.drawable.ic_place_holder)
+                .into(holder.binding.imgThumbnail);
         holder.itemView.setOnClickListener(v -> mListener.setOnClickListener(v, holder.getAdapterPosition()));
     }
 

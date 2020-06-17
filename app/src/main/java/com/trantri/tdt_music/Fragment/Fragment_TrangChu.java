@@ -16,21 +16,15 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.mancj.materialsearchbar.MaterialSearchBar;
 import com.trantri.tdt_music.Adapter.SearchBaiHatAdapter;
-import com.trantri.tdt_music.Model.BaiHatYeuThich;
 import com.trantri.tdt_music.R;
 import com.trantri.tdt_music.Service.ApiClient;
 import com.trantri.tdt_music.databinding.FragmentTrangChuBinding;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.ListIterator;
 import java.util.Objects;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
-import io.reactivex.rxjava3.observers.DisposableObserver;
+import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public class Fragment_TrangChu extends Fragment {
@@ -38,6 +32,7 @@ public class Fragment_TrangChu extends Fragment {
     ArrayList<String> list;
     SearchBaiHatAdapter mAdapter;
 
+    private CompositeDisposable compositeDisposable = new CompositeDisposable();
 
     @Nullable
     @Override
@@ -45,6 +40,12 @@ public class Fragment_TrangChu extends Fragment {
         binding = FragmentTrangChuBinding.inflate(getLayoutInflater());
         searchView();
         return binding.getRoot();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        compositeDisposable.clear();
     }
 
     private void searchView() {
@@ -85,40 +86,29 @@ public class Fragment_TrangChu extends Fragment {
     }
 
     private void SearchBaiHat(String keyword) {
-        ApiClient.getService(Objects.requireNonNull(getContext())).getSearchBaiHat(keyword)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new DisposableObserver<List<BaiHatYeuThich>>() {
-                    @Override
-                    public void onNext(@io.reactivex.rxjava3.annotations.NonNull List<BaiHatYeuThich> baiHatYeuThiches) {
-                        if (baiHatYeuThiches.size() > 0) {
-                            Log.d("TAGaaaa", "onNext: " + baiHatYeuThiches.size());
-                            mAdapter = new SearchBaiHatAdapter(getActivity(), baiHatYeuThiches);
-                            binding.recyclerViewSearch.setLayoutManager(new LinearLayoutManager(getActivity()));
-                            binding.recyclerViewSearch.setAdapter(mAdapter);
-                            binding.recyclerViewSearch.setVisibility(View.GONE);
-                            binding.recyclerViewSearch.setVisibility(View.VISIBLE);
-                            mAdapter.notifyDataSetChanged();
-                        } else {
-                            binding.recyclerViewSearch.setVisibility(View.GONE);
+        compositeDisposable.add(
+                ApiClient.getService(Objects.requireNonNull(getContext())).getSearchBaiHat(keyword)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(baiHatYeuThiches -> {
+                            if (baiHatYeuThiches.size() > 0) {
+                                Log.d("TAGaaaa", "onNext: " + baiHatYeuThiches.size());
+                                mAdapter = new SearchBaiHatAdapter(getActivity(), baiHatYeuThiches);
+                                binding.recyclerViewSearch.setLayoutManager(new LinearLayoutManager(getActivity()));
+                                binding.recyclerViewSearch.setAdapter(mAdapter);
+                                binding.recyclerViewSearch.setVisibility(View.GONE);
+                                binding.recyclerViewSearch.setVisibility(View.VISIBLE);
+                                mAdapter.notifyDataSetChanged();
+                            } else {
+                                binding.recyclerViewSearch.setVisibility(View.GONE);
 //                            binding.recyclerViewSearch.setVisibility(View.VISIBLE);
 //                            mAdapter.notifyDataSetChanged();
-                            Toast.makeText(getContext(), "Không có bài hát tương ứng!", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getContext(), "Không có bài hát tương ứng!", Toast.LENGTH_SHORT).show();
 
-                        }
-                    }
+                            }
+                        })
+        );
 
-                    @Override
-                    public void onError(@io.reactivex.rxjava3.annotations.NonNull Throwable e) {
-                        e.printStackTrace();
-
-                    }
-
-                    @Override
-                    public void onComplete() {
-
-                    }
-                });
         binding.searchMusic.addTextChangeListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {

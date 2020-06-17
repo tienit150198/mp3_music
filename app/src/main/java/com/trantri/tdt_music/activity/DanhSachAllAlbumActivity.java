@@ -51,23 +51,10 @@ public class DanhSachAllAlbumActivity extends AppCompatActivity {
         Disposable disposable = ApiClient.getService(getApplicationContext()).getAllAlbum()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribeWith(new DisposableObserver<List<Album>>() {
-                    @Override
-                    public void onNext(@NonNull List<Album> albums) {
-                        mDanhSachAllAlbumAdapter = new DanhSachAllAlbumAdapter(albums);
-                        binding.recycleAllAlbum.setLayoutManager(new GridLayoutManager(DanhSachAllAlbumActivity.this, 2));
-                        binding.recycleAllAlbum.setAdapter(mDanhSachAllAlbumAdapter);
-                    }
-
-                    @Override
-                    public void onError(@NonNull Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onComplete() {
-
-                    }
+                .subscribe(albums -> {
+                    mDanhSachAllAlbumAdapter = new DanhSachAllAlbumAdapter(albums);
+                    binding.recycleAllAlbum.setLayoutManager(new GridLayoutManager(DanhSachAllAlbumActivity.this, 2));
+                    binding.recycleAllAlbum.setAdapter(mDanhSachAllAlbumAdapter);
                 });
         compositeDisposable.add(disposable);
 

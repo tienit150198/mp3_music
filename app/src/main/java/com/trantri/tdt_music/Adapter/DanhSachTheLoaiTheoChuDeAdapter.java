@@ -39,8 +39,8 @@ public class DanhSachTheLoaiTheoChuDeAdapter extends RecyclerView.Adapter<DanhSa
         TheLoai theLoai = mTheLoais.get(position);
         Glide.with(holder.binding.imgTheloaitheochude)
                 .load(theLoai.getHinhTheLoai())
-                .placeholder(R.drawable.ic_place_holder)
-                .error(R.drawable.ic_place_holder)
+//                .placeholder(R.drawable.ic_place_holder)
+//                .error(R.drawable.ic_place_holder)
                 .into(holder.binding.imgTheloaitheochude);
         holder.binding.tvTheloaitheochude.setText(theLoai.getTenTheLoai());
     }

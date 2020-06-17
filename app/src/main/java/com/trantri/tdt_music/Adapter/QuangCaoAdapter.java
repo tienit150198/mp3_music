@@ -57,12 +57,12 @@ public class QuangCaoAdapter extends PagerAdapter {
         Glide.with(mContext).load(mListQC.get(position)
                 .getHinhanh())
                 .transform(new CenterInside(), new RoundedCorners(30))
-                .placeholder(R.drawable.ic_place_holder)
+//                .placeholder(R.drawable.ic_place_holder)
                 .into(binding.imgBackgroundQC);
         Glide.with(mContext).load(mListQC.get(position)
                 .getHinhbaihat())
                 .transform(new CenterInside(), new RoundedCorners(15))
-                .placeholder(R.drawable.ic_place_holder)
+//                .placeholder(R.drawable.ic_place_holder)
                 .into(binding.imgQC);
         binding.tvTitleBanner.setText(mListQC.get(position).getTenbaihat());
         binding.tvMieutaBH.setText(mListQC.get(position).getNoidung());
