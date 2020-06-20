@@ -12,4 +12,10 @@ public class Constraint {
         String PREVIOUS = "PREVIOUS";
     }
 
+    public interface YoutubeVideo{
+        String VIDEO_ID = "VIDEO_ID";
+    }
+    public interface SharedPref{
+        String TIME_VIDEO = "TIME_VIDEO";
+    }
 }

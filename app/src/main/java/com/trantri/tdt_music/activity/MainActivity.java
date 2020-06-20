@@ -52,6 +52,9 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         mViewPagerAdapter.addFragment(new FragmentPlaylist(), "Cá Nhân");
 
         binding.viewpager.setAdapter(mViewPagerAdapter);
+
+        binding.viewpager.setCurrentItem(0);
+
     }
 
     @Override

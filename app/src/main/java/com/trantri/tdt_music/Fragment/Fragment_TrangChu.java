@@ -109,6 +109,7 @@ public class Fragment_TrangChu extends Fragment {
                         })
         );
 
+        binding.searchMusic.setSpeechMode(false);
         binding.searchMusic.addTextChangeListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -117,14 +118,10 @@ public class Fragment_TrangChu extends Fragment {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-
                 if (count == 0) {
-//                    mAdapter.notifyDataSetChanged();
-
                     binding.recyclerViewSearch.setVisibility(View.GONE);
 
                 }
-//                mAdapter.notifyDataSetChanged();
             }
 
             @Override
