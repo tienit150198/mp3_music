@@ -2,6 +2,7 @@ package com.trantri.tdt_music.Fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.mancj.materialsearchbar.MaterialSearchBar;
@@ -20,6 +22,8 @@ import com.trantri.tdt_music.data.Constraint;
 import com.trantri.tdt_music.databinding.FragmentMvBinding;
 import com.trantri.tdt_music.utils.NetworkUtils;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
@@ -47,8 +51,16 @@ public class FragmentMV extends Fragment implements YoutubeAdapter.OnItemClickLi
     }
 
     private void searchData() {
+        List<String> list = new ArrayList<>();
+        list.add("sơn tùng");
+        list.add("đen vâu");
+        list.add("min");
+        list.add("Official MV Việt Nam");
+        list.add("trấn thành");
+
         binding.searchMv.setSuggestionsEnabled(true);
         binding.searchMv.setMaxSuggestionCount(5);
+        binding.searchMv.setLastSuggestions(list);
 
         binding.searchMv.setSpeechMode(false);
 
@@ -68,7 +80,8 @@ public class FragmentMV extends Fragment implements YoutubeAdapter.OnItemClickLi
                                 .observeOn(AndroidSchedulers.mainThread())
                                 .subscribe((youtube, throwable) -> {
                                     if (throwable != null) {
-                                        if (NetworkUtils.isOnline(Objects.requireNonNull(getContext()))) {
+                                        if (!NetworkUtils.isOnline(Objects.requireNonNull(getContext()))) {
+                                            Log.d(TAG, "onSearchConfirmed: ");
                                             Toast.makeText(getContext(), "Please check you wifi", Toast.LENGTH_SHORT).show();
                                         } else {
                                             Toast.makeText(getContext(), "Connected fail, please re-connect!", Toast.LENGTH_SHORT).show();
@@ -93,24 +106,24 @@ public class FragmentMV extends Fragment implements YoutubeAdapter.OnItemClickLi
 
         binding.recyclerMv.setAdapter(mYoutubeAdapter);
         binding.recyclerMv.setHasFixedSize(true);
-        binding.recyclerMv.setLayoutManager(new LinearLayoutManager(getContext()));
+        binding.recyclerMv.setLayoutManager(new GridLayoutManager(getContext(), 2));
     }
 
     private static final String TAG = "LOG_FragmentMV";
 
     private void initData() {
         compositeDisposable.add(
-                ApiMvClient.getService().queryMvYoutube("mv")
+                ApiMvClient.getService().queryMvYoutube("Official MV Việt nam")
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe((youtube, throwable) -> {
                             if (throwable != null) {
-                                if (NetworkUtils.isOnline(Objects.requireNonNull(getContext()))) {
+                                if (!NetworkUtils.isOnline(Objects.requireNonNull(getContext()))) {
                                     Toast.makeText(getContext(), "Please check you wifi", Toast.LENGTH_SHORT).show();
-                                } else {
-                                    Toast.makeText(getContext(), "Connected fail, please re-connect!", Toast.LENGTH_SHORT).show();
                                 }
                                 return;
+                            }else {
+                                Toast.makeText(getContext(), "Connected fail, please re-connect!", Toast.LENGTH_SHORT).show();
                             }
                             mYoutubeAdapter.submitList(youtube.getItems());
                         })

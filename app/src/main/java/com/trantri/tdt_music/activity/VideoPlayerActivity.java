@@ -40,9 +40,9 @@ public class VideoPlayerActivity extends YouTubeBaseActivity implements YouTubeP
         if (NetworkUtils.isOnline(this)) {
             if (mCurrentVideoId != null) {
                 binding.youtubePlayer.initialize(mCurrentVideoId, this);
-
             }
         } else {
+            Log.d(TAG, "onCreate: ");
             Toast.makeText(this, "Please check your wifi", Toast.LENGTH_SHORT).show();
         }
     }

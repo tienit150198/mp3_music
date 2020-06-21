@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@drawable/custom_screen"
     android:orientation="vertical"
     android:weightSum="10"
@@ -19,14 +20,14 @@
         android:id="@+id/viewPagerPlayNhac"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="8">
+        android:layout_weight="7.5">
 
     </androidx.viewpager.widget.ViewPager>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="2"
+        android:layout_weight="2.5"
         android:orientation="vertical">
         <LinearLayout
             android:layout_width="match_parent"
@@ -63,59 +64,125 @@
                 android:textStyle="bold" />
         </LinearLayout>
 
-        <LinearLayout
-            android:layout_marginLeft="10dp"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
             android:layout_marginTop="10dp"
-            android:gravity="center"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp">
 
             <ImageButton
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                android:layout_gravity="center_vertical|start"
                 android:id="@+id/btn_random"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_marginRight="15dp"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
                 android:background="@android:color/transparent"
                 android:scaleType="fitXY"
-                android:src="@drawable/iconsuffle" />
+                android:src="@drawable/ic_random"
+                android:tint="@android:color/white" />
 
             <ImageButton
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toEndOf="@id/btn_random"
+                app:layout_constraintEnd_toStartOf="@id/btn_play"
                 android:id="@+id/btn_back"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
                 android:layout_marginRight="15dp"
                 android:background="@android:color/transparent"
                 android:scaleType="fitXY"
-                android:src="@drawable/iconpreview" />
+                android:src="@drawable/iconpreview"
+                android:layout_marginEnd="15dp" />
 
             <ImageButton
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toEndOf="parent"
+                app:layout_constraintEnd_toStartOf="parent"
                 android:id="@+id/btn_play"
-                android:layout_width="70dp"
-                android:layout_height="70dp"
-                android:layout_marginRight="15dp"
-                android:background="@android:color/transparent"
-                android:scaleType="fitXY"
-                android:src="@drawable/iconplay" />
-
-            <ImageButton
-                android:id="@+id/btn_next"
                 android:layout_width="60dp"
                 android:layout_height="60dp"
                 android:layout_marginRight="15dp"
                 android:background="@android:color/transparent"
                 android:scaleType="fitXY"
-                android:src="@drawable/iconnext" />
+                android:src="@drawable/ic_play_music"
+                android:tint="@android:color/white"
+                android:layout_marginEnd="15dp" />
 
             <ImageButton
-                android:id="@+id/btn_lapLai"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toEndOf="@id/btn_play"
+                app:layout_constraintEnd_toStartOf="@id/btn_lapLai"
+                android:id="@+id/btn_next"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
                 android:layout_marginRight="15dp"
                 android:background="@android:color/transparent"
                 android:scaleType="fitXY"
-                android:src="@drawable/iconrepeat" />
-        </LinearLayout>
+                android:src="@drawable/iconnext"
+                android:layout_marginEnd="15dp" />
+
+            <ImageButton
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:id="@+id/btn_lapLai"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_marginRight="15dp"
+                android:background="@android:color/transparent"
+                android:scaleType="fitXY"
+                android:src="@drawable/ic_repeat"
+                android:tint="@android:color/white"
+                android:layout_marginEnd="15dp" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <RelativeLayout
+            android:layout_marginTop="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:layout_marginLeft="10dp"
+                android:src="@drawable/ic_favorite"
+                android:tint="@android:color/white"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:layout_alignParentStart="true" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_gravity="center_vertical|end"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_alignParentEnd="true">
+
+                <TextView
+                    android:text="Danh sách phát"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@android:color/white"
+                    android:drawableEnd="@drawable/ic_list_music"
+                    android:drawablePadding="10dp"
+                    android:drawableTint="@android:color/white"
+                    android:drawableRight="@drawable/ic_list_music" />
+
+            </LinearLayout>
+
+        </RelativeLayout>
     </LinearLayout>
 </LinearLayout>

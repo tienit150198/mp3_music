@@ -7,21 +7,22 @@
 
     <com.mancj.materialsearchbar.MaterialSearchBar
         android:id="@+id/search_mv"
-        style="@style/MaterialSearchBarDark"
+        style="@style/MaterialSearchBarLight"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="5dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:mt_backIconDrawable="@drawable/ic_baseline_arrow_back_24"
-        app:mt_hint="Nhập bài hát cần tìm"
-        app:mt_hintColor="@android:color/white"
-        app:mt_textColor="@color/white"
+        app:mt_backIconTint="@android:color/black"
+        app:mt_hint="Nhập từ khóa cần tìm"
+        app:mt_hintColor="@android:color/black"
+        app:mt_textColor="@android:color/black"
         app:mt_maxSuggestionsCount="5"
         app:mt_placeholder="Nhập bài hát cần tìm"
         app:mt_roundedSearchBarEnabled="true"
         app:mt_searchIconDrawable="@drawable/ic_search"
-        app:mt_searchIconTint="@android:color/white"
+        app:mt_searchIconTint="@android:color/black"
         app:mt_speechMode="true" />
 
       <androidx.recyclerview.widget.RecyclerView

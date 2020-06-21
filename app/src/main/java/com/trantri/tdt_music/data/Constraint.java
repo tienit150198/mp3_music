@@ -8,8 +8,15 @@ public class Constraint {
     public interface EventBusAction {
         String PLAY = "PLAY";
         String PAUSE = "PAUSE";
+        String RESUME = "RESUME";
         String NEXT = "NEXT";
         String PREVIOUS = "PREVIOUS";
+
+        String COMPLETED = "COMPLETED";
+        String PREPARED = "PREPARED";
+        String LOOP = "LOOP";
+        String SUFFIX = "SUFFIX";
+        String SEEK = "SEEK";
     }
 
     public interface YoutubeVideo{

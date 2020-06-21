@@ -42,7 +42,7 @@ public class Fragment_QuangCao extends Fragment {
     private int item;
 
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
-    FragmentQuangcaoBinding binding;
+    private FragmentQuangcaoBinding binding;
 
     @Nullable
     @Override

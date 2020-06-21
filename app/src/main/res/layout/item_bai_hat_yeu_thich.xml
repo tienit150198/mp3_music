@@ -19,7 +19,7 @@
         android:layout_toRightOf="@id/img_baihatyeuthich"
         android:maxLines="2"
         android:text="Khi Phải Xa Em"
-        android:textColor="@android:color/white"
+        android:textColor="@android:color/black"
         android:textSize="18sp"
         android:textStyle="bold" />
 
@@ -33,9 +33,11 @@
         android:layout_toRightOf="@id/img_baihatyeuthich"
         android:singleLine="true"
         android:text="Trần Đình Trí"
-        android:textColor="@android:color/white"
+        android:textColor="@android:color/black"
         android:textSize="15sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:layout_marginStart="5dp"
+        android:layout_toEndOf="@id/img_baihatyeuthich" />
 
     <ImageView
         android:id="@+id/img_luotthich"
@@ -45,7 +47,6 @@
         android:layout_centerVertical="true"
         android:layout_marginRight="10dp"
         android:src="@drawable/iconlove"
-        android:tint="@android:color/white"
         android:layout_alignParentEnd="true"
         android:layout_marginEnd="10dp" />
 

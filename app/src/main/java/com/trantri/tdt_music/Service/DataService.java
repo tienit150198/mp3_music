@@ -27,8 +27,8 @@ import retrofit2.http.Query;
 // dùng để gửi lên những phương thức để chúng ta tương tác phía server và sau khi server kết nối đc rồi
 // nó sẽ trả dữ liệu về cho thằng này ==> thằng này dùng để gửi phướng thức và dữ liệu từ phía server về.
 public interface DataService {
-
-    @GET("search?part=snippet&type=video&key=AIzaSyBE-8j4c1hviqwENsua7mKJAWSPsGNDPME")
+    // key = AIzaSyDo4nvFKFMv8zexPTCRu4XKgBBNBU_DNrw
+    @GET("search?part=snippet&type=video&maxResults=10&key=AIzaSyDo4nvFKFMv8zexPTCRu4XKgBBNBU_DNrw")
     Single<Youtube> queryMvYoutube(@Query("q") String q);
 
     @GET("songbanner.php")
@@ -72,7 +72,7 @@ public interface DataService {
     @FormUrlEncoded
         // tương tác và gửi data lên và nhận về
     @POST("TheLoaiTheoChuDe.php")
-    Observable<List<TheLoai>> getTheLoaiTheoChuDe(@Field("idchude") String idchude);
+    Observable<List<TheLoai>> getTheLoaiTheoChuDe(@Field("idchude1") String idchude);
 
     @GET("AlbumAll.php")
     Single<List<Album>> getAllAlbum();

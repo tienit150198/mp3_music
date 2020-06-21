@@ -3,41 +3,32 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="20dp">
+    android:layout_marginTop="5dp">
 
     <ImageView
         android:id="@+id/imgThumbnail"
-        android:layout_width="320dp"
-        android:layout_height="180dp"
+        android:layout_width="173dp"
+        android:layout_height="130dp"
         android:contentDescription="thumbnail of mv"
         android:src="@drawable/demo_mv"
+        android:scaleType="fitCenter"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <RelativeLayout
-        android:layout_width="320dp"
-        android:layout_height="50dp"
-        android:background="#66000000"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
-
-        <TextView
-            android:id="@+id/tvNameMv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginStart="5dp"
-            android:layout_marginLeft="5dp"
-            android:layout_marginTop="5dp"
-            android:ellipsize="end"
-            android:fontFamily="sans-serif"
-            android:maxLines="2"
-            android:text="ERIK - 'Em Không Sai, Chúng Ta Sai' (Official MV)"
-            android:textColor="#fff"
-            android:textSize="16sp" />
-
-    </RelativeLayout>
+    <TextView
+        app:layout_constraintStart_toStartOf="@id/imgThumbnail"
+        app:layout_constraintEnd_toEndOf="@id/imgThumbnail"
+        app:layout_constraintTop_toBottomOf="@id/imgThumbnail"
+        android:id="@+id/tvNameMv"
+        android:layout_width="173dp"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:ellipsize="end"
+        android:fontFamily="sans-serif-medium"
+        android:maxLines="2"
+        android:text="ERIK - 'Em Không Sai, Chúng Ta Sai' (Official MV)"
+        android:textColor="@android:color/black"
+        android:textSize="14sp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

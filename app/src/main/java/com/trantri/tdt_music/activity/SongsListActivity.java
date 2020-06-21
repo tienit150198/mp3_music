@@ -8,6 +8,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.os.StrictMode;
+import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -86,7 +87,8 @@ public class SongsListActivity extends AppCompatActivity {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(baiHatYeuThiches -> {
-                    mAdapter = new DanhSachBaiHatAdapter(baiHatYeuThiches);
+                    listBaiHat = baiHatYeuThiches;
+                    mAdapter = new DanhSachBaiHatAdapter(listBaiHat);
                     binding.recycleDanhSachBH.setLayoutManager(new LinearLayoutManager(SongsListActivity.this));
                     binding.recycleDanhSachBH.setAdapter(mAdapter);
                     eventClick();
@@ -99,7 +101,8 @@ public class SongsListActivity extends AppCompatActivity {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(baiHatYeuThiches -> {
-                    mAdapter = new DanhSachBaiHatAdapter(baiHatYeuThiches);
+                    listBaiHat = baiHatYeuThiches;
+                    mAdapter = new DanhSachBaiHatAdapter(listBaiHat);
                     binding.recycleDanhSachBH.setLayoutManager(new LinearLayoutManager(SongsListActivity.this));
                     binding.recycleDanhSachBH.setAdapter(mAdapter);
                     eventClick();
@@ -112,7 +115,8 @@ public class SongsListActivity extends AppCompatActivity {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(baiHatYeuThiches -> {
-                    mAdapter = new DanhSachBaiHatAdapter(baiHatYeuThiches);
+                    listBaiHat = baiHatYeuThiches;
+                    mAdapter = new DanhSachBaiHatAdapter(listBaiHat);
                     binding.recycleDanhSachBH.setLayoutManager(new LinearLayoutManager(SongsListActivity.this));
                     binding.recycleDanhSachBH.setAdapter(mAdapter);
                     eventClick();
@@ -144,7 +148,8 @@ public class SongsListActivity extends AppCompatActivity {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(baiHatYeuThiches -> {
-                    mAdapter = new DanhSachBaiHatAdapter(baiHatYeuThiches);
+                    listBaiHat = baiHatYeuThiches;
+                    mAdapter = new DanhSachBaiHatAdapter(listBaiHat);
                     binding.recycleDanhSachBH.setLayoutManager(new LinearLayoutManager(SongsListActivity.this));
                     binding.recycleDanhSachBH.setAdapter(mAdapter);
                     eventClick();
@@ -189,10 +194,12 @@ public class SongsListActivity extends AppCompatActivity {
         }
     }
 
+    private static final String TAG = "xxxx SONGLISTACTIVITY";
     private void eventClick() {
         binding.btnNghetatca.setEnabled(true);
         binding.btnNghetatca.setOnClickListener(v -> {
             Intent intent = new Intent(SongsListActivity.this, PlayMusicActivity.class);
+            Log.d(TAG, "eventClick: " + listBaiHat.toString());
             intent.putParcelableArrayListExtra("allbaihat", (ArrayList<? extends Parcelable>) listBaiHat);
             startActivity(intent);
         });

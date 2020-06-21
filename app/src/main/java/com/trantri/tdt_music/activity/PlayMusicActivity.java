@@ -2,15 +2,13 @@ package com.trantri.tdt_music.activity;
 
 import android.content.Intent;
 import android.graphics.Color;
-import android.media.AudioManager;
 import android.media.MediaPlayer;
-import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.StrictMode;
 import android.util.Log;
 import android.widget.SeekBar;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -19,31 +17,42 @@ import com.trantri.tdt_music.Fragment.FragmentCDMusic;
 import com.trantri.tdt_music.Fragment.FragmentPlayDanhSachBaiHat;
 import com.trantri.tdt_music.Model.BaiHatYeuThich;
 import com.trantri.tdt_music.Model.MessageEventBus;
+import com.trantri.tdt_music.Model.music.InformationMusic;
 import com.trantri.tdt_music.R;
 import com.trantri.tdt_music.data.Constraint;
 import com.trantri.tdt_music.databinding.ActivityPlayMusicBinding;
 
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Objects;
-import java.util.Random;
+
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.disposables.CompositeDisposable;
 
 public class PlayMusicActivity extends AppCompatActivity {
 
     public static ArrayList<BaiHatYeuThich> baiHatList = new ArrayList<>();
 
     public static ViewPagerPlayMusicAdapter mViewPagerPlayMusicAdapter;
-    ActivityPlayMusicBinding binding;
+    private ActivityPlayMusicBinding binding;
 
-    FragmentCDMusic mFragmentCDMusic;
+    private FragmentCDMusic mFragmentCDMusic;
 
-    FragmentPlayDanhSachBaiHat mFragmentPlayDanhSachBaiHat;
+    private FragmentPlayDanhSachBaiHat mFragmentPlayDanhSachBaiHat;
 
-    MediaPlayer mMediaPlayer;
+    private MediaPlayer mMediaPlayer;
+
+
+    //TODO: tran tien
+    private int mCurrentTime = 0;
+    private int mCurrentPosition = 0;
+    private boolean isPlay = false;
+
+    private boolean isLoop = false;
+    private boolean isSuffix = false;
 
     int position = 0;
 
@@ -55,13 +64,17 @@ public class PlayMusicActivity extends AppCompatActivity {
 
     private Handler mHandler = null;
 
-    private static final String TAG = "LOG_PlayMusicActivity";
+    private static final String TAG = "xxxx PlayMusicActivity";
+
+    private CompositeDisposable compositeDisposable = new CompositeDisposable();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityPlayMusicBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+        EventBus.getDefault().register(this);
         //
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
@@ -69,47 +82,97 @@ public class PlayMusicActivity extends AppCompatActivity {
 //khởi tạo handler
         mHandler = new Handler();
 
-        init();
+        GetDataFromItent();
 
+        Intent intentService = new Intent(this, PlayMusicService.class);
+        intentService.putParcelableArrayListExtra("allbaihat", baiHatList);
+        startService(intentService);
+
+        init();
         eventClick();
 
-        GetDataFromItent();
+        compositeDisposable.add(
+                PlayMusicService.getCurrentTime()
+                        .subscribeOn(AndroidSchedulers.mainThread())
+                        .subscribe(integer -> mCurrentTime = integer)
+        );
+
 
         //khởi tạo bài hát dầu tiên
 
-        try {
-            if (baiHatList.get(0) != null) {
-                mMediaPlayer = new MediaPlayer();
-                mMediaPlayer.setDataSource(this, Uri.parse(baiHatList.get(0).getLinkBaiHat()));
-                mMediaPlayer.prepareAsync();
-                mMediaPlayer.setOnPreparedListener(mp -> {
-                    mp.start();
-                    TimeSong();
-                    UpdateTime();
-
-                    if (mMediaPlayer.isPlaying()) {
-                        binding.btnPlay.setImageResource(R.drawable.iconpause);
-                        EventBus.getDefault().post(new MessageEventBus(Constraint.EventBusAction.PLAY, baiHatList.get(0)));
-                    } else {
-                        Log.d(TAG, "onCreate: " + baiHatList.get(0));
-                        binding.btnPlay.setImageResource(R.drawable.ic_play);
-                        EventBus.getDefault().post(new MessageEventBus(Constraint.EventBusAction.PLAY, null));
-                    }
-
-//                binding.btnPlay.setImageResource(mMediaPlayer.isPlaying() ? R.drawable.iconpause :
-//                        R.drawable.iconplay);
-
-                });
-            }
-
-
-        } catch (IllegalArgumentException | IOException e) {
-            Log.d("TAG", "erross" + e);
-        }
         //set title action bar
-        Objects.requireNonNull(getSupportActionBar()).setTitle(baiHatList.get(0).getTenBaiHat());
     }
 
+    @Subscribe
+    public void onEvent(MessageEventBus messageEventBus) {
+        switch (messageEventBus.message) {
+            case Constraint
+                    .EventBusAction.PLAY:
+                if (messageEventBus.action != null) {
+                    Log.d(TAG, "onEvent: " + messageEventBus.action.toString());
+                    mCurrentPosition = ((InformationMusic) messageEventBus.action).getPosition();
+                }
+
+                playMusic();
+                break;
+            case Constraint
+                    .EventBusAction.PAUSE:
+                pauseMusic();
+                break;
+            case Constraint
+                    .EventBusAction.RESUME:
+                resumeMusic();
+                break;
+            case Constraint.EventBusAction.PREVIOUS:
+                if (messageEventBus.action == Boolean.FALSE) {
+                    Toast.makeText(this, "This is fist music", Toast.LENGTH_SHORT).show();
+                }
+                break;
+            case Constraint.EventBusAction.NEXT:
+                if (messageEventBus.action == Boolean.FALSE) {
+                    Toast.makeText(this, "This is fist last", Toast.LENGTH_SHORT).show();
+                }
+                break;
+            case Constraint.EventBusAction.PREPARED:
+                if (messageEventBus.action != null) {
+                    InformationMusic mInformationMusic = (InformationMusic) messageEventBus.action;
+                    TimeSong(mInformationMusic.getDurationTime());
+                    UpdateTime();
+
+                    Objects.requireNonNull(getSupportActionBar()).setTitle(baiHatList.get(mInformationMusic.getPosition()).getTenBaiHat());
+                }
+                break;
+
+        }
+    }
+
+    private void resumeMusic() {
+        binding.btnPlay.setImageResource(R.drawable.iconpause);
+        isPlay = true;
+    }
+
+    private void playMusic() {
+        isPlay = true;
+        Objects.requireNonNull(getSupportActionBar()).setTitle(baiHatList.get(mCurrentPosition).getTenBaiHat());
+        binding.btnPlay.setImageResource(R.drawable.iconpause);
+
+//        mFragmentCDMusic.Playnhac(baiHatList.get(mCurrentPosition).getHinhBaiHat());
+        // start Animation
+        mFragmentCDMusic.startAnimation();
+    }
+
+    private void pauseMusic() {
+        isPlay = false;
+        binding.btnPlay.setImageResource(R.drawable.iconplay);
+        mFragmentCDMusic.stopAnimation();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        compositeDisposable.clear();
+        EventBus.getDefault().unregister(this);
+    }
 
     private void eventClick() {
         final Handler handler = new Handler();
@@ -119,7 +182,7 @@ public class PlayMusicActivity extends AppCompatActivity {
                 mViewPagerPlayMusicAdapter.getItem(1);
                 if (!baiHatList.isEmpty()) {
 
-                    mFragmentCDMusic.Playnhac(baiHatList.get(position).getHinhBaiHat());
+//                    mFragmentCDMusic.Playnhac(baiHatList.get(mCurrentPosition).getHinhBaiHat());
                     handler.removeCallbacks(this);
                 } else {
                     handler.postDelayed(this, 300);
@@ -129,57 +192,51 @@ public class PlayMusicActivity extends AppCompatActivity {
         }, 500);
 
         binding.btnPlay.setOnClickListener(v -> {
-
-            if (mMediaPlayer.isPlaying()) {
-
-                mMediaPlayer.pause();
-                binding.btnPlay.setImageResource(R.drawable.iconplay);
-                mFragmentCDMusic.stopAnimation();
+            if (isPlay) {
                 EventBus.getDefault().post(new MessageEventBus(Constraint.EventBusAction.PAUSE, null));
-
             } else {
-
-                mMediaPlayer.start();
-                binding.btnPlay.setImageResource(R.drawable.iconpause);
-                mFragmentCDMusic.startAnimation();
-                EventBus.getDefault().post(new MessageEventBus(Constraint.EventBusAction.PLAY, baiHatList.get(position)));
+                EventBus.getDefault().post(new MessageEventBus(Constraint.EventBusAction.RESUME, null));
             }
-            TimeSong();
-            UpdateTime();
         });
 
         binding.btnLapLai.setOnClickListener(v -> {
-            if (!repeat) {
-                if (checkRandom) {
-                    checkRandom = false;
-                    binding.btnLapLai.setImageResource(R.drawable.iconsyned);
-                    binding.btnRandom.setImageResource(R.drawable.iconsuffle);
-                }
-                binding.btnLapLai.setImageResource(R.drawable.iconsyned);
-                repeat = true;
-            } else {
-                binding.btnLapLai.setImageResource(R.drawable.iconrepeat);
-                repeat = false;
-            }
+            isLoop = !isLoop;
+
+            EventBus.getDefault().post(new MessageEventBus(Constraint.EventBusAction.LOOP, isLoop));
+
+//            if (!repeat) {
+//                if (checkRandom) {
+//                    checkRandom = false;
+//                    binding.btnLapLai.setImageResource(R.drawable.iconsyned);
+//                    binding.btnRandom.setImageResource(R.drawable.iconsuffle);
+//                }
+//                binding.btnLapLai.setImageResource(R.drawable.iconsyned);
+//                repeat = true;
+//            } else {
+//                binding.btnLapLai.setImageResource(R.drawable.iconrepeat);
+//                repeat = false;
+//            }
         });
         binding.btnRandom.setOnClickListener(v -> {
-            if (!checkRandom) {
-                if (repeat) {
-                    repeat = false;
-                    binding.btnRandom.setImageResource(R.drawable.iconshuffled);
-                    binding.btnLapLai.setImageResource(R.drawable.iconrepeat);
-                }
-                binding.btnRandom.setImageResource(R.drawable.iconshuffled);
-                checkRandom = true;
-            } else {
-                binding.btnRandom.setImageResource(R.drawable.iconsuffle);
-                checkRandom = false;
-            }
+            isSuffix = !isSuffix;
+            EventBus.getDefault().post(new MessageEventBus(Constraint.EventBusAction.SUFFIX, isSuffix));
+
+//            if (!checkRandom) {
+//                if (repeat) {
+//                    repeat = false;
+//                    binding.btnRandom.setImageResource(R.drawable.iconshuffled);
+//                    binding.btnLapLai.setImageResource(R.drawable.iconrepeat);
+//                }
+//                binding.btnRandom.setImageResource(R.drawable.iconshuffled);
+//                checkRandom = true;
+//            } else {
+//                binding.btnRandom.setImageResource(R.drawable.iconsuffle);
+//                checkRandom = false;
+//            }
         });
         binding.seekbarSong.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-
 
             }
 
@@ -190,99 +247,105 @@ public class PlayMusicActivity extends AppCompatActivity {
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                mMediaPlayer.seekTo(binding.seekbarSong.getProgress());
+                Log.d(TAG, "onStopTrackingTouch: " + binding.seekbarSong.getProgress());
+                EventBus.getDefault().post(new MessageEventBus(Constraint.EventBusAction.SEEK, binding.seekbarSong.getProgress()));
+//                mMediaPlayer.seekTo(binding.seekbarSong.getProgress());
             }
         });
         binding.btnNext.setOnClickListener(v -> {
-            if (baiHatList.size() > 0) {
-                if (mMediaPlayer.isPlaying() || mMediaPlayer != null) {
-                    mMediaPlayer.stop();
-                    mMediaPlayer.release();
-                    mMediaPlayer = null;
-                }
-                if (position < (baiHatList.size())) {
-                    binding.btnPlay.setImageResource(R.drawable.iconpause);
-                    EventBus.getDefault().post(new MessageEventBus(Constraint.EventBusAction.PLAY, baiHatList.get(position)));
+            EventBus.getDefault().post(new MessageEventBus(Constraint.EventBusAction.NEXT, null));
 
-                    position++;
-
-
-                    if (repeat) {
-                        if (position == 0) {
-                            position = baiHatList.size();
-                        }
-                        position -= 1;
-                    }
-                    if (checkRandom) {
-                        Random random = new Random();
-                        int index = random.nextInt(baiHatList.size());
-                        if (index == position) {
-                            position = index - 1;
-                        }
-                        position = index;
-                    }
-                    if (position > (baiHatList.size()) - 1) {
-                        position = 0;
-                    }
-                    new PlayMusic().execute(baiHatList.get(position).getLinkBaiHat());
-                    mFragmentCDMusic.Playnhac(baiHatList.get(position).getHinhBaiHat());
-                    Objects.requireNonNull(getSupportActionBar()).setTitle(baiHatList.get(position).getTenBaiHat());
-                    UpdateTime();
-                }
-            }
-            binding.btnBack.setClickable(false);
-            binding.btnNext.setClickable(false);
-            Handler mHandler = new Handler();
-            mHandler.postDelayed(() -> {
-                binding.btnBack.setClickable(true);
-                binding.btnNext.setClickable(true);
-            }, 5000);
+//            if (baiHatList.size() > 0) {
+//                if (mMediaPlayer.isPlaying() || mMediaPlayer != null) {
+//                    mMediaPlayer.stop();
+//                    mMediaPlayer.release();
+//                    mMediaPlayer = null;
+//                }
+//                if (position < (baiHatList.size())) {
+//                    binding.btnPlay.setImageResource(R.drawable.iconpause);
+//                    EventBus.getDefault().post(new MessageEventBus(Constraint.EventBusAction.PLAY, baiHatList.get(position)));
+//
+//                    position++;
+//
+//
+//                    if (repeat) {
+//                        if (position == 0) {
+//                            position = baiHatList.size();
+//                        }
+//                        position -= 1;
+//                    }
+//                    if (checkRandom) {
+//                        Random random = new Random();
+//                        int index = random.nextInt(baiHatList.size());
+//                        if (index == position) {
+//                            position = index - 1;
+//                        }
+//                        position = index;
+//                    }
+//                    if (position > (baiHatList.size()) - 1) {
+//                        position = 0;
+//                    }
+//                    new PlayMusic().execute(baiHatList.get(position).getLinkBaiHat());
+//                    mFragmentCDMusic.Playnhac(baiHatList.get(position).getHinhBaiHat());
+//                    Objects.requireNonNull(getSupportActionBar()).setTitle(baiHatList.get(position).getTenBaiHat());
+//                    UpdateTime();
+//                }
+//            }
+//            binding.btnBack.setClickable(false);
+//            binding.btnNext.setClickable(false);
+//            Handler mHandler = new Handler();
+//            mHandler.postDelayed(() -> {
+//                binding.btnBack.setClickable(true);
+//                binding.btnNext.setClickable(true);
+//            }, 5000);
         });
         binding.btnBack.setOnClickListener(v -> {
-            if (baiHatList.size() > 0) {
-                if (mMediaPlayer.isPlaying() || mMediaPlayer != null) {
-                    mMediaPlayer.stop();
-                    mMediaPlayer.release();
-                    mMediaPlayer = null;
-                }
-                if (position < (baiHatList.size())) {
+            EventBus.getDefault().post(new MessageEventBus(Constraint.EventBusAction.PREVIOUS, null));
 
-                    binding.btnPlay.setImageResource(R.drawable.iconpause);
-                    EventBus.getDefault().post(new MessageEventBus(Constraint.EventBusAction.PLAY, baiHatList.get(position)));
-
-                    position--;
-
-                    if (position < 0) {
-
-                        position = baiHatList.size() - 1;
-
-                    }
-                    if (repeat) {
-                        position += 1;
-                    }
-                    if (checkRandom) {
-                        Random random = new Random();
-                        int index = random.nextInt(baiHatList.size());
-                        if (index == position) {
-                            position = index - 1;
-                        }
-                        position = index;
-                    }
-
-                    new PlayMusic().execute(baiHatList.get(position).getLinkBaiHat());
-                    mFragmentCDMusic.Playnhac(baiHatList.get(position).getHinhBaiHat());
-                    Objects.requireNonNull(getSupportActionBar()).setTitle(baiHatList.get(position).getTenBaiHat());
-                    UpdateTime();
-                }
-            }
+//            if (baiHatList.size() > 0) {
+//                if (mMediaPlayer.isPlaying() || mMediaPlayer != null) {
+//                    mMediaPlayer.stop();
+//                    mMediaPlayer.release();
+//                    mMediaPlayer = null;
+//                }
+//                if (position < (baiHatList.size())) {
+//
+//                    binding.btnPlay.setImageResource(R.drawable.iconpause);
+//                    EventBus.getDefault().post(new MessageEventBus(Constraint.EventBusAction.PLAY, baiHatList.get(position)));
+//
+//                    position--;
+//
+//                    if (position < 0) {
+//
+//                        position = baiHatList.size() - 1;
+//
+//                    }
+//                    if (repeat) {
+//                        position += 1;
+//                    }
+//                    if (checkRandom) {
+//                        Random random = new Random();
+//                        int index = random.nextInt(baiHatList.size());
+//                        if (index == position) {
+//                            position = index - 1;
+//                        }
+//                        position = index;
+//                    }
+//
+//                    new PlayMusic().execute(baiHatList.get(position).getLinkBaiHat());
+//                    mFragmentCDMusic.Playnhac(baiHatList.get(position).getHinhBaiHat());
+//                    Objects.requireNonNull(getSupportActionBar()).setTitle(baiHatList.get(position).getTenBaiHat());
+//                    UpdateTime();
+//                }
+//            }
             //Test máy thật xem như nhau mà t test từ hôm qua r
-            binding.btnBack.setClickable(false);
-            binding.btnNext.setClickable(false);
-            Handler mHandler = new Handler();
-            mHandler.postDelayed(() -> {
-                binding.btnBack.setClickable(true);
-                binding.btnNext.setClickable(true);
-            }, 500);
+//            binding.btnBack.setClickable(false);
+//            binding.btnNext.setClickable(false);
+//            Handler mHandler = new Handler();
+//            mHandler.postDelayed(() -> {
+//                binding.btnBack.setClickable(true);
+//                binding.btnNext.setClickable(true);
+//            }, 500);
         });
     }
 
@@ -291,14 +354,17 @@ public class PlayMusicActivity extends AppCompatActivity {
         baiHatList.clear();
         if (intent != null) {
             if (intent.hasExtra("cakhuc")) {
+                Log.d(TAG, "GetDataFromItent: cakhuc");
                 BaiHatYeuThich baiHatYeuThich = intent.getParcelableExtra("cakhuc");
                 baiHatList.add(baiHatYeuThich);
             }
             if (intent.hasExtra("allbaihat")) {
+                Log.d(TAG, "GetDataFromItent: allbaihat");
                 baiHatList = intent.getParcelableArrayListExtra("allbaihat");
             }
 
-            Log.d(TAG, "GetDataFromItent: " + baiHatList.toString());
+
+            Log.d(TAG, "GetDataFromItent: " + (baiHatList != null ? baiHatList.toString() : null));
         }
 
     }
@@ -308,7 +374,7 @@ public class PlayMusicActivity extends AppCompatActivity {
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         binding.toobarPlayNhac.setNavigationOnClickListener(v -> {
             finish();
-            mMediaPlayer.stop();
+//            mMediaPlayer.stop();
             baiHatList.clear();
         });
         binding.toobarPlayNhac.setTitleTextColor(Color.WHITE);
@@ -324,22 +390,19 @@ public class PlayMusicActivity extends AppCompatActivity {
         binding.viewPagerPlayNhac.setAdapter(mViewPagerPlayMusicAdapter);
         mFragmentCDMusic = (FragmentCDMusic) mViewPagerPlayMusicAdapter.getItem(1);
 
-        if (baiHatList.size() > 0) {
+        if (baiHatList != null && baiHatList.size() > 0) {
             getSupportActionBar().setTitle(baiHatList.get(0).getTenBaiHat());
-            new PlayMusic().execute(baiHatList.get(0).getLinkBaiHat());
-            binding.btnPlay.setImageResource(R.drawable.iconpause);
-            EventBus.getDefault().post(new MessageEventBus(Constraint.EventBusAction.PLAY, baiHatList.get(0)));
-
+//            new PlayMusic().execute(baiHatList.get(0).getLinkBaiHat());
+//            binding.btnPlay.setImageResource(R.drawable.iconpause);
+            EventBus.getDefault().post(new MessageEventBus(Constraint.EventBusAction.PLAY, new InformationMusic(baiHatList.get(0), 0, 0)));
         }
     }
 
-    public void TimeSong() {
+    public void TimeSong(int totalTime) {
         try {
             SimpleDateFormat mFormat = new SimpleDateFormat("mm:ss");
-            if (mMediaPlayer.getDuration() > 0) {
-                binding.tvTotalTimeSong.setText(mFormat.format(mMediaPlayer.getDuration()));
-                binding.seekbarSong.setMax(mMediaPlayer.getDuration());
-            }
+            binding.tvTotalTimeSong.setText(mFormat.format(totalTime));
+            binding.seekbarSong.setMax(totalTime);
         } catch (Exception e) {
             Log.d("TAG", "TimeSong: " + e);
         }
@@ -351,132 +414,97 @@ public class PlayMusicActivity extends AppCompatActivity {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                if (mMediaPlayer != null) {
-                    SimpleDateFormat formatTime = new SimpleDateFormat("mm:ss");
-// thời gian vị trí hiện tai của bài hast
-                    binding.tvTimeSong.setText(formatTime.format(mMediaPlayer.getCurrentPosition()));
-                    // update process skSong
-                    binding.seekbarSong.setProgress(mMediaPlayer.getCurrentPosition());
-                    // kiểm tra thời gian bài hát nếu kết thúc -> next
-                    mMediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-                        @Override
-                        public void onCompletion(MediaPlayer mp) {
-                            if (position < (baiHatList.size())) {
-                                binding.btnPlay.setImageResource(R.drawable.iconpause);
-                                EventBus.getDefault().post(new MessageEventBus(Constraint.EventBusAction.PLAY, baiHatList.get(position)));
-
-                                position++;
-                                if (repeat) {
-                                    if (position == 0) {
-                                        position = baiHatList.size();
-                                    }
-                                    position -= 1;
-                                }
-                                if (checkRandom) {
-                                    Random random = new Random();
-                                    int index = random.nextInt(baiHatList.size());
-                                    if (index == position) {
-                                        position = index - 1;
-                                    }
-                                    position = index;
-                                }
-                                if (position > (baiHatList.size()) - 1) {
-                                    position = 0;
-                                }
-                                new PlayMusic().execute(baiHatList.get(position).getLinkBaiHat());
-                                mFragmentCDMusic.Playnhac(baiHatList.get(position).getHinhBaiHat());
-                                Objects.requireNonNull(getSupportActionBar()).setTitle(baiHatList.get(position).getTenBaiHat());
-                                TimeSong();
-                                UpdateTime();
-                            }
-                        }
-                    });
-
-                    handler.postDelayed(this, 500);
-                }
+                SimpleDateFormat formatTime = new SimpleDateFormat("mm:ss");
+                // thời gian vị trí hiện tai của bài hát
+                binding.tvTimeSong.setText(formatTime.format(mCurrentTime));
+                // update process skSong
+                binding.seekbarSong.setProgress(mCurrentTime);
+                handler.postDelayed(this, 500);
             }
+//            }
         }, 100);
 
-        final Handler handler1 = new Handler();
-        handler1.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if (next) {
-                    if (position < (baiHatList.size())) {
-                        binding.btnPlay.setImageResource(R.drawable.iconpause);
-                        EventBus.getDefault().post(new MessageEventBus(Constraint.EventBusAction.PLAY, baiHatList.get(position)));
-                        position++;
-                        if (repeat) {
-                            if (position == 0) {
-                                position = baiHatList.size();
-                            }
-                            position -= 1;
-                        }
-                        if (checkRandom) {
-                            Random random = new Random();
-                            int index = random.nextInt(baiHatList.size());
-                            if (index == position) {
-                                position = index - 1;
-                            }
-                            position = index;
-                        }
-                        if (position > (baiHatList.size())) {
-                            position = 0;
-                        }
-                        new PlayMusic().execute(baiHatList.get(position).getLinkBaiHat());
-                        mFragmentCDMusic.Playnhac(baiHatList.get(position).getHinhBaiHat());
-                        Objects.requireNonNull(getSupportActionBar()).setTitle(baiHatList.get(position).getTenBaiHat());
-                    }
+//        final Handler handler1 = new Handler();
+//        handler1.postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                if (next) {
+//                    if (position < (baiHatList.size())) {
+//                        binding.btnPlay.setImageResource(R.drawable.iconpause);
+//                        EventBus.getDefault().post(new MessageEventBus(Constraint.EventBusAction.PLAY, baiHatList.get(position)));
+//                        position++;
+//                        if (repeat) {
+//                            if (position == 0) {
+//                                position = baiHatList.size();
+//                            }
+//                            position -= 1;
+//                        }
+//                        if (checkRandom) {
+//                            Random random = new Random();
+//                            int index = random.nextInt(baiHatList.size());
+//                            if (index == position) {
+//                                position = index - 1;
+//                            }
+//                            position = index;
+//                        }
+//                        if (position > (baiHatList.size())) {
+//                            position = 0;
+//                        }
+//                        new PlayMusic().execute(baiHatList.get(position).getLinkBaiHat());
+//                        mFragmentCDMusic.Playnhac(baiHatList.get(position).getHinhBaiHat());
+//                        Objects.requireNonNull(getSupportActionBar()).setTitle(baiHatList.get(position).getTenBaiHat());
+//                    }
+//
+//                    binding.btnBack.setClickable(false);
+//                    binding.btnBack.setClickable(false);
+//                    Handler mHandler = new Handler();
+//                    mHandler.postDelayed(() -> {
+//                        binding.btnBack.setClickable(true);
+//                        binding.btnNext.setClickable(true);
+//                    }, 5000);
+//                    next = false;
+//                    handler1.removeCallbacks(this);
+//
+//                } else {
+//
+//                    handler1.postDelayed(this, 1000);
+//                }
+//            }
+//        }, 1000);
+//    }
 
-                    binding.btnBack.setClickable(false);
-                    binding.btnBack.setClickable(false);
-                    Handler mHandler = new Handler();
-                    mHandler.postDelayed(() -> {
-                        binding.btnBack.setClickable(true);
-                        binding.btnNext.setClickable(true);
-                    }, 5000);
-                    next = false;
-                    handler1.removeCallbacks(this);
-
-                } else {
-
-                    handler1.postDelayed(this, 1000);
-                }
-            }
-        }, 1000);
-    }
-
-    class PlayMusic extends AsyncTask<String, Void, String> {
-        // khi thực hiện
-        @Override
-        protected String doInBackground(String... strings) {
-            return strings[0];
-        }
-
-        // trả kết quả
-        @Override
-        protected void onPostExecute(String baihat) {
-            try {
-                mMediaPlayer = new MediaPlayer();
-                mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC); // play dưới dạng online
-                mMediaPlayer.setOnCompletionListener(mp -> {
-                    mMediaPlayer.stop();
-                    mMediaPlayer.reset();
-                });
-                mMediaPlayer.setDataSource(baihat);
-                // khi media muốn phát đc
-                mMediaPlayer.prepareAsync();
-                mMediaPlayer.setOnPreparedListener(mp -> {
-                    mp.start();
-                    TimeSong();
-                    UpdateTime();
-                });
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-        }
+//    class PlayMusic extends AsyncTask<String, Void, String> {
+//        // khi thực hiện
+//        @Override
+//        protected String doInBackground(String... strings) {
+//            return strings[0];
+//        }
+//
+//        // trả kết quả
+//        @Override
+//        protected void onPostExecute(String baihat) {
+//            try {
+//                mMediaPlayer = new MediaPlayer();
+//                mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC); // play dưới dạng online
+//                mMediaPlayer.setOnCompletionListener(mp -> {
+//                    mMediaPlayer.stop();
+//                    mMediaPlayer.reset();
+//                });
+//                mMediaPlayer.setDataSource(baihat);
+//                // khi media muốn phát đc
+//                mMediaPlayer.prepareAsync();
+//                mMediaPlayer.setOnPreparedListener(mp -> {
+//                    mp.start();
+//                    TimeSong();
+//                    UpdateTime();
+//                });
+//            } catch (FileNotFoundException e) {
+//                e.printStackTrace();
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//
+//        }
+//    }
     }
 }

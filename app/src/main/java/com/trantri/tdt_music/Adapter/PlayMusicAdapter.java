@@ -35,7 +35,7 @@ public class PlayMusicAdapter extends RecyclerView.Adapter<PlayMusicAdapter.View
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         BaiHatYeuThich baihat = listBH.get(position);
         holder.binding.tvTenCaSiPlayMusic.setText(baihat.getCaSi());
-        holder.binding.tvTenCaSiPlayMusic.setText(baihat.getTenBaiHat());
+        holder.binding.tvPlaynhacTenbaihat.setText(baihat.getTenBaiHat());
         holder.binding.tvPlaynhacindex.setText(position + 1 + "");
     }
 
