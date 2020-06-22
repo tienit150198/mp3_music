@@ -1,4 +1,4 @@
-package com.trantri.tdt_music.activity;
+package com.trantri.tdt_music.service;
 
 import android.app.Service;
 import android.content.Intent;
@@ -187,7 +187,7 @@ public class PlayMusicService extends Service {
             stopMusic();
             playMusic(mCurrentPosition);
         }else{
-            EventBus.getDefault().post(new MessageEventBus(Constraint.EventBusAction.NEXT, Boolean.FALSE));
+            EventBus.getDefault().post(new MessageEventBus(Constraint.EventBusAction.FAIL, "This is the last song"));
         }
     }
 
@@ -199,7 +199,7 @@ public class PlayMusicService extends Service {
 
             playMusic(mCurrentPosition);
         }else{
-            EventBus.getDefault().post(new MessageEventBus(Constraint.EventBusAction.NEXT, Boolean.FALSE));
+            EventBus.getDefault().post(new MessageEventBus(Constraint.EventBusAction.FAIL, "This is the first song"));
         }
     }
 

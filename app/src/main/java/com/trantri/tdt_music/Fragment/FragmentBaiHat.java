@@ -12,7 +12,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.trantri.tdt_music.Adapter.BaiHatAdapter;
-import com.trantri.tdt_music.Service.ApiClient;
+import com.trantri.tdt_music.data.remote.ApiClient;
 import com.trantri.tdt_music.databinding.FragmentBaiHatYeuthichBinding;
 
 import java.util.Objects;

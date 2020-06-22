@@ -1,8 +1,10 @@
 package com.trantri.tdt_music.activity;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -98,7 +100,6 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                         setInformationBottomSheet(baiHatYeuThich);
                     }
                 }
-
                 break;
             case Constraint.EventBusAction.PAUSE:
                 isPlay = false;
@@ -122,6 +123,10 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                         setInformationBottomSheet(baiHatYeuThich);
                     }
                 }
+                break;
+            case Constraint.EventBusAction.FAIL:
+                Log.d(TAG, "onEvent:  " + message.action);
+                Toast.makeText(this, String.valueOf(message.action), Toast.LENGTH_SHORT).show();
                 break;
         }
     }

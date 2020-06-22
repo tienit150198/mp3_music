@@ -32,7 +32,7 @@
         <activity android:name=".activity.DanhSachTheLoaiTheoChuDeActivity" />
         <activity android:name=".activity.DanhSachAllAlbumActivity" />
         <activity android:name=".activity.PlayMusicActivity" />
-        <service android:name=".activity.PlayMusicService"/>
+        <service android:name=".service.PlayMusicService"/>
     </application>
 
 </manifest>

@@ -17,6 +17,7 @@ public class Constraint {
         String LOOP = "LOOP";
         String SUFFIX = "SUFFIX";
         String SEEK = "SEEK";
+        String FAIL = "SEEK";
     }
 
     public interface YoutubeVideo{

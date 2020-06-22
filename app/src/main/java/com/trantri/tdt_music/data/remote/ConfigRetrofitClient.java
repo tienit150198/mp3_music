@@ -1,4 +1,4 @@
-package com.trantri.tdt_music.Service;
+package com.trantri.tdt_music.data.remote;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

@@ -122,6 +122,6 @@ public class VideoPlayerActivity extends YouTubeBaseActivity implements YouTubeP
     @Override
     public void onInitializationFailure(YouTubePlayer.Provider provider, YouTubeInitializationResult youTubeInitializationResult) {
         Log.d(TAG, "onInitializationFailure: fail");
-        Toast.makeText(this, youTubeInitializationResult.toString(), Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this, youTubeInitializationResult.toString(), Toast.LENGTH_SHORT).show();
     }
 }

@@ -19,7 +19,7 @@ import com.bumptech.glide.load.resource.bitmap.CenterInside;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.trantri.tdt_music.Model.ChuDe;
 import com.trantri.tdt_music.Model.TheLoai;
-import com.trantri.tdt_music.Service.ApiClient;
+import com.trantri.tdt_music.data.remote.ApiClient;
 import com.trantri.tdt_music.activity.DanhSachAllChuDeActivity;
 import com.trantri.tdt_music.activity.DanhSachTheLoaiTheoChuDeActivity;
 import com.trantri.tdt_music.activity.SongsListActivity;

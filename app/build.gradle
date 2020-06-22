@@ -9,6 +9,8 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        multiDexEnabled true
+
     }
 
     buildFeatures {
@@ -28,6 +30,8 @@ android {
 
 dependencies {
     def room_version = "2.2.5"
+    implementation 'com.android.support:multidex:1.0.3'
+
 
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     //noinspection GradleCompatible

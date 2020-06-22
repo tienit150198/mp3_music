@@ -3,7 +3,6 @@ package com.trantri.tdt_music.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -11,7 +10,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import com.trantri.tdt_music.Adapter.DanhSachTheLoaiTheoChuDeAdapter;
 import com.trantri.tdt_music.Model.ChuDe;
 import com.trantri.tdt_music.Model.TheLoai;
-import com.trantri.tdt_music.Service.ApiClient;
+import com.trantri.tdt_music.data.remote.ApiClient;
 import com.trantri.tdt_music.databinding.ActivityDanhSachTheLoaiTheoChuDeBinding;
 
 import java.util.List;
@@ -22,7 +21,6 @@ import io.reactivex.rxjava3.annotations.NonNull;
 import io.reactivex.rxjava3.core.Observer;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.disposables.Disposable;
-import io.reactivex.rxjava3.observers.DisposableObserver;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public class DanhSachTheLoaiTheoChuDeActivity extends AppCompatActivity {
@@ -64,7 +62,7 @@ public class DanhSachTheLoaiTheoChuDeActivity extends AppCompatActivity {
                     @Override
                     public void onError(@NonNull Throwable e) {
                         Log.d(TAG, "onError: " + e.getMessage());
-                        Toast.makeText(DanhSachTheLoaiTheoChuDeActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(DanhSachTheLoaiTheoChuDeActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
                     }
 
                     @Override

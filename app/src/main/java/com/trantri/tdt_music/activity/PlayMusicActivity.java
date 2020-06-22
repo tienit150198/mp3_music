@@ -11,6 +11,7 @@ import android.widget.SeekBar;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import com.trantri.tdt_music.Adapter.ViewPagerPlayMusicAdapter;
 import com.trantri.tdt_music.Fragment.FragmentCDMusic;
@@ -21,6 +22,7 @@ import com.trantri.tdt_music.Model.music.InformationMusic;
 import com.trantri.tdt_music.R;
 import com.trantri.tdt_music.data.Constraint;
 import com.trantri.tdt_music.databinding.ActivityPlayMusicBinding;
+import com.trantri.tdt_music.service.PlayMusicService;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -123,15 +125,9 @@ public class PlayMusicActivity extends AppCompatActivity {
                     .EventBusAction.RESUME:
                 resumeMusic();
                 break;
-            case Constraint.EventBusAction.PREVIOUS:
-                if (messageEventBus.action == Boolean.FALSE) {
-                    Toast.makeText(this, "This is fist music", Toast.LENGTH_SHORT).show();
-                }
-                break;
-            case Constraint.EventBusAction.NEXT:
-                if (messageEventBus.action == Boolean.FALSE) {
-                    Toast.makeText(this, "This is fist last", Toast.LENGTH_SHORT).show();
-                }
+            case Constraint.EventBusAction.FAIL:
+                Log.d(TAG, "onEvent: " + messageEventBus.action);
+                    Toast.makeText(this, String.valueOf(messageEventBus.action), Toast.LENGTH_SHORT).show();
                 break;
             case Constraint.EventBusAction.PREPARED:
                 if (messageEventBus.action != null) {
@@ -203,7 +199,13 @@ public class PlayMusicActivity extends AppCompatActivity {
             isLoop = !isLoop;
 
             EventBus.getDefault().post(new MessageEventBus(Constraint.EventBusAction.LOOP, isLoop));
-
+            if(isLoop){
+                Toast.makeText(this, "LOOP ON", Toast.LENGTH_SHORT).show();
+                binding.btnLapLai.setColorFilter(ContextCompat.getColor(this,R.color.playmusic_selected));
+            }else{
+                Toast.makeText(this, "LOOP OFF", Toast.LENGTH_SHORT).show();
+                binding.btnLapLai.setColorFilter(ContextCompat.getColor(this,R.color.playmusic_unselect));
+            }
 //            if (!repeat) {
 //                if (checkRandom) {
 //                    checkRandom = false;
@@ -221,6 +223,13 @@ public class PlayMusicActivity extends AppCompatActivity {
             isSuffix = !isSuffix;
             EventBus.getDefault().post(new MessageEventBus(Constraint.EventBusAction.SUFFIX, isSuffix));
 
+            if(isSuffix){
+                Toast.makeText(this, "RANDOM ON", Toast.LENGTH_SHORT).show();
+                binding.btnRandom.setColorFilter(ContextCompat.getColor(this,R.color.playmusic_selected));
+            }else{
+                Toast.makeText(this, "RANDOM OFF", Toast.LENGTH_SHORT).show();
+                binding.btnRandom.setColorFilter(ContextCompat.getColor(this,R.color.playmusic_unselect));
+            }
 //            if (!checkRandom) {
 //                if (repeat) {
 //                    repeat = false;
@@ -247,7 +256,6 @@ public class PlayMusicActivity extends AppCompatActivity {
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                Log.d(TAG, "onStopTrackingTouch: " + binding.seekbarSong.getProgress());
                 EventBus.getDefault().post(new MessageEventBus(Constraint.EventBusAction.SEEK, binding.seekbarSong.getProgress()));
 //                mMediaPlayer.seekTo(binding.seekbarSong.getProgress());
             }

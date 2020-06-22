@@ -1,4 +1,4 @@
-package com.trantri.tdt_music.Service;
+package com.trantri.tdt_music.data.remote;
 
 /**
  * Created by TranTien

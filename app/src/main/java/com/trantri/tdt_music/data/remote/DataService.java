@@ -1,4 +1,4 @@
-package com.trantri.tdt_music.Service;
+package com.trantri.tdt_music.data.remote;
 
 
 import com.trantri.tdt_music.Model.Album;
@@ -27,8 +27,8 @@ import retrofit2.http.Query;
 // dùng để gửi lên những phương thức để chúng ta tương tác phía server và sau khi server kết nối đc rồi
 // nó sẽ trả dữ liệu về cho thằng này ==> thằng này dùng để gửi phướng thức và dữ liệu từ phía server về.
 public interface DataService {
-    // key = AIzaSyDo4nvFKFMv8zexPTCRu4XKgBBNBU_DNrw
-    @GET("search?part=snippet&type=video&maxResults=10&key=AIzaSyDo4nvFKFMv8zexPTCRu4XKgBBNBU_DNrw")
+    // key = AIzaSyDCKG-CnrEJ-pDdMXlnp8yizMgIWAcli28
+    @GET("search?part=snippet&type=video&maxResults=10&key=AIzaSyDCKG-CnrEJ-pDdMXlnp8yizMgIWAcli28")
     Single<Youtube> queryMvYoutube(@Query("q") String q);
 
     @GET("songbanner.php")

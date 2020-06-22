@@ -1,6 +1,5 @@
-package com.trantri.tdt_music.Service;
+package com.trantri.tdt_music.data.remote;
 
-import android.app.Application;
 import android.content.Context;
 
 import com.google.gson.Gson;
