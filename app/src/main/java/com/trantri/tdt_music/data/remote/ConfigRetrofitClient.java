@@ -1,4 +1,4 @@
-package com.trantri.tdt_music.Service;
+package com.trantri.tdt_music.data.remote;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.concurrent.TimeUnit;
 
+import hu.akarnokd.rxjava3.retrofit.RxJava3CallAdapterFactory;
 import okhttp3.OkHttpClient;
 import okhttp3.Protocol;
 import retrofit2.Retrofit;
@@ -33,6 +34,7 @@ public class ConfigRetrofitClient {
         retrofit = new Retrofit.Builder()
                 .baseUrl(url_base)
                 .client(mOkHttpClient) // cấu hình tương tác của mảng
+                .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create(mGson)) // convert dữ liệu API thành dữ liệu java
                 .build();
     return retrofit;

@@ -5,8 +5,9 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.trantri.tdt_music.Model.music.InformationMusic;
 
-public class BaiHatYeuThich implements Parcelable {
+public class BaiHatYeuThich extends InformationMusic implements Parcelable {
 
     public static final Creator<BaiHatYeuThich> CREATOR = new Creator<BaiHatYeuThich>() {
         @Override

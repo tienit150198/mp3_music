@@ -3,10 +3,7 @@ package com.trantri.tdt_music.Adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -17,20 +14,15 @@ import com.bumptech.glide.load.resource.bitmap.CenterInside;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.trantri.tdt_music.Model.BaiHatYeuThich;
 import com.trantri.tdt_music.R;
-import com.trantri.tdt_music.Service.ApiClient;
-import com.trantri.tdt_music.Service.DataService;
+import com.trantri.tdt_music.data.remote.ApiClient;
 import com.trantri.tdt_music.activity.PlayMusicActivity;
 import com.trantri.tdt_music.databinding.ItemBaiHatYeuThichBinding;
 
 import java.util.List;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
-import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.observers.DisposableObserver;
 import io.reactivex.rxjava3.schedulers.Schedulers;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class BaiHatAdapter extends RecyclerView.Adapter<BaiHatAdapter.ViewHolder> {
     Context mContext;

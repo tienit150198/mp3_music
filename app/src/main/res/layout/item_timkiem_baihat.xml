@@ -23,7 +23,9 @@
         android:text="Ten Bài Hát"
         android:textColor="#000"
         android:textSize="18sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:layout_marginStart="5dp"
+        android:layout_toEndOf="@id/img_timkiem" />
 
     <TextView
         android:id="@+id/tv_SearchTenCaSi"
@@ -39,7 +41,9 @@
         android:text="Ten Ca Sĩ"
         android:textColor="#494848"
         android:textSize="15sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:layout_marginStart="5dp"
+        android:layout_toEndOf="@id/img_timkiem" />
 
     <ImageView
         android:id="@+id/img_SearchLuotThich"
@@ -48,5 +52,8 @@
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
         android:layout_marginRight="10dp"
-        android:src="@drawable/iconlove" />
+        android:src="@drawable/ic_favorite"
+        android:tint="@android:color/black"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="10dp" />
 </RelativeLayout>

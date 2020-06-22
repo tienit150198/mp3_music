@@ -2,24 +2,19 @@ package com.trantri.tdt_music.activity;
 
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 
 import com.trantri.tdt_music.Adapter.DanhSachAllChuDeAdapter;
-import com.trantri.tdt_music.Model.ChuDe;
-import com.trantri.tdt_music.Service.ApiClient;
+import com.trantri.tdt_music.data.remote.ApiClient;
 import com.trantri.tdt_music.databinding.ActivityDanhSachAllChuDeBinding;
 
-import java.util.List;
 import java.util.Objects;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
-import io.reactivex.rxjava3.annotations.NonNull;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.disposables.Disposable;
-import io.reactivex.rxjava3.observers.DisposableObserver;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public class DanhSachAllChuDeActivity extends AppCompatActivity {

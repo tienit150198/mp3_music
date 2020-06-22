@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#120520"
     android:orientation="vertical"
     tools:context=".activity.MainActivity">
 
@@ -38,9 +37,9 @@
         android:layout_alignParentBottom="true"
         android:layout_gravity="bottom"
         android:background="@drawable/custom_navigation"
-        app:itemIconTint="@android:color/white"
-        app:itemRippleColor="@android:color/white"
-        app:itemTextColor="@android:color/white"
+        app:itemIconTint="@android:color/primary_text_light"
+        app:itemRippleColor="@android:color/black"
+        app:itemTextColor="@android:color/black"
         app:layout_behavior="com.google.android.material.behavior.HideBottomViewOnScrollBehavior"
         app:menu="@menu/menu_botoomnavigation" />
 

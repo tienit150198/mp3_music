@@ -1,7 +1,9 @@
-package com.trantri.tdt_music.Service;
+package com.trantri.tdt_music.data.remote;
 
-import android.app.Application;
 import android.content.Context;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import java.util.concurrent.TimeUnit;
 
@@ -27,11 +29,15 @@ public class ApiClient {
 
         OkHttpClient okHttpClient = httpClient.build();
 
+        Gson gson = new GsonBuilder()
+                .setLenient()
+                .create();
+
         return new Retrofit.Builder()
                 .baseUrl(BASE_URL)
                 .client(okHttpClient)
                 .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
-                .addConverterFactory(GsonConverterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create(gson))
                 .build()
                 .create(DataService.class);
     }

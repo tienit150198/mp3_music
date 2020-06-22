@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 
 import com.trantri.tdt_music.Adapter.DanhSachAllPlaylistAdapter;
 import com.trantri.tdt_music.R;
-import com.trantri.tdt_music.Service.ApiClient;
+import com.trantri.tdt_music.data.remote.ApiClient;
 import com.trantri.tdt_music.databinding.ActivityPlaylistBinding;
 
 import java.util.Objects;

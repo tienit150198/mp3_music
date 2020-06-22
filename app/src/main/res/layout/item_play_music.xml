@@ -28,7 +28,9 @@
             android:text="Tên Ca Khúc"
             android:textColor="#ffff"
             android:textSize="17sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:layout_marginStart="10dp"
+            android:layout_toEndOf="@id/tv_playnhacindex" />
         <TextView
             android:singleLine="true"
             android:ellipsize="end"
@@ -40,7 +42,9 @@
             android:layout_toRightOf="@id/tv_playnhacindex"
             android:id="@+id/tv_tenCaSiPlayMusic"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_toEndOf="@id/tv_playnhacindex" />
     </RelativeLayout>
 
 </RelativeLayout>

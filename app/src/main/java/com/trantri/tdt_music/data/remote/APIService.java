@@ -1,4 +1,4 @@
-package com.trantri.tdt_music.Service;
+package com.trantri.tdt_music.data.remote;
 
 public class APIService {
     // truyền url để tướng tác phía server

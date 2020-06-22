@@ -1,28 +1,18 @@
 package com.trantri.tdt_music.Fragment;
 
-import android.app.SearchManager;
-import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
-import androidx.viewpager.widget.ViewPager;
 
 import com.trantri.tdt_music.Adapter.QuangCaoAdapter;
 import com.trantri.tdt_music.Model.Quangcao;
-import com.trantri.tdt_music.R;
-import com.trantri.tdt_music.Service.ApiClient;
-import com.trantri.tdt_music.Service.DataService;
+import com.trantri.tdt_music.data.remote.ApiClient;
 import com.trantri.tdt_music.databinding.FragmentQuangcaoBinding;
 
 import java.util.ArrayList;
@@ -31,9 +21,7 @@ import java.util.Objects;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
-import io.reactivex.rxjava3.observers.DisposableObserver;
 import io.reactivex.rxjava3.schedulers.Schedulers;
-import me.relex.circleindicator.CircleIndicator;
 
 public class Fragment_QuangCao extends Fragment {
     private QuangCaoAdapter mAdapter;
@@ -42,7 +30,7 @@ public class Fragment_QuangCao extends Fragment {
     private int item;
 
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
-    FragmentQuangcaoBinding binding;
+    private FragmentQuangcaoBinding binding;
 
     @Nullable
     @Override

@@ -2,7 +2,7 @@ package com.trantri.tdt_music.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.Toast;
+import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -10,16 +10,17 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import com.trantri.tdt_music.Adapter.DanhSachTheLoaiTheoChuDeAdapter;
 import com.trantri.tdt_music.Model.ChuDe;
 import com.trantri.tdt_music.Model.TheLoai;
-import com.trantri.tdt_music.Service.ApiClient;
+import com.trantri.tdt_music.data.remote.ApiClient;
 import com.trantri.tdt_music.databinding.ActivityDanhSachTheLoaiTheoChuDeBinding;
 
 import java.util.List;
 import java.util.Objects;
 
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.annotations.NonNull;
+import io.reactivex.rxjava3.core.Observer;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.disposables.Disposable;
-import io.reactivex.rxjava3.observers.DisposableObserver;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public class DanhSachTheLoaiTheoChuDeActivity extends AppCompatActivity {
@@ -40,16 +41,36 @@ public class DanhSachTheLoaiTheoChuDeActivity extends AppCompatActivity {
         GetData(mChuDe.getIDChuDe());
     }
 
+    private static final String TAG = "LOG_DanhSachuD";
     private void GetData(String idchude) {
-        Disposable disposable = ApiClient.getService(getApplication()).getTheLoaiTheoChuDe(idchude)
+        ApiClient.getService(getApplication()).getTheLoaiTheoChuDe(idchude)
                 .subscribeOn(Schedulers.io())
-                .observeOn(Schedulers.newThread())
-                .subscribe(theLoais -> {
-                    mAdapter = new DanhSachTheLoaiTheoChuDeAdapter(theLoais);
-                    binding.myRecycleTheoChuDe.setLayoutManager(new GridLayoutManager(DanhSachTheLoaiTheoChuDeActivity.this, 2));
-                    binding.myRecycleTheoChuDe.setAdapter(mAdapter);
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<List<TheLoai>>() {
+                    @Override
+                    public void onSubscribe(@NonNull Disposable d) {
+                        compositeDisposable.add(d);
+                    }
+
+                    @Override
+                    public void onNext(@NonNull List<TheLoai> theLoais) {
+                        mAdapter = new DanhSachTheLoaiTheoChuDeAdapter(theLoais);
+                        binding.myRecycleTheoChuDe.setLayoutManager(new GridLayoutManager(DanhSachTheLoaiTheoChuDeActivity.this, 2));
+                        binding.myRecycleTheoChuDe.setAdapter(mAdapter);
+                    }
+
+                    @Override
+                    public void onError(@NonNull Throwable e) {
+                        Log.d(TAG, "onError: " + e.getMessage());
+//                        Toast.makeText(DanhSachTheLoaiTheoChuDeActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        Log.d(TAG, "onComplete: ");
+                    }
                 });
-        compositeDisposable.add(disposable);
+
     }
 
     private void init() {
@@ -63,10 +84,8 @@ public class DanhSachTheLoaiTheoChuDeActivity extends AppCompatActivity {
     private void GetIntent() {
         Intent itent = getIntent();
 
-
         if (itent != null) {
             if (itent.hasExtra("chude")) {
-
                 mChuDe = (ChuDe) itent.getSerializableExtra("chude");
             }
         }

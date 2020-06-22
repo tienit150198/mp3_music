@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="#30012D">
+    android:layout_height="match_parent">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -15,7 +14,7 @@
             android:id="@+id/viewPager"
             android:layout_width="match_parent"
             android:layout_height="180dp"
-            android:background="#30012D"
+            android:background="@android:color/white"
             />
 
         <me.relex.circleindicator.CircleIndicator

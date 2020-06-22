@@ -8,6 +8,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.os.StrictMode;
+import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -20,7 +21,7 @@ import com.trantri.tdt_music.Model.Playlist;
 import com.trantri.tdt_music.Model.PlaylistAll;
 import com.trantri.tdt_music.Model.Quangcao;
 import com.trantri.tdt_music.Model.TheLoai;
-import com.trantri.tdt_music.Service.ApiClient;
+import com.trantri.tdt_music.data.remote.ApiClient;
 import com.trantri.tdt_music.databinding.ActivitySongsListBinding;
 
 import java.io.IOException;
@@ -31,10 +32,8 @@ import java.util.List;
 import java.util.Objects;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
-import io.reactivex.rxjava3.annotations.NonNull;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.disposables.Disposable;
-import io.reactivex.rxjava3.observers.DisposableObserver;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public class SongsListActivity extends AppCompatActivity {
@@ -86,7 +85,8 @@ public class SongsListActivity extends AppCompatActivity {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(baiHatYeuThiches -> {
-                    mAdapter = new DanhSachBaiHatAdapter(baiHatYeuThiches);
+                    listBaiHat = baiHatYeuThiches;
+                    mAdapter = new DanhSachBaiHatAdapter(listBaiHat);
                     binding.recycleDanhSachBH.setLayoutManager(new LinearLayoutManager(SongsListActivity.this));
                     binding.recycleDanhSachBH.setAdapter(mAdapter);
                     eventClick();
@@ -99,7 +99,8 @@ public class SongsListActivity extends AppCompatActivity {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(baiHatYeuThiches -> {
-                    mAdapter = new DanhSachBaiHatAdapter(baiHatYeuThiches);
+                    listBaiHat = baiHatYeuThiches;
+                    mAdapter = new DanhSachBaiHatAdapter(listBaiHat);
                     binding.recycleDanhSachBH.setLayoutManager(new LinearLayoutManager(SongsListActivity.this));
                     binding.recycleDanhSachBH.setAdapter(mAdapter);
                     eventClick();
@@ -112,7 +113,8 @@ public class SongsListActivity extends AppCompatActivity {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(baiHatYeuThiches -> {
-                    mAdapter = new DanhSachBaiHatAdapter(baiHatYeuThiches);
+                    listBaiHat = baiHatYeuThiches;
+                    mAdapter = new DanhSachBaiHatAdapter(listBaiHat);
                     binding.recycleDanhSachBH.setLayoutManager(new LinearLayoutManager(SongsListActivity.this));
                     binding.recycleDanhSachBH.setAdapter(mAdapter);
                     eventClick();
@@ -144,7 +146,8 @@ public class SongsListActivity extends AppCompatActivity {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(baiHatYeuThiches -> {
-                    mAdapter = new DanhSachBaiHatAdapter(baiHatYeuThiches);
+                    listBaiHat = baiHatYeuThiches;
+                    mAdapter = new DanhSachBaiHatAdapter(listBaiHat);
                     binding.recycleDanhSachBH.setLayoutManager(new LinearLayoutManager(SongsListActivity.this));
                     binding.recycleDanhSachBH.setAdapter(mAdapter);
                     eventClick();
@@ -189,10 +192,12 @@ public class SongsListActivity extends AppCompatActivity {
         }
     }
 
+    private static final String TAG = "xxxx SONGLISTACTIVITY";
     private void eventClick() {
         binding.btnNghetatca.setEnabled(true);
         binding.btnNghetatca.setOnClickListener(v -> {
             Intent intent = new Intent(SongsListActivity.this, PlayMusicActivity.class);
+            Log.d(TAG, "eventClick: " + listBaiHat.toString());
             intent.putParcelableArrayListExtra("allbaihat", (ArrayList<? extends Parcelable>) listBaiHat);
             startActivity(intent);
         });

@@ -1,6 +1,7 @@
 package com.trantri.tdt_music.Fragment;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -13,12 +14,16 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.mancj.materialsearchbar.MaterialSearchBar;
 import com.trantri.tdt_music.Adapter.SearchBaiHatAdapter;
-import com.trantri.tdt_music.R;
-import com.trantri.tdt_music.Service.ApiClient;
+import com.trantri.tdt_music.Model.MessageEventBus;
+import com.trantri.tdt_music.data.remote.ApiClient;
+import com.trantri.tdt_music.data.Constraint;
 import com.trantri.tdt_music.databinding.FragmentTrangChuBinding;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -27,7 +32,7 @@ import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
-public class Fragment_TrangChu extends Fragment {
+public class Fragment_TrangChu extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
     FragmentTrangChuBinding binding;
     ArrayList<String> list;
     SearchBaiHatAdapter mAdapter;
@@ -38,8 +43,15 @@ public class Fragment_TrangChu extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = FragmentTrangChuBinding.inflate(getLayoutInflater());
-        searchView();
         return binding.getRoot();
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        searchView();
+
+        // config refresh data
+        binding.refresh.setOnRefreshListener(this);
     }
 
     @Override
@@ -49,19 +61,16 @@ public class Fragment_TrangChu extends Fragment {
     }
 
     private void searchView() {
-
-
         list = new ArrayList<>();
-        list.add("nhạc trẻ");
-        list.add("nhạc vàng");
-        list.add("nhạc cách mạng");
+        list.add("sơn tùng");
+        list.add("đen vâu");
+        list.add("min");
+
         binding.searchMusic.setSuggestionsEnabled(true);
+        binding.searchMusic.setMaxSuggestionCount(5);
 
+        binding.searchMusic.setSpeechMode(false);
         binding.searchMusic.setLastSuggestions(list);
-        binding.searchMusic.setCardViewElevation(10);
-        binding.searchMusic.setClearIcon(R.drawable.ic_baseline_delete_24);
-        binding.searchMusic.setTextColor(R.color.white);
-
         binding.searchMusic.setOnSearchActionListener(new MaterialSearchBar.OnSearchActionListener() {
             @Override
             public void onSearchStateChanged(boolean enabled) {
@@ -77,10 +86,6 @@ public class Fragment_TrangChu extends Fragment {
 
             @Override
             public void onButtonClicked(int buttonCode) {
-                switch (buttonCode) {
-
-
-                }
             }
         });
     }
@@ -109,6 +114,7 @@ public class Fragment_TrangChu extends Fragment {
                         })
         );
 
+        binding.searchMusic.setSpeechMode(false);
         binding.searchMusic.addTextChangeListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -117,14 +123,10 @@ public class Fragment_TrangChu extends Fragment {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-
                 if (count == 0) {
-//                    mAdapter.notifyDataSetChanged();
-
                     binding.recyclerViewSearch.setVisibility(View.GONE);
 
                 }
-//                mAdapter.notifyDataSetChanged();
             }
 
             @Override
@@ -132,5 +134,16 @@ public class Fragment_TrangChu extends Fragment {
 //                binding.searchMusic.closeSearch();
             }
         });
+    }
+
+    @Override
+    public void onRefresh() {
+        binding.refresh.setRefreshing(true);
+
+        new Handler().postDelayed(() -> {
+            EventBus.getDefault().post(new MessageEventBus(Constraint.EventBusAction.PAUSE, null));
+            Toast.makeText(getContext(), "data refreshed", Toast.LENGTH_SHORT).show();
+            binding.refresh.setRefreshing(false);
+        }, 1000);
     }
 }
