@@ -23,7 +23,7 @@ import java.util.List;
 public class DanhSachTheLoaiTheoChuDeAdapter extends RecyclerView.Adapter<DanhSachTheLoaiTheoChuDeAdapter.ViewHolder> {
     List<TheLoai> mTheLoais;
 
-    public DanhSachTheLoaiTheoChuDeAdapter(List<TheLoai> mTheLoais) {
+    public DanhSachTheLoaiTheoChuDeAdapter(@NonNull List<TheLoai> mTheLoais) {
         this.mTheLoais = mTheLoais;
     }
 
@@ -37,7 +37,7 @@ public class DanhSachTheLoaiTheoChuDeAdapter extends RecyclerView.Adapter<DanhSa
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         TheLoai theLoai = mTheLoais.get(position);
-        Glide.with(holder.binding.imgTheloaitheochude)
+        Glide.with(holder.itemView.getContext())
                 .load(theLoai.getHinhTheLoai())
 //                .placeholder(R.drawable.ic_place_holder)
 //                .error(R.drawable.ic_place_holder)

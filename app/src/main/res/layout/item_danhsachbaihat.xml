@@ -31,7 +31,9 @@
             android:text="Ten Ca Khuc"
             android:textColor="#000"
             android:textSize="20sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:layout_marginStart="5dp"
+            android:layout_toEndOf="@id/tv_danhSachIndex" />
 
         <TextView
             android:id="@+id/tv_TenCaSiBH"
@@ -39,11 +41,14 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/tv_tenCaKhuc"
             android:layout_marginLeft="10dp"
+            android:maxWidth="250dp"
             android:layout_toRightOf="@id/tv_danhSachIndex"
             android:ellipsize="end"
-            android:singleLine="true"
+            android:maxLines="2"
             android:text="Tran Dinh Tri"
-            android:textColor="#4b4a4a" />
+            android:textColor="#4b4a4a"
+            android:layout_marginStart="10dp"
+            android:layout_toEndOf="@id/tv_danhSachIndex" />
 
         <ImageView
             android:id="@+id/img_yeuThich"
@@ -51,6 +56,7 @@
             android:layout_height="30dp"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:src="@drawable/iconlove" />
+            android:src="@drawable/iconlove"
+            android:layout_alignParentEnd="true" />
     </RelativeLayout>
 </androidx.cardview.widget.CardView>

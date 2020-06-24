@@ -24,10 +24,10 @@
         android:paddingLeft="5dp"
         android:layout_gravity="center"
         android:id="@+id/tv_tenAllAlbum"
-        android:layout_width="wrap_content"
+        android:layout_width="120dp"
         android:layout_height="wrap_content"
         android:ellipsize="end"
-        android:gravity="left"
+        android:gravity="center"
         android:lines="2"
         android:maxLines="2"
         android:maxWidth="180dp"
@@ -36,9 +36,9 @@
         android:textSize="15sp" />
 
     <TextView
-        android:layout_gravity="center"
+        android:gravity="center"
         android:id="@+id/tv_tenCaSiAlBum"
-        android:layout_width="wrap_content"
+        android:layout_width="120dp"
         android:layout_height="wrap_content"
         android:text="Various Artists"
         android:textColor="#545452"

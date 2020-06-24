@@ -68,11 +68,10 @@ public interface DataService {
     @GET("chuDeAll.php")
     Single<List<ChuDe>> getAllChuDe();
 
-
     @FormUrlEncoded
-        // tương tác và gửi data lên và nhận về
     @POST("TheLoaiTheoChuDe.php")
-    Observable<List<TheLoai>> getTheLoaiTheoChuDe(@Field("idchude1") String idchude);
+        // tương tác và gửi data lên và nhận về
+    Observable<List<TheLoai>> getTheLoaiTheoChuDe(@Field("idchude") String idchude);
 
     @GET("AlbumAll.php")
     Single<List<Album>> getAllAlbum();

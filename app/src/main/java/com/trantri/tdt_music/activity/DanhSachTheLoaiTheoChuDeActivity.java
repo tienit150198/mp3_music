@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import com.trantri.tdt_music.Adapter.DanhSachTheLoaiTheoChuDeAdapter;
 import com.trantri.tdt_music.Model.ChuDe;
 import com.trantri.tdt_music.Model.TheLoai;
+import com.trantri.tdt_music.data.remote.APIService;
 import com.trantri.tdt_music.data.remote.ApiClient;
 import com.trantri.tdt_music.databinding.ActivityDanhSachTheLoaiTheoChuDeBinding;
 
@@ -43,7 +44,7 @@ public class DanhSachTheLoaiTheoChuDeActivity extends AppCompatActivity {
 
     private static final String TAG = "LOG_DanhSachuD";
     private void GetData(String idchude) {
-        ApiClient.getService(getApplication()).getTheLoaiTheoChuDe(idchude)
+        ApiClient.getService(this).getTheLoaiTheoChuDe(idchude)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<List<TheLoai>>() {
