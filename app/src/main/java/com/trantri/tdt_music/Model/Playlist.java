@@ -52,4 +52,13 @@ public class Playlist implements Serializable {
         this.icon = icon;
     }
 
+    @Override
+    public String toString() {
+        return "Playlist{" +
+                "idPlaylist='" + idPlaylist + '\'' +
+                ", ten='" + ten + '\'' +
+                ", hinhAnhPlaylist='" + hinhAnhPlaylist + '\'' +
+                ", icon='" + icon + '\'' +
+                '}';
+    }
 }

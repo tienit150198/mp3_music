@@ -20,12 +20,11 @@ import com.trantri.tdt_music.databinding.ItemCacChuDeBinding;
 import java.util.List;
 
 public class DanhSachAllChuDeAdapter extends RecyclerView.Adapter<DanhSachAllChuDeAdapter.ViewHolder> {
-    List<ChuDe> mList;
-    Context mContext;
-
-    public DanhSachAllChuDeAdapter(Context mContext, List<ChuDe> mList) {
-        this.mContext = mContext;
-        this.mList = mList;
+    private List<ChuDe> mList;
+    private OnItemClickedListener mListener;
+    public DanhSachAllChuDeAdapter(@NonNull List<ChuDe> list, @NonNull OnItemClickedListener listener) {
+        mList = list;
+        mListener = listener;
     }
 
     @NonNull
@@ -37,30 +36,36 @@ public class DanhSachAllChuDeAdapter extends RecyclerView.Adapter<DanhSachAllChu
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
-        final ChuDe chuDe = mList.get(position);
-
-        Glide.with(mContext)
-                .load(chuDe.getHinhChuDe())
-//                .placeholder(R.drawable.ic_place_holder)
-//                .error(R.drawable.ic_place_holder)
-                .into(holder.binding.imgAllChuDe);
-        holder.binding.imgAllChuDe.setOnClickListener(v -> {
-            Intent intent = new Intent(mContext, DanhSachTheLoaiTheoChuDeActivity.class);
-            intent.putExtra("chude", mList.get(position));
-            mContext.startActivity(intent);
-        });
+        holder.bindData(mList.get(position));
     }
 
     @Override
     public int getItemCount() {
-        return mList.size();
+        return (mList != null ? mList.size() : 0);
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        ItemCacChuDeBinding binding;
+        private ItemCacChuDeBinding binding;
         public ViewHolder(@NonNull ItemCacChuDeBinding b) {
             super(b.getRoot());
             binding = b;
+
+            itemView.setOnClickListener(v -> {
+                if(mListener != null){
+                    mListener.onItemClicked(mList.get(getAdapterPosition()));
+                }
+            });
         }
+
+        public void bindData(ChuDe chuDe){
+            Glide
+                    .with(itemView.getContext())
+                    .load(chuDe.getHinhChuDe())
+                    .into(binding.imgAllChuDe);
+        }
+    }
+
+    public interface OnItemClickedListener{
+        default void onItemClicked(@NonNull ChuDe chude){};
     }
 }

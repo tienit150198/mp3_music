@@ -68,7 +68,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         mViewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
         mViewPagerAdapter.addFragment(new Fragment_TrangChu(), "Trang Chủ");
         mViewPagerAdapter.addFragment(new FragmentMV(), "MV");
-        mViewPagerAdapter.addFragment(new UserFragment(), "Cá Nhân");
+        mViewPagerAdapter.addFragment(UserFragment.newInstance(), "Cá Nhân");
 
         binding.viewpager.setAdapter(mViewPagerAdapter);
 

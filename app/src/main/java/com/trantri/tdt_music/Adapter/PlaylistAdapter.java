@@ -50,12 +50,10 @@ public class PlaylistAdapter extends ArrayAdapter<Playlist> {
         Playlist playlist = getItem(position);
         Glide.with(getContext()).load(playlist.getHinhAnhPlaylist())
                 .transform(new CenterInside(), new RoundedCorners(30))
-//                .placeholder(R.drawable.ic_place_holder)
                 .into(mViewHolder.imgBackgroud);
         Glide.with(getContext())
                 .load(playlist.getIcon())
                 .transform(new CenterInside(), new RoundedCorners(15))
-//                .placeholder(R.drawable.ic_place_holder)
                 .into(mViewHolder.imgPlaylist);
         mViewHolder.txtNamePlaylist.setText(playlist.getTen());
         return convertView;

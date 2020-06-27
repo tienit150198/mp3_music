@@ -26,4 +26,12 @@ public class Constraint {
     public interface SharedPref{
         String TIME_VIDEO = "TIME_VIDEO";
     }
+
+    public interface Database{
+        String DATABASE_NAME = "MUSIC";
+        String NAME_BAI_HAT_YEU_THICH = "BAI_HAT_YEU_THICH";
+        String NAME_PLAY_LIST = "PLAY_LIST";
+        String PK_BAI_HAT_YEU_THICH = "idBaiHat";
+        String PK_PLAY_LIST = "playlist_name";
+    }
 }

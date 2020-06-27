@@ -43,6 +43,7 @@ public class PlaylistActivity extends AppCompatActivity {
                         Log.d(TAG, "Getdata: " + throwable.getMessage());
                         return;
                     }
+                    Log.d(TAG, "Getdata: " + playlistAlls.toString());
                     mAdapter = new DanhSachAllPlaylistAdapter(PlaylistActivity.this, playlistAlls);
                     binding.myRecycleViewPlaylist.setHasFixedSize(true);
                     binding.myRecycleViewPlaylist.setLayoutManager(new GridLayoutManager(PlaylistActivity.this, 2));

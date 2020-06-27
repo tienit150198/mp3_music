@@ -1,27 +1,21 @@
 package com.trantri.tdt_music.Model;
 
-import android.os.Parcel;
-import android.os.Parcelable;
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.trantri.tdt_music.Model.music.InformationMusic;
 
-public class BaiHatYeuThich extends InformationMusic implements Parcelable {
+import java.io.Serializable;
 
-    public static final Creator<BaiHatYeuThich> CREATOR = new Creator<BaiHatYeuThich>() {
-        @Override
-        public BaiHatYeuThich createFromParcel(Parcel in) {
-            return new BaiHatYeuThich(in);
-        }
-
-        @Override
-        public BaiHatYeuThich[] newArray(int size) {
-            return new BaiHatYeuThich[size];
-        }
-    };
+@Entity
+public class BaiHatYeuThich extends InformationMusic implements Serializable {
     @SerializedName("IdBaiHat")
     @Expose
+    @PrimaryKey
+    @ColumnInfo(name = "idBaiHat")
     private String idBaiHat;
     @SerializedName("TenBaiHat")
     @Expose
@@ -39,14 +33,41 @@ public class BaiHatYeuThich extends InformationMusic implements Parcelable {
     @Expose
     private String luotThich;
 
-    protected BaiHatYeuThich(Parcel in) {
-        idBaiHat = in.readString();
-        tenBaiHat = in.readString();
-        hinhBaiHat = in.readString();
-        caSi = in.readString();
-        linkBaiHat = in.readString();
-        luotThich = in.readString();
+    boolean isLiked;
+
+
+    public BaiHatYeuThich() {
+        isLiked = false;
     }
+
+    public BaiHatYeuThich(String idBaiHat, String tenBaiHat, String hinhBaiHat, String caSi, String linkBaiHat, String luotThich, boolean isLiked) {
+        this.idBaiHat = idBaiHat;
+        this.tenBaiHat = tenBaiHat;
+        this.hinhBaiHat = hinhBaiHat;
+        this.caSi = caSi;
+        this.linkBaiHat = linkBaiHat;
+        this.luotThich = luotThich;
+        this.isLiked = isLiked;
+    }
+
+    public BaiHatYeuThich(String idBaiHat, String tenBaiHat, String hinhBaiHat, String caSi, String linkBaiHat, String luotThich) {
+        this.idBaiHat = idBaiHat;
+        this.tenBaiHat = tenBaiHat;
+        this.hinhBaiHat = hinhBaiHat;
+        this.caSi = caSi;
+        this.linkBaiHat = linkBaiHat;
+        this.luotThich = luotThich;
+        this.isLiked = false;
+    }
+
+    public boolean isLiked() {
+        return isLiked;
+    }
+
+    public void setLiked(boolean liked) {
+        isLiked = liked;
+    }
+
 
     public String getIdBaiHat() {
         return idBaiHat;
@@ -94,21 +115,6 @@ public class BaiHatYeuThich extends InformationMusic implements Parcelable {
 
     public void setLuotThich(String luotThich) {
         this.luotThich = luotThich;
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(idBaiHat);
-        dest.writeString(tenBaiHat);
-        dest.writeString(hinhBaiHat);
-        dest.writeString(caSi);
-        dest.writeString(linkBaiHat);
-        dest.writeString(luotThich);
     }
 
     @Override

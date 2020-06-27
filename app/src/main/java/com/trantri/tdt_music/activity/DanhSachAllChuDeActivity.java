@@ -1,12 +1,15 @@
 package com.trantri.tdt_music.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 
 import com.trantri.tdt_music.Adapter.DanhSachAllChuDeAdapter;
+import com.trantri.tdt_music.Model.ChuDe;
 import com.trantri.tdt_music.data.remote.ApiClient;
 import com.trantri.tdt_music.databinding.ActivityDanhSachAllChuDeBinding;
 
@@ -17,7 +20,7 @@ import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
-public class DanhSachAllChuDeActivity extends AppCompatActivity {
+public class DanhSachAllChuDeActivity extends AppCompatActivity implements DanhSachAllChuDeAdapter.OnItemClickedListener {
     DanhSachAllChuDeAdapter mAdapter;
     ActivityDanhSachAllChuDeBinding binding;
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
@@ -41,7 +44,7 @@ public class DanhSachAllChuDeActivity extends AppCompatActivity {
                         Log.d(TAG, "GetDataChuDe: err");
                         return;
                     }
-                    mAdapter = new DanhSachAllChuDeAdapter(getApplicationContext(), chuDes);
+                    mAdapter = new DanhSachAllChuDeAdapter(chuDes, this);
                     binding.recycleViewAllChuDe.setLayoutManager(new GridLayoutManager(DanhSachAllChuDeActivity.this, 1));
                     binding.recycleViewAllChuDe.setAdapter(mAdapter);
                 });
@@ -54,6 +57,13 @@ public class DanhSachAllChuDeActivity extends AppCompatActivity {
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("Tất Cả Chủ Đề Bài Hát");
         binding.toobarAllChuDe.setNavigationOnClickListener(v -> finish());
+    }
+
+    @Override
+    public void onItemClicked(@NonNull ChuDe chude) {
+        Intent intent = new Intent(this, DanhSachTheLoaiTheoChuDeActivity.class);
+        intent.putExtra("chude", chude);
+        startActivity(intent);
     }
 
     @Override
