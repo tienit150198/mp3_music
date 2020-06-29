@@ -40,11 +40,17 @@ public class Fragment_TimKiem extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        binding = FragmentTimKiemBinding.inflate(getLayoutInflater());
+        binding = FragmentTimKiemBinding.inflate(inflater, container, false);
         ((AppCompatActivity) Objects.requireNonNull(getActivity())).setSupportActionBar(binding.toolbartimkiembaihat);
         binding.toolbartimkiembaihat.setTitle("Tìm kiếm bài hát...");
         setHasOptionsMenu(true);
         return binding.getRoot();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
     }
 
     @Override

@@ -28,8 +28,8 @@ public interface BaiHatYeuThichDao {
     @Update(onConflict = OnConflictStrategy.REPLACE)
     void updateBaiHatYeuThich(BaiHatYeuThich baiHatYeuThich);
 
-    @Query("SELECT * FROM " + Constraint.Database.NAME_BAI_HAT_YEU_THICH + " WHERE " + Constraint.Database.PK_BAI_HAT_YEU_THICH + " = :idBaiHat")
-    BaiHatYeuThich getBaiHatYeuThich(int idBaiHat);
+    @Query("SELECT * FROM " + Constraint.Database.NAME_BAI_HAT_YEU_THICH + " WHERE " + Constraint.Database.PK_BAI_HAT_YEU_THICH + " = :tenBaiHat")
+    BaiHatYeuThich getBaiHatYeuThich(String tenBaiHat);
 
     @Query("SELECT * FROM " + Constraint.Database.NAME_BAI_HAT_YEU_THICH)
     LiveData<List<BaiHatYeuThich>> getAllBaiHatYeuThich();

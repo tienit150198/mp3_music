@@ -2,6 +2,7 @@ package com.trantri.tdt_music.Fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,7 +41,7 @@ public class FragmentMV extends Fragment implements YoutubeAdapter.OnItemClickLi
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        binding = FragmentMvBinding.inflate(getLayoutInflater(), container, false);
+        binding = FragmentMvBinding.inflate(inflater, container, false);
         return binding.getRoot();
     }
 
@@ -49,6 +50,12 @@ public class FragmentMV extends Fragment implements YoutubeAdapter.OnItemClickLi
         configData();
         initData();
         searchData();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
     }
 
     private void searchData() {
@@ -82,8 +89,10 @@ public class FragmentMV extends Fragment implements YoutubeAdapter.OnItemClickLi
                                 .subscribe((youtube, throwable) -> {
                                     if (throwable != null) {
                                         if (!NetworkUtils.isOnline(Objects.requireNonNull(getContext()))) {
+                                            Log.d(TAG, "onSearchConfirmed: ERR");
                                             Toast.makeText(getContext(), "Please check you wifi", Toast.LENGTH_SHORT).show();
                                         } else {
+                                            Log.d(TAG, "onSearchConfirmed: ERR1");
                                             Toast.makeText(getContext(), "Connected fail, please re-connect!" + throwable.getMessage(), Toast.LENGTH_SHORT).show();
                                         }
                                         return;

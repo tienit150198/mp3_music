@@ -4,6 +4,12 @@ import android.app.Application;
 import android.telephony.SubscriptionManager;
 
 import com.google.gson.Gson;
+import com.trantri.tdt_music.Fragment.FragmentAlbum;
+import com.trantri.tdt_music.Fragment.FragmentBaiHat;
+import com.trantri.tdt_music.Fragment.FragmentChuDeThLoai;
+import com.trantri.tdt_music.Fragment.FragmentPlaylist;
+import com.trantri.tdt_music.Fragment.Fragment_QuangCao;
+import com.trantri.tdt_music.activity.DanhSachAllAlbumActivity;
 
 /**
  * Created by TranTien

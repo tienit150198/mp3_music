@@ -1,7 +1,6 @@
 package com.trantri.tdt_music.Adapter;
 
 import android.content.Context;
-import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.widget.Toast;
@@ -10,43 +9,38 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.resource.bitmap.CenterInside;
-import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
-import com.google.gson.Gson;
 import com.trantri.tdt_music.Model.BaiHatYeuThich;
 import com.trantri.tdt_music.R;
-import com.trantri.tdt_music.activity.PlayMusicActivity;
 import com.trantri.tdt_music.data.local.AppDatabase;
 import com.trantri.tdt_music.databinding.ItemBaiHatYeuThichBinding;
 
 import java.util.List;
 
-public class BaiHatAdapter extends RecyclerView.Adapter<BaiHatAdapter.ViewHolder> {
-    private Context mContext;
+/**
+ * Created by TranTien
+ * Date 06/28/2020.
+ */
+public class MusicLikedAdapter extends RecyclerView.Adapter<MusicLikedAdapter.MusicLikedViewHolder> {
     private List<BaiHatYeuThich> mBaiHatYeuThiches;
-    private static List<BaiHatYeuThich> mBatHatDaThiches;
     private AppDatabase mInstanceDatabase;
 
-    public BaiHatAdapter(Context mContext, List<BaiHatYeuThich> mBaiHatYeuThiches) {
-        this.mContext = mContext;
-        this.mBaiHatYeuThiches = mBaiHatYeuThiches;
-        mInstanceDatabase = AppDatabase.getInstance(mContext);
-    }
+    private DanhSachAllChuDeAdapter.OnItemClickedListener mListener;
 
-    public void setBaiHatDaThich(List<BaiHatYeuThich> mList) {
-        mBatHatDaThiches = mList;
-        notifyDataSetChanged();
+    public MusicLikedAdapter(@NonNull Context context, @NonNull List<BaiHatYeuThich> mBaiHatYeuThiches, @NonNull DanhSachAllChuDeAdapter.OnItemClickedListener listener) {
+        this.mBaiHatYeuThiches = mBaiHatYeuThiches;
+        mInstanceDatabase = AppDatabase.getInstance(context);
+
+        mListener = listener;
     }
 
     @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        LayoutInflater inflater = LayoutInflater.from(mContext);
-        return new ViewHolder(ItemBaiHatYeuThichBinding.inflate(inflater));
+    public MusicLikedViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        return new MusicLikedViewHolder(ItemBaiHatYeuThichBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false));
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull MusicLikedViewHolder holder, int position) {
         holder.bindData(mBaiHatYeuThiches.get(position));
     }
 
@@ -55,18 +49,15 @@ public class BaiHatAdapter extends RecyclerView.Adapter<BaiHatAdapter.ViewHolder
         return (mBaiHatYeuThiches != null ? mBaiHatYeuThiches.size() : 0);
     }
 
-    private static final String TAG = "xxxxxx";
-    public class ViewHolder extends RecyclerView.ViewHolder {
-        ItemBaiHatYeuThichBinding binding;
+    public class MusicLikedViewHolder extends RecyclerView.ViewHolder {
+        private ItemBaiHatYeuThichBinding binding;
 
-        public ViewHolder(ItemBaiHatYeuThichBinding b) {
-            super(b.getRoot());
-            binding = b;
-            itemView.setOnClickListener(v -> {
-                Intent intent = new Intent(mContext, PlayMusicActivity.class);
-                intent.putExtra("cakhuc", new Gson().toJson(mBaiHatYeuThiches.get(getLayoutPosition())));
-                mContext.startActivity(intent);
-            });
+        public MusicLikedViewHolder(@NonNull ItemBaiHatYeuThichBinding itemBaiHatYeuThichBinding) {
+            super(itemBaiHatYeuThichBinding.getRoot());
+
+            binding = itemBaiHatYeuThichBinding;
+
+            binding.rlBaihat.setOnClickListener(v -> mListener.onItemClicked(getAdapterPosition()));
 
             binding.imgLuotthich.setOnClickListener(v -> {
                 if (!mBaiHatYeuThiches.get(getAdapterPosition()).isLiked()) {
@@ -87,17 +78,12 @@ public class BaiHatAdapter extends RecyclerView.Adapter<BaiHatAdapter.ViewHolder
             Glide
                     .with(itemView.getContext())
                     .load(baiHatYeuThich.getHinhBaiHat())
-                    .transform(new CenterInside(), new RoundedCorners(15))
                     .into(binding.imgBaihatyeuthich);
 
-            binding.imgLuotthich.setImageResource(R.drawable.iconlove);
-            if (mBatHatDaThiches != null) {
-                for (int i = 0; i < mBatHatDaThiches.size(); i++) {
-                    if (baiHatYeuThich.getTenBaiHat().equals(mBatHatDaThiches.get(i).getTenBaiHat())) {
-                        binding.imgLuotthich.setImageResource(R.drawable.iconloved);
-                        baiHatYeuThich.setLiked(true);
-                    }
-                }
+            if (baiHatYeuThich.isLiked()) {
+                binding.imgLuotthich.setImageResource(R.drawable.iconloved);
+            } else {
+                binding.imgLuotthich.setImageResource(R.drawable.iconlove);
             }
 
             binding.tvTenBaiHat.setText(baiHatYeuThich.getTenBaiHat());

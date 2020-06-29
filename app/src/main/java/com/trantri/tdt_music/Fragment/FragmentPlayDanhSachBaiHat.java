@@ -21,13 +21,22 @@ public class FragmentPlayDanhSachBaiHat extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        binding = FragmentPlayDanhSachBaiHatBinding.inflate(getLayoutInflater());
+        binding = FragmentPlayDanhSachBaiHatBinding.inflate(inflater, container, false);
+        return binding.getRoot();
+    }
 
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         if (PlayMusicActivity.baiHatList.size() > 0) {
             musicAdapter = new PlayMusicAdapter(getActivity(), PlayMusicActivity.baiHatList);
             binding.recyclePlayDanhSachBH.setLayoutManager(new LinearLayoutManager(getActivity()));
             binding.recyclePlayDanhSachBH.setAdapter(musicAdapter);
         }
-        return binding.getRoot();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+//        binding = null;
     }
 }

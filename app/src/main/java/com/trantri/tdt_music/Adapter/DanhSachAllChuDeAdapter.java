@@ -67,5 +67,6 @@ public class DanhSachAllChuDeAdapter extends RecyclerView.Adapter<DanhSachAllChu
 
     public interface OnItemClickedListener{
         default void onItemClicked(@NonNull ChuDe chude){};
+        default void onItemClicked(@NonNull int position){};
     }
 }

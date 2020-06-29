@@ -17,8 +17,12 @@ public class SplashScreenActivity extends AppCompatActivity {
         binding = ActivitySplashScreenBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         new Handler().postDelayed(() -> {
+            binding.processSplash.setIndeterminate(false);
+
             startActivity(new Intent(SplashScreenActivity.this, MainActivity.class));
             finish();
+
+
         },2000);
     }
 }

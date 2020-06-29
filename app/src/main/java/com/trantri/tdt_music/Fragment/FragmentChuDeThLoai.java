@@ -40,10 +40,16 @@ public class FragmentChuDeThLoai extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        binding = FragmentChudeTheloaiBinding.inflate(getLayoutInflater());
+        binding = FragmentChudeTheloaiBinding.inflate(inflater, container, false);
         initView();
         GetData();
         return binding.getRoot();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
     }
 
     private void initView() {

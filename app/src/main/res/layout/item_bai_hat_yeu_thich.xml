@@ -3,56 +3,62 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <ImageView
-        android:id="@+id/img_baihatyeuthich"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
-        android:layout_margin="5dp"
-        android:scaleType="fitXY" />
+    <RelativeLayout
+        android:id="@+id/rlBaihat"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-    <TextView
-        android:maxWidth="250dp"
-        android:id="@+id/tv_tenBaiHat"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="5dp"
-        android:layout_marginTop="7dp"
-        android:layout_toRightOf="@id/img_baihatyeuthich"
-        android:maxLines="2"
-        android:text="Khi Phải Xa Em"
-        android:textColor="@android:color/black"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        android:layout_marginStart="5dp"
-        android:layout_toEndOf="@id/img_baihatyeuthich" />
+        <ImageView
+            android:id="@+id/img_baihatyeuthich"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_margin="5dp"
+            android:scaleType="fitXY" />
 
-    <TextView
+        <TextView
+            android:id="@+id/tv_tenBaiHat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="7dp"
+            android:layout_toEndOf="@id/img_baihatyeuthich"
+            android:layout_toRightOf="@id/img_baihatyeuthich"
+            android:maxWidth="250dp"
+            android:maxLines="2"
+            android:text="Khi Phải Xa Em"
+            android:textColor="@android:color/black"
+            android:textSize="18sp"
+            android:textStyle="bold" />
 
-        android:id="@+id/tv_tenCaSi"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/tv_tenBaiHat"
-        android:layout_marginLeft="5dp"
-        android:layout_marginTop="7dp"
-        android:layout_toRightOf="@id/img_baihatyeuthich"
-        android:text="Trần Đình Trí"
-        android:maxWidth="250dp"
-        android:maxLines="2"
-        android:textColor="@android:color/black"
-        android:textSize="15sp"
-        android:textStyle="bold"
-        android:layout_marginStart="5dp"
-        android:layout_toEndOf="@id/img_baihatyeuthich" />
+        <TextView
+
+            android:id="@+id/tv_tenCaSi"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_tenBaiHat"
+            android:layout_marginStart="5dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="7dp"
+            android:layout_toEndOf="@id/img_baihatyeuthich"
+            android:layout_toRightOf="@id/img_baihatyeuthich"
+            android:maxWidth="250dp"
+            android:maxLines="2"
+            android:text="Trần Đình Trí"
+            android:textColor="@android:color/black"
+            android:textSize="15sp"
+            android:textStyle="bold" />
+    </RelativeLayout>
 
     <ImageView
         android:id="@+id/img_luotthich"
         android:layout_width="20dp"
         android:layout_height="20dp"
+        android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
+        android:layout_marginEnd="10dp"
         android:layout_marginRight="10dp"
-        android:src="@drawable/iconlove"
-        android:layout_alignParentEnd="true"
-        android:layout_marginEnd="10dp" />
+        android:src="@drawable/iconlove" />
 
 </RelativeLayout>

@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_marginRight="20dp"
-    android:layout_marginLeft="20dp"
-    android:layout_marginEnd="20dp"
+    android:layout_marginRight="15dp"
+    android:layout_marginEnd="15dp"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <androidx.cardview.widget.CardView xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -11,9 +10,8 @@
         android:id="@+id/ClickAlbum"
         android:layout_height="230dp"
         android:layout_gravity="center"
-        android:layout_marginRight="20dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginEnd="20dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginEnd="15dp"
         app:cardCornerRadius="10dp">
 
         <LinearLayout
@@ -26,7 +24,6 @@
                 android:id="@+id/img_album"
                 android:layout_width="180dp"
                 android:layout_height="180dp"
-
                 android:layout_gravity="center"
                 android:scaleType="fitXY" />
 
@@ -39,7 +36,7 @@
                 android:layout_marginRight="2dp"
                 android:ellipsize="end"
                 android:gravity="center"
-                android:maxLines="2"
+                android:singleLine="true"
                 android:maxWidth="180dp"
                 android:text="Xuân Này Con Không Về"
                 android:textColor="#070acc"

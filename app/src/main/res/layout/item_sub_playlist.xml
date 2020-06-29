@@ -12,12 +12,23 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:text="Nhạc ahihi"
-        android:textColor="@android:color/black" />
+        android:textSize="24sp"
+        android:layout_marginBottom="10dp"
+        android:textColor="#283593" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_sub_playlist"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/tvNamePlaylist" />
+        android:layout_below="@id/tvNamePlaylist"
+        android:layout_marginBottom="5dp"/>
+
+    <View
+        android:layout_below="@id/recycler_sub_playlist"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#92D8F8"
+        android:layout_marginBottom="10dp"
+        />
 
 </RelativeLayout>

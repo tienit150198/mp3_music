@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.trantri.tdt_music.Adapter.BaiHatAdapter;
+import com.trantri.tdt_music.data.local.AppDatabase;
 import com.trantri.tdt_music.data.remote.ApiClient;
 import com.trantri.tdt_music.databinding.FragmentBaiHatYeuthichBinding;
 
@@ -27,12 +28,32 @@ public class FragmentBaiHat extends Fragment {
     private FragmentBaiHatYeuthichBinding binding;
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
 
+    private AppDatabase mInstanceDatabase;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        binding = FragmentBaiHatYeuthichBinding.inflate(getLayoutInflater());
-        GetData();
+        binding = FragmentBaiHatYeuthichBinding.inflate(inflater, container, false);
         return binding.getRoot();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        GetData();
+        mInstanceDatabase = AppDatabase.getInstance(getContext());
+        mInstanceDatabase.mBaihatBaiHatYeuThichDao().getAllBaiHatYeuThich()
+                .observe(Objects.requireNonNull(getActivity()), baiHatYeuThiches -> {
+                    if (mAdapter == null) {
+                        mAdapter = new BaiHatAdapter(getActivity(), null);
+                    }
+                    mAdapter.setBaiHatDaThich(baiHatYeuThiches);
+                });
     }
 
     private static final String TAG = "LOG_FragmentBaiHat";
@@ -47,6 +68,7 @@ public class FragmentBaiHat extends Fragment {
                         Log.d(TAG, "Getdata: " + throwable.getMessage());
                         return;
                     }
+
                     Log.d(TAG, "GetData: SUCCESS");
                     mAdapter = new BaiHatAdapter(getActivity(), baiHatYeuThiches);
                     LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());

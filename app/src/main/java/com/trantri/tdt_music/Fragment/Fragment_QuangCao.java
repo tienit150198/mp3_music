@@ -35,9 +35,15 @@ public class Fragment_QuangCao extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        binding = FragmentQuangcaoBinding.inflate(getLayoutInflater());
+        binding = FragmentQuangcaoBinding.inflate(inflater, container, false);
         GetBanner();
         return binding.getRoot();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
     }
 
     private static final String TAG = "LOG_Fragment_QuangCao";

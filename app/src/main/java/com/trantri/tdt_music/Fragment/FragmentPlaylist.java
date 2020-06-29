@@ -39,10 +39,16 @@ public class FragmentPlaylist extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        binding = FragmentPlaylistBinding.inflate(getLayoutInflater());
+        binding = FragmentPlaylistBinding.inflate(inflater, container, false);
         GetData();
         ActionView();
         return binding.getRoot();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
     }
 
     private void ActionView() {

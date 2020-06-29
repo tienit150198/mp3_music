@@ -6,7 +6,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.os.StrictMode;
 import android.util.Log;
 
@@ -14,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.bumptech.glide.Glide;
+import com.google.gson.Gson;
 import com.trantri.tdt_music.Adapter.DanhSachBaiHatAdapter;
 import com.trantri.tdt_music.Model.Album;
 import com.trantri.tdt_music.Model.BaiHatYeuThich;
@@ -21,13 +21,13 @@ import com.trantri.tdt_music.Model.Playlist;
 import com.trantri.tdt_music.Model.PlaylistAll;
 import com.trantri.tdt_music.Model.Quangcao;
 import com.trantri.tdt_music.Model.TheLoai;
+import com.trantri.tdt_music.data.local.AppDatabase;
 import com.trantri.tdt_music.data.remote.ApiClient;
 import com.trantri.tdt_music.databinding.ActivitySongsListBinding;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -47,6 +47,8 @@ public class SongsListActivity extends AppCompatActivity {
     Album mAlbum;
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
 
+    private AppDatabase mInstanceDatabase;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,6 +59,14 @@ public class SongsListActivity extends AppCompatActivity {
         StrictMode.setThreadPolicy(policy);
         DataItent();
         init();
+
+        mInstanceDatabase = AppDatabase.getInstance(this);
+        mInstanceDatabase.mBaihatBaiHatYeuThichDao().getAllBaiHatYeuThich().observe(this, baiHatYeuThiches -> {
+            if (mAdapter == null) {
+                mAdapter = new DanhSachBaiHatAdapter(this, null);
+            }
+            mAdapter.setBaiHatDaThich(baiHatYeuThiches);
+        });
 
         if (mQuangcao != null && !mQuangcao.getTenbaihat().equals("")) {
             setValuesInView(mQuangcao.getTenbaihat(), mQuangcao.getHinhbaihat());
@@ -86,7 +96,7 @@ public class SongsListActivity extends AppCompatActivity {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(baiHatYeuThiches -> {
                     listBaiHat = baiHatYeuThiches;
-                    mAdapter = new DanhSachBaiHatAdapter(listBaiHat);
+                    mAdapter = new DanhSachBaiHatAdapter(this, listBaiHat);
                     binding.recycleDanhSachBH.setLayoutManager(new LinearLayoutManager(SongsListActivity.this));
                     binding.recycleDanhSachBH.setAdapter(mAdapter);
                     eventClick();
@@ -100,7 +110,7 @@ public class SongsListActivity extends AppCompatActivity {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(baiHatYeuThiches -> {
                     listBaiHat = baiHatYeuThiches;
-                    mAdapter = new DanhSachBaiHatAdapter(listBaiHat);
+                    mAdapter = new DanhSachBaiHatAdapter(this, listBaiHat);
                     binding.recycleDanhSachBH.setLayoutManager(new LinearLayoutManager(SongsListActivity.this));
                     binding.recycleDanhSachBH.setAdapter(mAdapter);
                     eventClick();
@@ -114,7 +124,7 @@ public class SongsListActivity extends AppCompatActivity {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(baiHatYeuThiches -> {
                     listBaiHat = baiHatYeuThiches;
-                    mAdapter = new DanhSachBaiHatAdapter(listBaiHat);
+                    mAdapter = new DanhSachBaiHatAdapter(this, listBaiHat);
                     binding.recycleDanhSachBH.setLayoutManager(new LinearLayoutManager(SongsListActivity.this));
                     binding.recycleDanhSachBH.setAdapter(mAdapter);
                     eventClick();
@@ -147,7 +157,7 @@ public class SongsListActivity extends AppCompatActivity {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(baiHatYeuThiches -> {
                     listBaiHat = baiHatYeuThiches;
-                    mAdapter = new DanhSachBaiHatAdapter(listBaiHat);
+                    mAdapter = new DanhSachBaiHatAdapter(this, listBaiHat);
                     binding.recycleDanhSachBH.setLayoutManager(new LinearLayoutManager(SongsListActivity.this));
                     binding.recycleDanhSachBH.setAdapter(mAdapter);
                     eventClick();
@@ -193,12 +203,13 @@ public class SongsListActivity extends AppCompatActivity {
     }
 
     private static final String TAG = "xxxx SONGLISTACTIVITY";
+
     private void eventClick() {
         binding.btnNghetatca.setEnabled(true);
         binding.btnNghetatca.setOnClickListener(v -> {
             Intent intent = new Intent(SongsListActivity.this, PlayMusicActivity.class);
             Log.d(TAG, "eventClick: " + listBaiHat.toString());
-            intent.putParcelableArrayListExtra("allbaihat", (ArrayList<? extends Parcelable>) listBaiHat);
+            intent.putExtra("allbaihat", new Gson().toJson(listBaiHat));
             startActivity(intent);
         });
     }

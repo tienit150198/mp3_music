@@ -18,9 +18,10 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.mancj.materialsearchbar.MaterialSearchBar;
 import com.trantri.tdt_music.Adapter.SearchBaiHatAdapter;
+import com.trantri.tdt_music.App;
 import com.trantri.tdt_music.Model.MessageEventBus;
-import com.trantri.tdt_music.data.remote.ApiClient;
 import com.trantri.tdt_music.data.Constraint;
+import com.trantri.tdt_music.data.remote.ApiClient;
 import com.trantri.tdt_music.databinding.FragmentTrangChuBinding;
 
 import org.greenrobot.eventbus.EventBus;
@@ -32,26 +33,29 @@ import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
-public class Fragment_TrangChu extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
-    FragmentTrangChuBinding binding;
-    ArrayList<String> list;
-    SearchBaiHatAdapter mAdapter;
+public class Fragment_TrangChu extends Fragment {
+    private FragmentTrangChuBinding binding;
+    private ArrayList<String> list;
+    private SearchBaiHatAdapter mAdapter;
 
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        binding = FragmentTrangChuBinding.inflate(getLayoutInflater());
+        binding = FragmentTrangChuBinding.inflate(inflater, container, false);
         return binding.getRoot();
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         searchView();
+    }
 
-        // config refresh data
-        binding.refresh.setOnRefreshListener(this);
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
     }
 
     @Override
@@ -134,16 +138,5 @@ public class Fragment_TrangChu extends Fragment implements SwipeRefreshLayout.On
 //                binding.searchMusic.closeSearch();
             }
         });
-    }
-
-    @Override
-    public void onRefresh() {
-        binding.refresh.setRefreshing(true);
-
-        new Handler().postDelayed(() -> {
-            EventBus.getDefault().post(new MessageEventBus(Constraint.EventBusAction.PAUSE, null));
-            Toast.makeText(getContext(), "data refreshed", Toast.LENGTH_SHORT).show();
-            binding.refresh.setRefreshing(false);
-        }, 1000);
     }
 }

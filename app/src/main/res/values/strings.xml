@@ -6,4 +6,11 @@
     <string name="youtube_id">AIzaSyBE-8j4c1hviqwENsua7mKJAWSPsGNDPME</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="title_dialog_input">Playlist</string>
+    <string name="message_dialog_input">Input name playlist</string>
+    <string name="message_dialog_selected">Select options</string>
+    <string name="title_dialog_selected">Playlist</string>
+    <string name="OK">OK</string>
+    <string name="Cancel">Cancel</string>
 </resources>

@@ -1,5 +1,6 @@
 package com.trantri.tdt_music.Model;
 
+import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
@@ -7,18 +8,20 @@ import androidx.room.PrimaryKey;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.trantri.tdt_music.Model.music.InformationMusic;
+import com.trantri.tdt_music.data.Constraint;
 
 import java.io.Serializable;
 
-@Entity
-public class BaiHatYeuThich extends InformationMusic implements Serializable {
+@Entity(tableName = Constraint.Database.NAME_BAI_HAT_YEU_THICH)
+public class BaiHatYeuThich{
     @SerializedName("IdBaiHat")
     @Expose
-    @PrimaryKey
     @ColumnInfo(name = "idBaiHat")
     private String idBaiHat;
     @SerializedName("TenBaiHat")
     @Expose
+    @NonNull
+    @PrimaryKey
     private String tenBaiHat;
     @SerializedName("HinhBaiHat")
     @Expose
@@ -40,7 +43,7 @@ public class BaiHatYeuThich extends InformationMusic implements Serializable {
         isLiked = false;
     }
 
-    public BaiHatYeuThich(String idBaiHat, String tenBaiHat, String hinhBaiHat, String caSi, String linkBaiHat, String luotThich, boolean isLiked) {
+    public BaiHatYeuThich(String idBaiHat, @NonNull String tenBaiHat, String hinhBaiHat, String caSi, String linkBaiHat, String luotThich, boolean isLiked) {
         this.idBaiHat = idBaiHat;
         this.tenBaiHat = tenBaiHat;
         this.hinhBaiHat = hinhBaiHat;
@@ -50,7 +53,7 @@ public class BaiHatYeuThich extends InformationMusic implements Serializable {
         this.isLiked = isLiked;
     }
 
-    public BaiHatYeuThich(String idBaiHat, String tenBaiHat, String hinhBaiHat, String caSi, String linkBaiHat, String luotThich) {
+    public BaiHatYeuThich(String idBaiHat, @NonNull String tenBaiHat, String hinhBaiHat, String caSi, String linkBaiHat, String luotThich) {
         this.idBaiHat = idBaiHat;
         this.tenBaiHat = tenBaiHat;
         this.hinhBaiHat = hinhBaiHat;
@@ -127,5 +130,34 @@ public class BaiHatYeuThich extends InformationMusic implements Serializable {
                 ", linkBaiHat='" + linkBaiHat + '\'' +
                 ", luotThich='" + luotThich + '\'' +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof BaiHatYeuThich)) return false;
+
+        BaiHatYeuThich that = (BaiHatYeuThich) o;
+
+        if (!idBaiHat.equals(that.idBaiHat)) return false;
+        if (tenBaiHat != null ? !tenBaiHat.equals(that.tenBaiHat) : that.tenBaiHat != null)
+            return false;
+        if (hinhBaiHat != null ? !hinhBaiHat.equals(that.hinhBaiHat) : that.hinhBaiHat != null)
+            return false;
+        if (caSi != null ? !caSi.equals(that.caSi) : that.caSi != null) return false;
+        if (linkBaiHat != null ? !linkBaiHat.equals(that.linkBaiHat) : that.linkBaiHat != null)
+            return false;
+        return luotThich != null ? luotThich.equals(that.luotThich) : that.luotThich == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = idBaiHat.hashCode();
+        result = 31 * result + (tenBaiHat != null ? tenBaiHat.hashCode() : 0);
+        result = 31 * result + (hinhBaiHat != null ? hinhBaiHat.hashCode() : 0);
+        result = 31 * result + (caSi != null ? caSi.hashCode() : 0);
+        result = 31 * result + (linkBaiHat != null ? linkBaiHat.hashCode() : 0);
+        result = 31 * result + (luotThich != null ? luotThich.hashCode() : 0);
+        return result;
     }
 }

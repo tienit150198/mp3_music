@@ -11,6 +11,8 @@ import android.util.Log;
 
 import androidx.annotation.Nullable;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.trantri.tdt_music.Model.BaiHatYeuThich;
 import com.trantri.tdt_music.Model.MessageEventBus;
 import com.trantri.tdt_music.Model.music.InformationMusic;
@@ -20,8 +22,11 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.io.IOException;
+import java.lang.reflect.Type;
+import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 import io.reactivex.rxjava3.subjects.BehaviorSubject;
@@ -52,7 +57,7 @@ public class PlayMusicService extends Service {
         @Override
         public void run() {
             mCurrentTime.onNext(mMediaPlayer.getCurrentPosition());
-            mHandler.postDelayed(this, 1000);
+            mHandler.postDelayed(this, 500);
         }
     };
 
@@ -87,11 +92,16 @@ public class PlayMusicService extends Service {
         mListBaiHat.clear();
         if (intent != null) {
             if (intent.hasExtra("cakhuc")) {
-                BaiHatYeuThich baiHatYeuThich = intent.getParcelableExtra("cakhuc");
+                String text = intent.getStringExtra("cakhuc");
+                BaiHatYeuThich baiHatYeuThich = new Gson().fromJson(text, BaiHatYeuThich.class);
                 mListBaiHat.add(baiHatYeuThich);
             }
             if (intent.hasExtra("allbaihat")) {
-                mListBaiHat = intent.getParcelableArrayListExtra("allbaihat");
+                String txtAllBaiHat = intent.getStringExtra("allbaihat");
+                Type type = new TypeToken<List<BaiHatYeuThich>>() {
+                }.getType();
+
+                mListBaiHat = new Gson().fromJson(txtAllBaiHat, type);
             }
 
             Log.d(TAG, "GetDataFromItent: " + (mListBaiHat != null ? mListBaiHat.toString() : null));
@@ -106,11 +116,10 @@ public class PlayMusicService extends Service {
         if (mListBaiHat.size() > positionPlay && mListBaiHat.get(positionPlay) != null) {
             if(mMediaPlayer == null){
                 mMediaPlayer = new MediaPlayer();
-
                 try {
                     Log.d(TAG, "playMusic: " + Uri.parse(mListBaiHat.get(positionPlay).getLinkBaiHat()));
                     mCurrentPosition = positionPlay;
-//            mMediaPlayer = MediaPlayer.create(this, Uri.parse(mListBaiHat.get(positionPlay).getLinkBaiHat()));
+
                     mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
 
                     mMediaPlayer.setDataSource(mListBaiHat.get(positionPlay).getLinkBaiHat());
@@ -262,6 +271,18 @@ public class PlayMusicService extends Service {
                     timeSeek = (int) messageEventBus.action;
                 }
                 changePosition(timeSeek);
+                break;
+
+            case Constraint.EventBusAction.UPDATE:
+                if(messageEventBus.action != null){
+                    BaiHatYeuThich baiHatYeuThich = (BaiHatYeuThich) messageEventBus.action;
+
+                    for(int i = 0 ; i < mListBaiHat.size() ; i++){
+                        if(mListBaiHat.get(i).getTenBaiHat().equals(baiHatYeuThich.getTenBaiHat())){
+                            mListBaiHat.set(i, baiHatYeuThich);
+                        }
+                    }
+                }
                 break;
         }
     }

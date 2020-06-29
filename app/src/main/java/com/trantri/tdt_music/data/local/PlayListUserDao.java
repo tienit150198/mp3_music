@@ -17,19 +17,19 @@ import java.util.List;
  * Date 06/27/2020.
  */
 @Dao
-public interface PlayListDao {
+public interface PlayListUserDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insertPlaylist(PlayList playList);
+    void insertPlaylist(PlayListUser playListUser);
 
     @Update(onConflict = OnConflictStrategy.REPLACE)
-    void updatePlaylist(PlayList playList);
+    void updatePlaylist(PlayListUser playListUser);
 
     @Delete
-    void deletePlaylist(PlayList playList);
+    void deletePlaylist(PlayListUser playListUser);
 
     @Query("SELECT * FROM " + Constraint.Database.NAME_PLAY_LIST + " WHERE " + Constraint.Database.PK_PLAY_LIST + " = :name")
-    PlayList getPlaylist(String name);
+    PlayListUser getPlaylist(String name);
 
-    @Query("SELECT * FROM " + Constraint.Database.PK_PLAY_LIST)
-    LiveData<List<PlayList>> getAllPlaylist();
+    @Query("SELECT * FROM " + Constraint.Database.NAME_PLAY_LIST)
+    LiveData<List<PlayListUser>> getAllPlaylist();
 }

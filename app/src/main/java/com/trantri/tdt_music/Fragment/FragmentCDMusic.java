@@ -1,14 +1,14 @@
 package com.trantri.tdt_music.Fragment;
 
-import android.animation.ObjectAnimator;
-import android.animation.ValueAnimator;
+import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.LinearInterpolator;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -16,50 +16,68 @@ import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
 import com.trantri.tdt_music.R;
+import com.trantri.tdt_music.activity.PlayMusicActivity;
+import com.trantri.tdt_music.databinding.FragmentCdMusicBinding;
 
-import java.util.Objects;
-
-import de.hdodenhof.circleimageview.CircleImageView;
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.disposables.CompositeDisposable;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public class FragmentCDMusic extends Fragment {
-    private View view;
-    private CircleImageView mCircleImageView;
-    // khi click nó tạo ra các hình ảnh
-    private ObjectAnimator mObjectAnimator;
+    private FragmentCdMusicBinding binding;
+    private Animation animation;
 
-    private boolean aLive = false;
+    private CompositeDisposable compositeDisposable = new CompositeDisposable();
+
+    public FragmentCDMusic() {
+    }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.fragment_cd_music, container, false);
+        binding = FragmentCdMusicBinding.inflate(inflater, container, false);
+        Log.d(TAG, "onCreateView: ");
+        return binding.getRoot();
+    }
 
-        mCircleImageView = view.findViewById(R.id.img_circle);
+    private static final String TAG = "111";
 
-        mObjectAnimator = ObjectAnimator.ofFloat(mCircleImageView, "rotation", 0f, 360f);
-        mObjectAnimator.setDuration(10000);
-
-        mObjectAnimator.setRepeatCount(ValueAnimator.INFINITE);
-
-        mObjectAnimator.setRepeatMode(ValueAnimator.RESTART);
-
-        mObjectAnimator.setInterpolator(new LinearInterpolator());
-
-        return view;
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        Log.d(TAG, "onAttach: ");
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-        mObjectAnimator.start();
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        Log.d(TAG, "onViewCreated: ");
+        animation = AnimationUtils.loadAnimation(getContext(), R.anim.rotate_animation);
+
+        compositeDisposable.add(
+                PlayMusicActivity
+                        .getImageSubject()
+                        .subscribeOn(Schedulers.newThread())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(s -> {
+                            if (!s.isEmpty()) {
+                                playMusic(s);
+                            }
+                        })
+        );
+
     }
 
-    public void Playnhac(String hinhAnh) {
-        Log.d("TAG", hinhAnh);
+    public void playMusic(String hinhAnh) {
+        Log.d(TAG, hinhAnh + " - " + (getActivity() != null));
         try {
-            if (!hinhAnh.isEmpty()) {
-                Glide.with(Objects.requireNonNull(getContext())).load(hinhAnh).into(mCircleImageView);
+            if (getActivity() != null) {
+                Glide
+                        .with(this)
+                        .load(hinhAnh)
+                        .into(binding.imgCircle);
+                binding.imgCircle.startAnimation(animation);
             }
+
         } catch (IllegalArgumentException e) {
             e.getMessage();
         }
@@ -68,11 +86,7 @@ public class FragmentCDMusic extends Fragment {
 
     public void stopAnimation() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            mObjectAnimator.pause();
+            binding.imgCircle.clearAnimation();
         }
-    }
-
-    public void startAnimation() {
-        mObjectAnimator.start();
     }
 }

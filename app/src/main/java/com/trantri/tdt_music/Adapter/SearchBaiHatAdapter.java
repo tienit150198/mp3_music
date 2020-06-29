@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.google.gson.Gson;
 import com.trantri.tdt_music.activity.PlayMusicActivity;
 import com.trantri.tdt_music.Model.BaiHatYeuThich;
 import com.trantri.tdt_music.R;
@@ -62,7 +63,7 @@ public class SearchBaiHatAdapter extends RecyclerView.Adapter<SearchBaiHatAdapte
             txtCasi = itemView.findViewById(R.id.tv_SearchTenCaSi);
         itemView.setOnClickListener(v -> {
             Intent intent = new Intent(mContext, PlayMusicActivity.class);
-            intent.putExtra("cakhuc",list.get(getAdapterPosition()));
+            intent.putExtra("cakhuc",new Gson().toJson(list.get(getAdapterPosition())));
             mContext.startActivity(intent);
         });
 //        imgLike.setOnClickListener(new View.OnClickListener() {
