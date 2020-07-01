@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="10dp"
+    android:layout_marginBottom="20dp"
     android:layout_marginTop="5dp"
     android:layout_marginLeft="5dp"
     android:layout_marginRight="5dp"
@@ -29,13 +29,13 @@
         </FrameLayout>
 
         <TextView
-            android:layout_gravity="center"
+            android:layout_gravity="center_horizontal|top"
             android:id="@+id/tv_theloaitheochude"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ellipsize="end"
-            android:gravity="center"
-            android:lines="2"
+            android:gravity="center_horizontal|top"
+            android:maxLines="2"
             android:maxWidth="200dp"
             android:paddingLeft="5dp"
             android:paddingRight="5dp"
@@ -44,16 +44,5 @@
             android:textColor="#000000"
             android:textSize="15sp"
             android:textStyle="bold" />
-
-        <TextView
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingLeft="5dp"
-            android:paddingRight="5dp"
-            android:paddingTop="5dp"
-            android:text="Various Artists"
-            android:textSize="13sp" />
     </LinearLayout>
 </LinearLayout>

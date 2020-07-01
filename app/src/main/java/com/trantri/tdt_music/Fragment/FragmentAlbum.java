@@ -55,15 +55,15 @@ public class FragmentAlbum extends Fragment {
     }
 
     private void GetDataAlbum() {
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
+        linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
+        binding.myRecycleAlbum.setLayoutManager(linearLayoutManager);
         disposable.add(
                 ApiClient.getService(Objects.requireNonNull(getContext())).getDataAlbum()
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe((albums) -> {
                             mAdapter = new AlbumAdapter(getActivity(), albums);
-                            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
-                            linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
-                            binding.myRecycleAlbum.setLayoutManager(linearLayoutManager);
                             binding.myRecycleAlbum.setAdapter(mAdapter);
 
                         })

@@ -7,13 +7,13 @@ import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.StrictMode;
-import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.trantri.tdt_music.Adapter.DanhSachBaiHatAdapter;
 import com.trantri.tdt_music.Model.Album;
 import com.trantri.tdt_music.Model.BaiHatYeuThich;
@@ -21,11 +21,13 @@ import com.trantri.tdt_music.Model.Playlist;
 import com.trantri.tdt_music.Model.PlaylistAll;
 import com.trantri.tdt_music.Model.Quangcao;
 import com.trantri.tdt_music.Model.TheLoai;
+import com.trantri.tdt_music.data.Constraint;
 import com.trantri.tdt_music.data.local.AppDatabase;
 import com.trantri.tdt_music.data.remote.ApiClient;
 import com.trantri.tdt_music.databinding.ActivitySongsListBinding;
 
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
@@ -37,17 +39,19 @@ import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public class SongsListActivity extends AppCompatActivity {
-    ActivitySongsListBinding binding;
-    Quangcao mQuangcao;
-    List<BaiHatYeuThich> listBaiHat;
-    DanhSachBaiHatAdapter mAdapter;
-    Playlist mPlaylist;
-    PlaylistAll mPlaylistAll;
-    TheLoai mTheLoai;
-    Album mAlbum;
-    private CompositeDisposable compositeDisposable = new CompositeDisposable();
+    private ActivitySongsListBinding binding;
+    private Quangcao mQuangcao;
+    private List<BaiHatYeuThich> listBaiHat;
+    private DanhSachBaiHatAdapter mAdapter;
+    private Playlist mPlaylist;
+    private PlaylistAll mPlaylistAll;
+    private TheLoai mTheLoai;
+    private Album mAlbum;
 
     private AppDatabase mInstanceDatabase;
+    private CompositeDisposable compositeDisposable = new CompositeDisposable();
+
+    private boolean isUser = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,12 +65,19 @@ public class SongsListActivity extends AppCompatActivity {
         init();
 
         mInstanceDatabase = AppDatabase.getInstance(this);
-        mInstanceDatabase.mBaihatBaiHatYeuThichDao().getAllBaiHatYeuThich().observe(this, baiHatYeuThiches -> {
-            if (mAdapter == null) {
-                mAdapter = new DanhSachBaiHatAdapter(this, null);
-            }
-            mAdapter.setBaiHatDaThich(baiHatYeuThiches);
-        });
+        mInstanceDatabase.mBaihatBaiHatYeuThichDao()
+                .getAllBaiHatYeuThich()
+                .observe(this, baiHatYeuThiches -> {
+                    if (mAdapter == null) {
+                        mAdapter = new DanhSachBaiHatAdapter(this, null);
+                    }
+                    mAdapter.setBaiHatDaThich(baiHatYeuThiches);
+                });
+
+        if(isUser){
+            mAdapter = new DanhSachBaiHatAdapter(this, listBaiHat);
+            binding.recycleDanhSachBH.setAdapter(mAdapter);
+        }
 
         if (mQuangcao != null && !mQuangcao.getTenbaihat().equals("")) {
             setValuesInView(mQuangcao.getTenbaihat(), mQuangcao.getHinhbaihat());
@@ -97,9 +108,7 @@ public class SongsListActivity extends AppCompatActivity {
                 .subscribe(baiHatYeuThiches -> {
                     listBaiHat = baiHatYeuThiches;
                     mAdapter = new DanhSachBaiHatAdapter(this, listBaiHat);
-                    binding.recycleDanhSachBH.setLayoutManager(new LinearLayoutManager(SongsListActivity.this));
                     binding.recycleDanhSachBH.setAdapter(mAdapter);
-                    eventClick();
                 });
         compositeDisposable.add(disposable);
     }
@@ -111,9 +120,7 @@ public class SongsListActivity extends AppCompatActivity {
                 .subscribe(baiHatYeuThiches -> {
                     listBaiHat = baiHatYeuThiches;
                     mAdapter = new DanhSachBaiHatAdapter(this, listBaiHat);
-                    binding.recycleDanhSachBH.setLayoutManager(new LinearLayoutManager(SongsListActivity.this));
                     binding.recycleDanhSachBH.setAdapter(mAdapter);
-                    eventClick();
                 });
         compositeDisposable.add(disposable1);
     }
@@ -125,9 +132,7 @@ public class SongsListActivity extends AppCompatActivity {
                 .subscribe(baiHatYeuThiches -> {
                     listBaiHat = baiHatYeuThiches;
                     mAdapter = new DanhSachBaiHatAdapter(this, listBaiHat);
-                    binding.recycleDanhSachBH.setLayoutManager(new LinearLayoutManager(SongsListActivity.this));
                     binding.recycleDanhSachBH.setAdapter(mAdapter);
-                    eventClick();
                 });
         compositeDisposable.add(disposable2);
     }
@@ -158,9 +163,7 @@ public class SongsListActivity extends AppCompatActivity {
                 .subscribe(baiHatYeuThiches -> {
                     listBaiHat = baiHatYeuThiches;
                     mAdapter = new DanhSachBaiHatAdapter(this, listBaiHat);
-                    binding.recycleDanhSachBH.setLayoutManager(new LinearLayoutManager(SongsListActivity.this));
                     binding.recycleDanhSachBH.setAdapter(mAdapter);
-                    eventClick();
                 });
         compositeDisposable.add(disposable3);
     }
@@ -171,12 +174,10 @@ public class SongsListActivity extends AppCompatActivity {
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("");
         binding.myToolbarList.setNavigationOnClickListener(v -> finish());
-//        mCollapsingToolbarLayout.setExpandedTitleColor(Color.BLUE);
-//        mCollapsingToolbarLayout.setCollapsedTitleTextColor(Color.BLACK);
-//        mCollapsingToolbarLayout.setExpandedTitleMarginStart(25);
-//        mCollapsingToolbarLayout.setExpandedTitleTextAppearance(18);
-//        mCollapsingToolbarLayout.setCollapsedTitleTextAppearance(18);
         binding.btnNghetatca.setEnabled(false);
+
+        binding.recycleDanhSachBH.setLayoutManager(new LinearLayoutManager(SongsListActivity.this));
+        eventClick();
     }
 
 
@@ -198,6 +199,14 @@ public class SongsListActivity extends AppCompatActivity {
             if (intent.hasExtra("album")) {
                 mAlbum = (Album) intent.getSerializableExtra("album");
             }
+            if (intent.hasExtra(Constraint.Intent.USER)) {
+                String txtAllBaiHat = intent.getStringExtra(Constraint.Intent.USER);
+                Type type = new TypeToken<List<BaiHatYeuThich>>() {
+                }.getType();
+                listBaiHat = new Gson().fromJson(txtAllBaiHat, type);
+
+                isUser = true;
+            }
 
         }
     }
@@ -208,7 +217,6 @@ public class SongsListActivity extends AppCompatActivity {
         binding.btnNghetatca.setEnabled(true);
         binding.btnNghetatca.setOnClickListener(v -> {
             Intent intent = new Intent(SongsListActivity.this, PlayMusicActivity.class);
-            Log.d(TAG, "eventClick: " + listBaiHat.toString());
             intent.putExtra("allbaihat", new Gson().toJson(listBaiHat));
             startActivity(intent);
         });

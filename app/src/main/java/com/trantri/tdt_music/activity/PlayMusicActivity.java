@@ -90,7 +90,11 @@ public class PlayMusicActivity extends AppCompatActivity {
         mInstanceDatabase = AppDatabase.getInstance(this);
 
         mInstanceDatabase.mBaihatBaiHatYeuThichDao()
-                .getAllBaiHatYeuThich().observe(this, baiHatYeuThiches -> mListBaiHatDaThich = baiHatYeuThiches);
+                .getAllBaiHatYeuThich().observe(this, baiHatYeuThiches -> {
+            mListBaiHatDaThich = baiHatYeuThiches;
+
+            updateLove();
+        });
         mInstanceDatabase.mPlayListUserDao()
                 .getAllPlaylist().observe(this, playListUsers -> mListPlayListUsers = playListUsers);
 
@@ -114,6 +118,17 @@ public class PlayMusicActivity extends AppCompatActivity {
                             UpdateTime();
                         })
         );
+    }
+
+    private void updateLove() {
+        binding.imgFavorite.setChecked(false);
+        for (int i = 0; i < mListBaiHatDaThich.size(); i++) {
+            BaiHatYeuThich baiHatYeuThich = mListBaiHatDaThich.get(i);
+            if (baiHatList != null && baiHatList.get(mCurrentPosition) != null
+                    && baiHatYeuThich.getTenBaiHat().equals(baiHatList.get(mCurrentPosition).getTenBaiHat())) {
+                binding.imgFavorite.setChecked(true);
+            }
+        }
     }
 
     @Override
@@ -147,7 +162,7 @@ public class PlayMusicActivity extends AppCompatActivity {
                 resumeMusic();
                 break;
             case Constraint.EventBusAction.NEXT:
-                binding.btnPlay.setImageResource(R.drawable.iconplay);
+                binding.btnPlay.setImageResource(R.drawable.ic_play_music);
 
                 break;
             case Constraint.EventBusAction.FAIL:
@@ -161,7 +176,7 @@ public class PlayMusicActivity extends AppCompatActivity {
                     UpdateTime();
 
                     mCurrentPosition = mInformationMusic.getPosition();
-                    binding.btnPlay.setImageResource(R.drawable.iconpause);
+                    binding.btnPlay.setImageResource(R.drawable.ic_pause_music);
                     mImageSubject.onNext(mInformationMusic.getBaiHatYeuThich().getHinhBaiHat());
                     Objects.requireNonNull(getSupportActionBar()).setTitle(baiHatList.get(mInformationMusic.getPosition()).getTenBaiHat());
                 }
@@ -172,10 +187,9 @@ public class PlayMusicActivity extends AppCompatActivity {
 
     private void resumeMusic() {
         Log.d(TAG, "resumeMusic: ");
-        binding.btnPlay.setImageResource(R.drawable.iconpause);
+        binding.btnPlay.setImageResource(R.drawable.ic_pause_music);
         isPlay = true;
 
-        binding.imgFavorite.setChecked(baiHatList.get(mCurrentPosition).isLiked());
         mImageSubject.onNext(baiHatList.get(mCurrentPosition).getHinhBaiHat());
 
         Objects.requireNonNull(getSupportActionBar()).setTitle(baiHatList.get(mCurrentPosition).getTenBaiHat());
@@ -184,9 +198,8 @@ public class PlayMusicActivity extends AppCompatActivity {
     private void playMusic() {
         Log.d(TAG, "playMusic: ");
         isPlay = true;
-        binding.imgFavorite.setChecked(baiHatList.get(mCurrentPosition).isLiked());
         Objects.requireNonNull(getSupportActionBar()).setTitle(baiHatList.get(mCurrentPosition).getTenBaiHat());
-        binding.btnPlay.setImageResource(R.drawable.iconpause);
+        binding.btnPlay.setImageResource(R.drawable.ic_pause_music);
 
         mImageSubject.onNext(baiHatList.get(mCurrentPosition).getHinhBaiHat());
     }
@@ -194,8 +207,7 @@ public class PlayMusicActivity extends AppCompatActivity {
     private void pauseMusic() {
         Log.d(TAG, "pauseMusic: ");
         isPlay = false;
-        binding.imgFavorite.setChecked(baiHatList.get(mCurrentPosition).isLiked());
-        binding.btnPlay.setImageResource(R.drawable.iconplay);
+        binding.btnPlay.setImageResource(R.drawable.ic_play_music);
         mFragmentCDMusic.stopAnimation();
     }
 
@@ -290,17 +302,13 @@ public class PlayMusicActivity extends AppCompatActivity {
             for (int i = 0; i < mListBaiHatDaThich.size(); i++) {
                 BaiHatYeuThich baiHatYeuThich = mListBaiHatDaThich.get(i);
                 if (baiHatYeuThich.getTenBaiHat().equals(baiHatList.get(mCurrentPosition).getTenBaiHat())) {
-                    if (baiHatYeuThich.isLiked()) {
-                        baiHatList.get(mCurrentPosition).setLiked(false);
-                        mInstanceDatabase.mBaihatBaiHatYeuThichDao().deleteBaiHatYeuThich(baiHatYeuThich);
-                        binding.imgFavorite.setChecked(false);
-                        isLiked = true;
-                    }
+                    mInstanceDatabase.mBaihatBaiHatYeuThichDao().deleteBaiHatYeuThich(baiHatYeuThich);
+                    binding.imgFavorite.setChecked(false);
+                    isLiked = true;
                 }
             }
             if (!isLiked) {
                 binding.imgFavorite.setChecked(true);
-                baiHatList.get(mCurrentPosition).setLiked(true);
                 Toast.makeText(this, "Đã thích", Toast.LENGTH_SHORT).show();
                 mInstanceDatabase.mBaihatBaiHatYeuThichDao().insertBaiHatYeuThich(baiHatList.get(mCurrentPosition));
             }
@@ -370,6 +378,15 @@ public class PlayMusicActivity extends AppCompatActivity {
                 isShowReturn = true;
                 TimeSong(intent.getIntExtra(Constraint.TOTAL_TIME, 0));
                 mCurrentPosition = intent.getIntExtra(Constraint.POSITION, 0);
+
+                if (intent.getStringExtra(Constraint.IMAGE) != null) {
+                    mImageSubject.onNext(baiHatList.get(mCurrentPosition).getHinhBaiHat());
+                }
+                if(intent.getBooleanExtra(Constraint.STATE, false)){
+                    binding.btnPlay.setImageResource(R.drawable.ic_pause_music);
+                }else{
+                    binding.btnPlay.setImageResource(R.drawable.ic_play_music);
+                }
                 return;
             }
             baiHatList.clear();
@@ -415,9 +432,9 @@ public class PlayMusicActivity extends AppCompatActivity {
             if (!isShowReturn) {
                 getSupportActionBar().setTitle(baiHatList.get(0).getTenBaiHat());
                 EventBus.getDefault().post(new MessageEventBus(Constraint.EventBusAction.PLAY, new InformationMusic(baiHatList.get(0), 0, 0)));
-            }else{
+            } else {
                 getSupportActionBar().setTitle(baiHatList.get(mCurrentPosition).getTenBaiHat());
-                binding.btnPlay.setImageResource(R.drawable.iconpause);
+                mImageSubject.onNext(baiHatList.get(mCurrentPosition).getHinhBaiHat());
             }
         }
     }

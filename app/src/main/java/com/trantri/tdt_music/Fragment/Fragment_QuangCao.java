@@ -2,6 +2,7 @@ package com.trantri.tdt_music.Fragment;
 
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,9 +20,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
-import io.reactivex.rxjava3.schedulers.Schedulers;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class Fragment_QuangCao extends Fragment {
     private QuangCaoAdapter mAdapter;
@@ -49,36 +51,41 @@ public class Fragment_QuangCao extends Fragment {
     private static final String TAG = "LOG_Fragment_QuangCao";
 
     private void GetBanner() {
-        compositeDisposable.add(
-                ApiClient.getService(Objects.requireNonNull(getContext()))
-                        .getDataBanner()
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe((quangcaoList) -> {
-                                final List<Quangcao> arrayListBanner = quangcaoList;
-                                mAdapter = new QuangCaoAdapter(getActivity(), (ArrayList<Quangcao>) arrayListBanner);
-                                binding.viewPager.setAdapter(mAdapter);
-                                // hiện ra số lượng indicator tùy theo số lượng pager
-                                binding.myIndicator.setViewPager(binding.viewPager);
-                                mHandler = new Handler();
-                                // thực hiện hành động khi handler gọi
-                                mRunnable = () -> {
-                                    // item hiện tại đang đứng ở đâu
-                                    item = binding.viewPager.getCurrentItem();
-                                    item++;
-                                    // nếu  vượt quá kích thức page thì trở lại pager đầu
-                                    assert arrayListBanner != null;
-                                    if (item >= arrayListBanner.size()) {
-                                        item = 0;
-                                    }
-                                    // chạy xong set dữ liệu lên
-                                    binding.viewPager.setCurrentItem(item, true);
-                                    //mHandler.postDelayed(mRunnable, 4000);
-                                };
-                                mHandler.postDelayed(mRunnable, 4000);
+        ApiClient.getService(Objects.requireNonNull(getContext()))
+                .getDataBanner()
+                .enqueue(new Callback<List<Quangcao>>() {
+                    @Override
+                    public void onResponse(Call<List<Quangcao>> call, Response<List<Quangcao>> response) {
+                        if (response.isSuccessful()) {
+                            final List<Quangcao> arrayListBanner = response.body();
+                            mAdapter = new QuangCaoAdapter(getActivity(), (ArrayList<Quangcao>) arrayListBanner);
+                            binding.viewPager.setAdapter(mAdapter);
+                            // hiện ra số lượng indicator tùy theo số lượng pager
+                            binding.myIndicator.setViewPager(binding.viewPager);
+                            mHandler = new Handler();
+                            // thực hiện hành động khi handler gọi
+                            mRunnable = () -> {
+                                // item hiện tại đang đứng ở đâu
+                                item = binding.viewPager.getCurrentItem();
+                                item++;
+                                // nếu  vượt quá kích thức page thì trở lại pager đầu
+                                assert arrayListBanner != null;
+                                if (item >= arrayListBanner.size()) {
+                                    item = 0;
+                                }
+                                // chạy xong set dữ liệu lên
+                                binding.viewPager.setCurrentItem(item, true);
+                                //mHandler.postDelayed(mRunnable, 4000);
+                            };
+                            mHandler.postDelayed(mRunnable, 4000);
+                        }
+                    }
 
-                        })
-        );
+                    @Override
+                    public void onFailure(Call<List<Quangcao>> call, Throwable t) {
+                        Log.d(TAG, "onFailure: " + t.getMessage());
+                    }
+                });
 
     }
 

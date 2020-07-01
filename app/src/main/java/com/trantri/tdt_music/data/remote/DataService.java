@@ -33,13 +33,13 @@ public interface DataService {
 
     @GET("songbanner.php")
         // nhận dữ liệu
-    Single<List<Quangcao>> getDataBanner();
+    Call<List<Quangcao>> getDataBanner();
 
     @GET("PlaylistSong.php")
     Single<List<Playlist>> getDataPlaylist();
 
     @GET("chudeandTheLoai.php")
-    Single<ChuDeAndTheLoai> getDataChuDeTheLoai();
+    Call<ChuDeAndTheLoai> getDataChuDeTheLoai();
 
     @GET("albumSong.php")
     Single<List<Album>> getDataAlbum();

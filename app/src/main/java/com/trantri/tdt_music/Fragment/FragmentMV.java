@@ -126,15 +126,17 @@ public class FragmentMV extends Fragment implements YoutubeAdapter.OnItemClickLi
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe((youtube, throwable) -> {
-                            if (throwable == null) {
+                            if (throwable != null) {
                                 Log.d(TAG, "initData: ERROR");
                                 return;
                             }
 
+                            if(youtube != null){
+                                mYoutubeAdapter.submitList(youtube.getItems());
+                            }
+
                             if (!NetworkUtils.isOnline(Objects.requireNonNull(getContext()))) {
                                 Toast.makeText(getContext(), "Please check you wifi", Toast.LENGTH_SHORT).show();
-                            } else {
-                                Toast.makeText(getContext(), "Connected fail, please re-connect!", Toast.LENGTH_SHORT).show();
                             }
                         })
         );

@@ -59,7 +59,9 @@ public class FragmentBaiHat extends Fragment {
     private static final String TAG = "LOG_FragmentBaiHat";
 
     private void GetData() {
-
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
+        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        binding.myRecycleBaiHatYeuThich.setLayoutManager(layoutManager);
         Disposable disposable = ApiClient.getService(Objects.requireNonNull(getContext())).getDataBaiHatDuocYeuThich()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -71,9 +73,6 @@ public class FragmentBaiHat extends Fragment {
 
                     Log.d(TAG, "GetData: SUCCESS");
                     mAdapter = new BaiHatAdapter(getActivity(), baiHatYeuThiches);
-                    LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
-                    layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-                    binding.myRecycleBaiHatYeuThich.setLayoutManager(layoutManager);
                     binding.myRecycleBaiHatYeuThich.setAdapter(mAdapter);
                 });
         compositeDisposable.add(disposable);

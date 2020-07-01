@@ -35,17 +35,18 @@ public class DanhSachAllChuDeActivity extends AppCompatActivity implements DanhS
     }
 
     private static final String TAG = "LOG_DSAllChuDe";
+
     private void GetDataChuDe() {
+        binding.recycleViewAllChuDe.setLayoutManager(new GridLayoutManager(DanhSachAllChuDeActivity.this, 1));
         Disposable disposable = ApiClient.getService(getApplication()).getAllChuDe()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe((chuDes, throwable) -> {
-                    if(throwable != null){
+                    if (throwable != null) {
                         Log.d(TAG, "GetDataChuDe: err");
                         return;
                     }
                     mAdapter = new DanhSachAllChuDeAdapter(chuDes, this);
-                    binding.recycleViewAllChuDe.setLayoutManager(new GridLayoutManager(DanhSachAllChuDeActivity.this, 1));
                     binding.recycleViewAllChuDe.setAdapter(mAdapter);
                 });
         compositeDisposable.add(disposable);

@@ -2,33 +2,23 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_marginLeft="20dp"
-    android:layout_marginEnd="20dp"
-    android:layout_marginRight="20dp">
+    android:layout_marginTop="20dp"
+    android:background="@android:color/white">
 
     <TextView
         android:id="@+id/tvNamePlaylist"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:text="Nhạc ahihi"
-        android:textSize="24sp"
-        android:layout_marginBottom="10dp"
-        android:textColor="#283593" />
+        android:layout_margin="15dp"
+        android:gravity="center_vertical"
+        android:text="Nhạc Của Tui"
+        android:textColor="#283593"
+        android:textSize="20sp" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_sub_playlist"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/tvNamePlaylist"
-        android:layout_marginBottom="5dp"/>
-
-    <View
-        android:layout_below="@id/recycler_sub_playlist"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="#92D8F8"
-        android:layout_marginBottom="10dp"
-        />
-
+        android:layout_marginBottom="5dp" />
 </RelativeLayout>

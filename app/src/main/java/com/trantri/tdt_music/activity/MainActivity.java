@@ -65,6 +65,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         mInstanceDatabase.mBaihatBaiHatYeuThichDao().getAllBaiHatYeuThich()
                 .observe(this, baiHatYeuThiches -> {
                     mListBaiHatDaThich = baiHatYeuThiches;
+                    updateLove();
                 });
 
         init();
@@ -74,6 +75,15 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         binding.bottomNavigation.setOnNavigationItemSelectedListener(this);
     }
 
+    private void updateLove() {
+        for (int i = 0; i < mListBaiHatDaThich.size(); i++) {
+            BaiHatYeuThich baiHatYeuThich = mListBaiHatDaThich.get(i);
+            if (mCurrentBaiHatYeuThich != null && baiHatYeuThich.getTenBaiHat().equals(mCurrentBaiHatYeuThich.getTenBaiHat())) {
+                binding.bottomSheet.sheetFravorite.setChecked(true);
+            }
+        }
+    }
+
     private void setEventClicked() {
         binding.bottomSheet.sheetFravorite.setOnClickListener(v -> {
             boolean isLiked = false;
@@ -81,17 +91,13 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
             for (int i = 0; i < mListBaiHatDaThich.size(); i++) {
                 BaiHatYeuThich baiHatYeuThich = mListBaiHatDaThich.get(i);
                 if (baiHatYeuThich.getTenBaiHat().equals(mCurrentBaiHatYeuThich.getTenBaiHat())) {
-                    if (baiHatYeuThich.isLiked()) {
-                        mCurrentBaiHatYeuThich.setLiked(false);
-                        mInstanceDatabase.mBaihatBaiHatYeuThichDao().deleteBaiHatYeuThich(baiHatYeuThich);
-                        binding.bottomSheet.sheetFravorite.setChecked(false);
-                        isLiked = true;
-                    }
+                    mInstanceDatabase.mBaihatBaiHatYeuThichDao().deleteBaiHatYeuThich(baiHatYeuThich);
+                    binding.bottomSheet.sheetFravorite.setChecked(false);
+                    isLiked = true;
                 }
             }
             if (!isLiked) {
                 binding.bottomSheet.sheetFravorite.setChecked(true);
-                mCurrentBaiHatYeuThich.setLiked(true);
                 Toast.makeText(this, "Đã thích", Toast.LENGTH_SHORT).show();
                 mInstanceDatabase.mBaihatBaiHatYeuThichDao().insertBaiHatYeuThich(mCurrentBaiHatYeuThich);
             }
@@ -112,6 +118,8 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
             intent.putExtra(Constraint.SHOW_SCREEN, Boolean.TRUE);
             intent.putExtra(Constraint.TOTAL_TIME, totalTime);
             intent.putExtra(Constraint.POSITION, currentPosition);
+            intent.putExtra(Constraint.IMAGE, mCurrentBaiHatYeuThich.getHinhBaiHat());
+            intent.putExtra(Constraint.STATE, isPlay);
 
             startActivity(intent);
             overridePendingTransition(R.anim.slide_in, R.anim.slide_non);
@@ -201,7 +209,6 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     private void setInformationBottomSheet(@NonNull BaiHatYeuThich mCurrentMusic) {
         mCurrentBaiHatYeuThich = mCurrentMusic;
         binding.bottomSheet.imgMusic.startAnimation(animation);
-        binding.bottomSheet.sheetFravorite.setChecked(mCurrentBaiHatYeuThich.isLiked());
         Glide.with(this)
                 .load(mCurrentMusic.getHinhBaiHat())
                 .centerInside()

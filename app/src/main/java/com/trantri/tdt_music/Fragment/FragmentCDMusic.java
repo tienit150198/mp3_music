@@ -19,7 +19,6 @@ import com.trantri.tdt_music.R;
 import com.trantri.tdt_music.activity.PlayMusicActivity;
 import com.trantri.tdt_music.databinding.FragmentCdMusicBinding;
 
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
@@ -56,10 +55,9 @@ public class FragmentCDMusic extends Fragment {
         compositeDisposable.add(
                 PlayMusicActivity
                         .getImageSubject()
-                        .subscribeOn(Schedulers.newThread())
-                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribeOn(Schedulers.computation())
                         .subscribe(s -> {
-                            if (!s.isEmpty()) {
+                            if (s != null && !s.isEmpty()) {
                                 playMusic(s);
                             }
                         })
@@ -81,7 +79,6 @@ public class FragmentCDMusic extends Fragment {
         } catch (IllegalArgumentException e) {
             e.getMessage();
         }
-
     }
 
     public void stopAnimation() {

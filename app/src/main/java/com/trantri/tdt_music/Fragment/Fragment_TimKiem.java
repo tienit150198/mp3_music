@@ -83,6 +83,7 @@ public class Fragment_TimKiem extends Fragment {
     private static final String TAG = "LOG_Fragment_TimKiem";
 
     private void SearchBaiHat(String keyword) {
+        binding.recycleviewTimKiem.setLayoutManager(new LinearLayoutManager(getActivity()));
         ApiClient.getService(Objects.requireNonNull(getContext())).getSearchBaiHat(keyword)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -97,8 +98,8 @@ public class Fragment_TimKiem extends Fragment {
                         if (baiHatYeuThiches.size() > 0) {
                             Log.d("TAGaaaa", "onNext: " + baiHatYeuThiches.size());
                             mAdapter = new SearchBaiHatAdapter(getActivity(), baiHatYeuThiches);
-                            binding.recycleviewTimKiem.setLayoutManager(new LinearLayoutManager(getActivity()));
                             binding.recycleviewTimKiem.setAdapter(mAdapter);
+
                             binding.recycleviewTimKiem.setVisibility(View.GONE);
                             binding.recycleviewTimKiem.setVisibility(View.VISIBLE);
                         } else {

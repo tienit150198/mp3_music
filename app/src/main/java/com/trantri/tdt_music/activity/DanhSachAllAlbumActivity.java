@@ -19,7 +19,7 @@ import io.reactivex.rxjava3.schedulers.Schedulers;
 public class DanhSachAllAlbumActivity extends AppCompatActivity {
     DanhSachAllAlbumAdapter mDanhSachAllAlbumAdapter;
     ActivityDanhSachAllAlbumBinding binding;
-    private  CompositeDisposable compositeDisposable = new CompositeDisposable();
+    private CompositeDisposable compositeDisposable = new CompositeDisposable();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,12 +38,12 @@ public class DanhSachAllAlbumActivity extends AppCompatActivity {
     }
 
     private void GetData() {
+        binding.recycleAllAlbum.setLayoutManager(new GridLayoutManager(DanhSachAllAlbumActivity.this, 2));
         Disposable disposable = ApiClient.getService(getApplicationContext()).getAllAlbum()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(albums -> {
                     mDanhSachAllAlbumAdapter = new DanhSachAllAlbumAdapter(albums);
-                    binding.recycleAllAlbum.setLayoutManager(new GridLayoutManager(DanhSachAllAlbumActivity.this, 2));
                     binding.recycleAllAlbum.setAdapter(mDanhSachAllAlbumAdapter);
                 });
         compositeDisposable.add(disposable);

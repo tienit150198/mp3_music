@@ -58,6 +58,9 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
+                android:singleLine="true"
+                android:maxWidth="150dp"
+                android:ellipsize="end"
                 android:text="Ca si"
                 android:textColor="@android:color/black"
                 android:textSize="16sp" />

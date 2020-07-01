@@ -9,6 +9,8 @@ public class Constraint {
     public static final String SHOW_SCREEN = "SHOW_SCREEN";
     public static final String TOTAL_TIME = "TOTAL_TIME";
     public static final String POSITION = "POSITION";
+    public static final String IMAGE = "IMAGE";
+    public static final String STATE = "STATE";
 
     public interface EventBusAction {
         String PLAY = "PLAY";
@@ -40,5 +42,11 @@ public class Constraint {
         String NAME_PLAY_LIST = "PLAY_LIST";
         String PK_BAI_HAT_YEU_THICH = "tenBaiHat";
         String PK_PLAY_LIST = "name";
+    }
+
+    public interface Intent{
+        String USER = "USER";
+        String USER_PLAYLIST = "USER_PLAYLIST";
+        String USER_MUSIC_LIKED = "USER_MUSIC_LIKED";
     }
 }

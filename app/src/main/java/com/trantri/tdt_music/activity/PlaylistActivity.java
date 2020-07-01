@@ -35,6 +35,7 @@ public class PlaylistActivity extends AppCompatActivity {
     private static final String TAG = "LOG_PlaylistActivity";
 
     private void Getdata() {
+
         Disposable disposable = ApiClient.getService(getApplication()).getAllPlaylist()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -43,10 +44,7 @@ public class PlaylistActivity extends AppCompatActivity {
                         Log.d(TAG, "Getdata: " + throwable.getMessage());
                         return;
                     }
-                    Log.d(TAG, "Getdata: " + playlistAlls.toString());
                     mAdapter = new DanhSachAllPlaylistAdapter(PlaylistActivity.this, playlistAlls);
-                    binding.myRecycleViewPlaylist.setHasFixedSize(true);
-                    binding.myRecycleViewPlaylist.setLayoutManager(new GridLayoutManager(PlaylistActivity.this, 2));
                     binding.myRecycleViewPlaylist.setAdapter(mAdapter);
                 });
         compositeDisposable.add(disposable);
@@ -59,6 +57,9 @@ public class PlaylistActivity extends AppCompatActivity {
 
         binding.toobarPlaylist.setTitleTextColor(getResources().getColor(R.color.BLACK));
         binding.toobarPlaylist.setNavigationOnClickListener(v -> finish());
+
+        binding.myRecycleViewPlaylist.setHasFixedSize(true);
+        binding.myRecycleViewPlaylist.setLayoutManager(new GridLayoutManager(PlaylistActivity.this, 2));
     }
 
     @Override
