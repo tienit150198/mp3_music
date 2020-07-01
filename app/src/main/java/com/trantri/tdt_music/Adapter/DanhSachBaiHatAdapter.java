@@ -78,8 +78,8 @@ public class DanhSachBaiHatAdapter extends RecyclerView.Adapter<DanhSachBaiHatAd
         }
 
         public void bindData(BaiHatYeuThich baiHatYeuThich, int position) {
-            binding.tvTenCaSiBH.setText(baiHatYeuThich.getTenBaiHat());
-            binding.tvTenCaKhuc.setText(baiHatYeuThich.getCaSi());
+            binding.tvTenCaSiBH.setText(baiHatYeuThich.getCaSi());
+            binding.tvTenCaKhuc.setText(baiHatYeuThich.getTenBaiHat());
             binding.tvDanhSachIndex.setText(position + 1 + "");
 
             binding.imgYeuThich.setImageResource(R.drawable.iconlove);

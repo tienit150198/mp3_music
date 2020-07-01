@@ -66,32 +66,6 @@ public class SearchBaiHatAdapter extends RecyclerView.Adapter<SearchBaiHatAdapte
             intent.putExtra("cakhuc",new Gson().toJson(list.get(getAdapterPosition())));
             mContext.startActivity(intent);
         });
-//        imgLike.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                imgLike.setImageResource(R.drawable.iconloved);
-//                DataService dataService = APIService.getService();
-//                Call<String> call = dataService.getDataLuotLikeBaiHat("1", list.get(getPosition()).getIdBaiHat());
-//            call.enqueue(new Callback<String>() {
-//                @Override
-//                public void onResponse(Call<String> call, Response<String> response) {
-//                    String str = response.body();
-//                    if (str.equals("OK")){
-//                        Toast.makeText(mContext, "Bạn Đã Thích", Toast.LENGTH_SHORT).show();
-//                    }
-//                    else {
-//                        Toast.makeText(mContext, "Please check again !", Toast.LENGTH_SHORT).show();
-//                    }
-//                }
-//
-//                @Override
-//                public void onFailure(Call<String> call, Throwable t) {
-//
-//                }
-//            });
-//            imgLike.setEnabled(false);
-//            }
-//        });
         }
     }
 

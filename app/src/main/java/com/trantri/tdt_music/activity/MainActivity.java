@@ -57,7 +57,6 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         setContentView(binding.getRoot());
 
         animation = AnimationUtils.loadAnimation(this, R.anim.rotate_animation);
-        binding.bottomSheet.imgMusic.startAnimation(animation);
 
         mCurrentBaiHatYeuThich = null;
 
@@ -115,6 +114,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
             intent.putExtra(Constraint.POSITION, currentPosition);
 
             startActivity(intent);
+            overridePendingTransition(R.anim.slide_in, R.anim.slide_non);
         });
     }
 
@@ -165,10 +165,12 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                 }
                 break;
             case Constraint.EventBusAction.PAUSE:
+                binding.bottomSheet.imgMusic.clearAnimation();
                 isPlay = false;
                 binding.bottomSheet.sheetPlaystate.setImageDrawable(getResources().getDrawable(R.drawable.ic_play));
                 break;
             case Constraint.EventBusAction.RESUME:
+                binding.bottomSheet.imgMusic.startAnimation(animation);
                 isPlay = true;
                 binding.bottomSheet.sheetPlaystate.setImageDrawable(getResources().getDrawable(R.drawable.ic_pause));
                 break;
@@ -198,6 +200,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
     private void setInformationBottomSheet(@NonNull BaiHatYeuThich mCurrentMusic) {
         mCurrentBaiHatYeuThich = mCurrentMusic;
+        binding.bottomSheet.imgMusic.startAnimation(animation);
         binding.bottomSheet.sheetFravorite.setChecked(mCurrentBaiHatYeuThich.isLiked());
         Glide.with(this)
                 .load(mCurrentMusic.getHinhBaiHat())

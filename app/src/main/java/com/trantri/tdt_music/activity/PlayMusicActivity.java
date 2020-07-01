@@ -116,6 +116,12 @@ public class PlayMusicActivity extends AppCompatActivity {
         );
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(R.anim.slide_non, R.anim.slide_out);
+    }
+
     public static BehaviorSubject<String> getImageSubject() {
         return mImageSubject;
     }
