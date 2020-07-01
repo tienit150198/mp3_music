@@ -3,6 +3,7 @@ package com.trantri.tdt_music.Model;
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 import com.google.gson.annotations.Expose;
@@ -53,6 +54,7 @@ public class BaiHatYeuThich{
         this.isLiked = isLiked;
     }
 
+    @Ignore
     public BaiHatYeuThich(String idBaiHat, @NonNull String tenBaiHat, String hinhBaiHat, String caSi, String linkBaiHat, String luotThich) {
         this.idBaiHat = idBaiHat;
         this.tenBaiHat = tenBaiHat;

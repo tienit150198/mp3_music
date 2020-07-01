@@ -71,7 +71,7 @@ public class FragmentChuDeThLoai extends Fragment {
                         return;
                     }
                     // addAll() là add thêm 1 mảng cùng kiểu dữ liệu vào mảng chủ đề
-                    final ArrayList<ChuDe> chuDeArrayList = new ArrayList<>(chuDeAndTheLoai != null ? chuDeAndTheLoai.getChuDe() : null);
+                    final ArrayList<ChuDe> chuDeArrayList = new ArrayList<>(chuDeAndTheLoai.getChuDe());
                     // addAll() là add thêm 1 mảng cùng kiểu dữ liệu vào mảng thể loại
                     final ArrayList<TheLoai> theLoaiArrayList = new ArrayList<>(chuDeAndTheLoai.getTheLoai());
 

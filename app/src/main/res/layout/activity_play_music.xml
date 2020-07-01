@@ -12,9 +12,7 @@
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toobarPlayNhac"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize">
-
-    </androidx.appcompat.widget.Toolbar>
+        android:layout_height="?attr/actionBarSize" />
 
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/viewPagerPlayNhac"
@@ -191,9 +189,7 @@
                     android:drawableTint="@android:color/white"
                     android:text="Danh sách phát"
                     android:textColor="@android:color/white" />
-
             </LinearLayout>
-
         </RelativeLayout>
     </LinearLayout>
 </LinearLayout>

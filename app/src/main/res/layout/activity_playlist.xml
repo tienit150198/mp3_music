@@ -10,16 +10,12 @@
         android:id="@+id/toobarPlaylist"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
-
-    </androidx.appcompat.widget.Toolbar>
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/myRecycleViewPlaylist"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/toobarPlaylist"
-        android:layout_marginTop="5dp">
-
-    </androidx.recyclerview.widget.RecyclerView>
+        android:layout_marginTop="5dp" />
 </RelativeLayout>

@@ -50,5 +50,8 @@
         android:text="Những Bài Hát Hot"
         android:textColor="#FFFF"
         android:textSize="13sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:layout_marginStart="13dp"
+        android:layout_marginEnd="50dp"
+        android:layout_toEndOf="@id/img_Playlist" />
 </RelativeLayout>

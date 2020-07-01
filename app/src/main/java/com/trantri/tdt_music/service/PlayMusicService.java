@@ -190,7 +190,7 @@ public class PlayMusicService extends Service {
     }
 
     public void nextMusic() {
-        if (mListBaiHat.size() > (mCurrentPosition + 1) && mListBaiHat.get(mCurrentPosition + 1) != null) {
+        if (mCurrentPosition + 1 < mListBaiHat.size() && mListBaiHat.get(mCurrentPosition + 1) != null) {
             mCurrentPosition++;
 
             stopMusic();

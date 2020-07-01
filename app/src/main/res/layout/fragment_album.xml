@@ -4,34 +4,31 @@
     android:layout_height="wrap_content">
 
     <RelativeLayout
-        android:padding="7dp"
         android:id="@+id/relaytiveAlbum"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:padding="7dp">
 
         <TextView
-            android:textColor="@android:color/black"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:text="Album Hot"
-            android:drawableRight="@drawable/ic_more"
-            android:drawableTint="@android:color/black"
             android:id="@+id/tv_NameAlbum"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:drawableEnd="@drawable/ic_more" />
+            android:drawableEnd="@drawable/ic_more"
+            android:drawableRight="@drawable/ic_more"
+            android:drawableTint="@android:color/black"
+            android:text="Album Hot"
+            android:textColor="@android:color/black"
+            android:textSize="20sp"
+            android:textStyle="bold" />
     </RelativeLayout>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:layout_marginBottom="10dp"
-        android:layout_marginTop="10dp"
         android:id="@+id/myRecycleAlbum"
-        android:layout_below="@id/relaytiveAlbum"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginRight="10dp"
+        android:layout_below="@id/relaytiveAlbum"
         android:layout_marginLeft="10dp"
-        >
-
-    </androidx.recyclerview.widget.RecyclerView>
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="10dp" />
 </RelativeLayout>

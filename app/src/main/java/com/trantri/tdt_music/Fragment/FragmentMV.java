@@ -16,9 +16,9 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import com.mancj.materialsearchbar.MaterialSearchBar;
 import com.trantri.tdt_music.Adapter.YoutubeAdapter;
 import com.trantri.tdt_music.Model.MessageEventBus;
-import com.trantri.tdt_music.data.remote.ApiMvClient;
 import com.trantri.tdt_music.activity.VideoPlayerActivity;
 import com.trantri.tdt_music.data.Constraint;
+import com.trantri.tdt_music.data.remote.ApiMvClient;
 import com.trantri.tdt_music.databinding.FragmentMvBinding;
 import com.trantri.tdt_music.utils.NetworkUtils;
 
@@ -75,7 +75,7 @@ public class FragmentMV extends Fragment implements YoutubeAdapter.OnItemClickLi
         binding.searchMv.setOnSearchActionListener(new MaterialSearchBar.OnSearchActionListener() {
             @Override
             public void onSearchStateChanged(boolean enabled) {
-                if(!enabled){
+                if (!enabled) {
                     binding.searchMv.clearSuggestions();
                 }
             }
@@ -126,15 +126,16 @@ public class FragmentMV extends Fragment implements YoutubeAdapter.OnItemClickLi
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe((youtube, throwable) -> {
-                            if (throwable != null) {
-                                if (!NetworkUtils.isOnline(Objects.requireNonNull(getContext()))) {
-                                    Toast.makeText(getContext(), "Please check you wifi", Toast.LENGTH_SHORT).show();
-                                }else {
-                                    Toast.makeText(getContext(), "Connected fail, please re-connect!", Toast.LENGTH_SHORT).show();
-                                }
+                            if (throwable == null) {
+                                Log.d(TAG, "initData: ERROR");
                                 return;
                             }
-                            mYoutubeAdapter.submitList(youtube.getItems());
+
+                            if (!NetworkUtils.isOnline(Objects.requireNonNull(getContext()))) {
+                                Toast.makeText(getContext(), "Please check you wifi", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(getContext(), "Connected fail, please re-connect!", Toast.LENGTH_SHORT).show();
+                            }
                         })
         );
     }

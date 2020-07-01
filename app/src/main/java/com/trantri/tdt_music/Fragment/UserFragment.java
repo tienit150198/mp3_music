@@ -69,6 +69,7 @@ public class UserFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         mInstanceDatabase = AppDatabase.getInstance(getContext());
+
         mInstanceDatabase.mPlayListUserDao().getAllPlaylist().observe(Objects.requireNonNull(getActivity()), playListUsers -> {
             if (playListUsers != null) {
                 mPlaylistUserAdapter = new PlaylistUserAdapter(playListUsers, new DanhSachAllChuDeAdapter.OnItemClickedListener() {

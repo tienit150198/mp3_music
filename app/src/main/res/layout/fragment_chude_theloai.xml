@@ -18,7 +18,8 @@
             android:drawableTint="@android:color/black"
             android:textColor="@android:color/black"
             android:textSize="20sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:drawableEnd="@drawable/ic_more" />
     </RelativeLayout>
 
     <HorizontalScrollView
