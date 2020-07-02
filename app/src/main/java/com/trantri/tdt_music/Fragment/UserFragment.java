@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -139,15 +140,24 @@ public class UserFragment extends Fragment implements DanhSachAllChuDeAdapter.On
         if (parentPosition == 0) {
             if (subPosition == 0) {
                 // show all playlist same chude
-                Intent intent = new Intent(getContext(), DanhSachTheLoaiTheoChuDeActivity.class);
-                intent.putExtra(Constraint.Intent.USER_PLAYLIST, new Gson().toJson(mPlayListUsers));
+                if(!mPlayListUsers.isEmpty()){
+                    Intent intent = new Intent(getContext(), DanhSachTheLoaiTheoChuDeActivity.class);
+                    intent.putExtra(Constraint.Intent.USER_PLAYLIST, new Gson().toJson(mPlayListUsers));
 
-                startActivity(intent);
+                    startActivity(intent);
+                }else{
+                    Toast.makeText(getContext(), "Không có danh sách bài hát có sẵn", Toast.LENGTH_SHORT).show();
+                }
+
             } else {
                 // music liked
-                Intent intent = new Intent(getContext(), SongsListActivity.class);
-                intent.putExtra(Constraint.Intent.USER, new Gson().toJson(mBaiHatDaThiches));
-                startActivity(intent);
+                if(!mBaiHatDaThiches.isEmpty()){
+                    Intent intent = new Intent(getContext(), SongsListActivity.class);
+                    intent.putExtra(Constraint.Intent.USER, new Gson().toJson(mBaiHatDaThiches));
+                    startActivity(intent);
+                }else{
+                    Toast.makeText(getContext(), "Không có bài hát đã thích", Toast.LENGTH_SHORT).show();
+                }
             }
         } else {
             if (subPosition == 0) {

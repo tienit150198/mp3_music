@@ -18,10 +18,12 @@ import java.util.List;
 public class PlayMusicAdapter extends RecyclerView.Adapter<PlayMusicAdapter.ViewHolder> {
     private Context mContext;
     private List<BaiHatYeuThich> listBH;
+    private DanhSachAllChuDeAdapter.OnItemClickedListener mListener;
 
-    public PlayMusicAdapter(Context mContext, List<BaiHatYeuThich> listBH) {
+    public PlayMusicAdapter(Context mContext, List<BaiHatYeuThich> listBH, @NonNull DanhSachAllChuDeAdapter.OnItemClickedListener listener) {
         this.mContext = mContext;
         this.listBH = listBH;
+        mListener = listener;
     }
 
     @NonNull
@@ -44,12 +46,14 @@ public class PlayMusicAdapter extends RecyclerView.Adapter<PlayMusicAdapter.View
         return listBH.size();
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    public class ViewHolder extends RecyclerView.ViewHolder {
         ItemPlayMusicBinding binding;
 
         public ViewHolder(ItemPlayMusicBinding b) {
             super(b.getRoot());
             binding = b;
+
+            itemView.setOnClickListener(v -> mListener.onItemClicked(getAdapterPosition()));
         }
     }
 }

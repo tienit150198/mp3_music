@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.StrictMode;
@@ -74,7 +75,7 @@ public class SongsListActivity extends AppCompatActivity {
                     mAdapter.setBaiHatDaThich(baiHatYeuThiches);
                 });
 
-        if(isUser){
+        if (isUser) {
             mAdapter = new DanhSachBaiHatAdapter(this, listBaiHat);
             binding.recycleDanhSachBH.setAdapter(mAdapter);
         }
@@ -206,6 +207,22 @@ public class SongsListActivity extends AppCompatActivity {
                 listBaiHat = new Gson().fromJson(txtAllBaiHat, type);
 
                 isUser = true;
+
+                Glide
+                        .with(this)
+                        .load(listBaiHat.get(0).getHinhBaiHat())
+                        .into(binding.imgDanhSachbaihat);
+
+                try {
+                    URL url = new URL(listBaiHat.get(0).getHinhBaiHat());
+                    Bitmap bitmap = BitmapFactory.decodeStream(url.openConnection().getInputStream());
+                    Drawable image = new BitmapDrawable(getResources(), bitmap);
+
+                    binding.myCollapsingToolLayout.setBackground(image);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
             }
 
         }
